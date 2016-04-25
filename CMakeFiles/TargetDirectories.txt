@@ -1,0 +1,3 @@
+/home/jeff/Git/CompressedStacks.cpp/CMakeFiles/edit_cache.dir
+/home/jeff/Git/CompressedStacks.cpp/CMakeFiles/rebuild_cache.dir
+/home/jeff/Git/CompressedStacks.cpp/CMakeFiles/smartstack.dir
