@@ -36,11 +36,11 @@ private:
 
 /* Derived types: Block and Levels */
 // A Partially Compressed Block is composed of the signatures of its SubBlocks
-template<class T> using Block = std::vector<T,Signature<T>>;
+template<class T> using Block = std::vector<Signature<T>>;
 template<class T> Block<T> initBlock(int space);
 
 // Each level of compressed Blocks (first and second) are stored in Levels
-template<class T> using Levels = std::vector<T,Block<T>>;
+template<class T> using Levels = std::vector<Block<T>>;
 template<class T> Levels<T> initLevels(int space, int depth);
 
 /** Constructors **/
@@ -52,6 +52,28 @@ Signature<T>::Signature(int index, int position, T context)
   mLast = index;
   mPosition = position;
   mContext = context;
+}
+
+template <class T>
+Block<T> initBlock(int space)
+{
+  Block<T> block;
+  block.reserve(space);
+  return block;
+}
+
+template <class T>
+Levels<T> initLevels(int space, int depth)
+{
+  Levels<T> levels;
+  for (int lvl = 1; lvl < depth; lvl++)
+   {
+    Block<T> block = initBlock<T>(space);
+    levels.push_back(block);
+   }
+   levels.reserve(depth-1);
+
+   return levels;
 }
 
 /** Setters **/
@@ -107,7 +129,7 @@ void Signature<T>::println()
 }
 
 template<class T>
-std::string toString(Block<T> block)
+std::string blockToString(Block<T> block)
 {
   std::string str;
   str = "[";
@@ -116,6 +138,13 @@ std::string toString(Block<T> block)
     str += "\t\t\t\t" + (*it).toString() + "\n";
   }
   str.back() = ']';
+  return str;
+}
+
+template<class T>
+std::string levelsToString(Levels<T> levels)
+{
+  std::string str;
   return str;
 }
 

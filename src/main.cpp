@@ -2,6 +2,7 @@
 #include "../include/sign.hpp"
 #include "../include/data.hpp"
 #include "../include/normalStack.hpp"
+#include "../include/compressedStack.hpp"
 
 // Test Signature
 void testSign()
@@ -45,10 +46,20 @@ void testNormalStack()
   stack.println();
 }
 
+// Test normal stack
+void testCompressedStack()
+{
+  Block<int> block = initBlock<int>(5);
+  Levels<int> lvls = initLevels<int>(3, 3);
+  Component<int, int> comp(3,5);
+  CompressedStack<int, int> stack = CompressedStack<int, int>(81,3);
+}
+
 // Main
 int main(int argc, char const *argv[]) {
   testSign();
   testData();
   testNormalStack();
+  testCompressedStack();
   return 0;
 }

@@ -4,30 +4,9 @@
 /**** Compressed Stack: declarations ****/
 #include "sign.hpp"
 #include "stack.hpp"
+#include "component.hpp"
 #include <string>
-
-/* Component of a Compressed Stack */
-template <class T, class D>
-class Component
-{
-public:
-  Component<T,D>(int space, int depth);
-
-  // Setters
-  void setSignature(Signature<T> sign);
-  void setLastSign(int index);
-
-  // IO
-  std::string toString();
-  void print();
-  void println();
-
-private:
-  Levels<T> mPartial;
-  Explicit<D> mExplicit;
-  Signature<T>* mSign;
-};
-
+#include <cmath>
 
 /* Compressed Stack itself */
 template <class T, class D>
@@ -36,8 +15,15 @@ class CompressedStack:Stack<D>
 public:
   CompressedStack<T,D>(int size, int space);
 
+  // Internals
+  Data<D> top(int k);
+  void push(Data<D> data);
+  Data<D> pop();
+
   // IO
   std::string toString();
+  void print();
+  void println();
 
 private:
   // Structure constraints
@@ -56,55 +42,20 @@ private:
 
 /** Constructors **/
 template <class T, class D>
-Component<T,D>::Component(int space, int depth)
-{
-  mSign = nullptr;
-
-  Levels<T> partial = initLevels<T>(space, depth);
-  mPartial = partial;
-
-  Explicit<D> xplicit;
-  xplicit = initExplicit<D>();
-  xplicit.resize(space);
-  mExplicit = xplicit;
-}
-
-template <class T, class D>
 CompressedStack<T,D>::CompressedStack(int size, int space)
 {
-  mSize = size;
-  mSpace = space;
-  mDepth = 0;
+   mSize = size;
+   mSpace = space;
+   mDepth = (int) ceil(log(size)/log(space)-.1); // - 1;
+
+   mPosition = 0;
+
+   mFirst = Component<T,D>(mSpace, mDepth);
+   mSecond = Component<T,D>(mSpace, mDepth);
+   mCompressed = initBlock<T>(mSpace);
 }
 
 /** IO **/
-template <class T>
-std::string toString(Levels<T> levels)
-{
-  std::string str;
-  str = "";
-  int index = 0;
-  for (typename Levels<T>::iterator it = levels.begin() ; it != levels.end(); ++it)
-  {
-    index++;
-    str += "\t\t\tLevel" + std::to_string(index) + "->\n";
-    str += "\t\t\t\t" + toString(*it) + "\n";
-  }
-  return str;
-}
-
-template <class T, class D>
-std::string Component<T,D>::toString()
-{
-  std::string str;
-  str = toString(mPartial);
-  str += "\t\t\tExplicit->\n";
-  str += toString(mExplicit);
-  str += "\t\t\tSignature->\n";
-  str += (&mSign).toString() + "\n";
-  return str;
-}
-
 template <class T, class D>
 std::string CompressedStack<T,D>::toString()
 {
@@ -119,6 +70,38 @@ std::string CompressedStack<T,D>::toString()
   str += "\t\tFully Compressed\n";
   str += toString();
   return str;
+}
+
+template <class T, class D>
+void CompressedStack<T,D>::print()
+{
+  std::cout << this->toString();
+}
+
+template <class T, class D>
+void CompressedStack<T,D>::println()
+{
+  this->print();
+  std::cout << std::endl;
+}
+
+/** Pushes, pops and accesses **/
+template <class T, class D>
+void CompressedStack<T,D>::push(Data<D> data)
+{
+
+}
+
+template <class T, class D>
+Data<D> CompressedStack<T,D>::pop()
+{
+
+}
+
+template <class T, class D>
+Data<D> CompressedStack<T,D>::top(int k)
+{
+
 }
 
 #endif /* COMPRESSEDSTACK */

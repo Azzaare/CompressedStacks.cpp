@@ -73,13 +73,13 @@ void Data<D>::println()
 }
 
 template <class D>
-std::string toString(Explicit<D> xplicit)
+std::string explicitToString(Explicit<D> xplicit)
 {
   std::string str;
   str = "{";
   for (typename Explicit<D>::iterator it = xplicit.begin() ; it != xplicit.end(); ++it)
     str += (*it).toString() + ",";
-  str.back() = '}';
+  str.back() = ')';
   return str;
 }
 
@@ -87,7 +87,7 @@ template <class D>
 void printExplicit(Explicit<D> xplicit)
 {
   std::string str;
-  str = toString(xplicit);
+  str = explicitToString(xplicit);
   std::cout << str;
 }
 template <class D>
