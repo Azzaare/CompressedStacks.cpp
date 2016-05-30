@@ -3,6 +3,8 @@
 #include "../include/data.hpp"
 #include "../include/normalStack.hpp"
 #include "../include/compressedStack.hpp"
+#include "../include/problem.hpp"
+#include <string>
 
 // Test Signature
 void testSign()
@@ -52,7 +54,16 @@ void testCompressedStack()
   Block<int> block = initBlock<int>(5);
   Levels<int> lvls = initLevels<int>(3, 3);
   Component<int, int> comp(3,5);
-  CompressedStack<int, int> stack = CompressedStack<int, int>(81,3);
+  CompressedStack<int, int> stack (81,3);
+}
+
+// Test problem
+void testProblem()
+{
+  std::string filePath = "../instances/test.csv";
+  Problem<int, int> problem (filePath, 5);
+
+
 }
 
 // Main

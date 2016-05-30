@@ -5,7 +5,7 @@
 #include "stack.hpp"
 
 template <class D>
-class NormalStack:Stack<D>
+class NormalStack: public Stack<D>
 {
 public:
   // Constructors

@@ -10,7 +10,7 @@
 
 /* Compressed Stack itself */
 template <class T, class D>
-class CompressedStack:Stack<D>
+class CompressedStack: public Stack<D>
 {
 public:
   CompressedStack<T,D>(int size, int space);
@@ -43,16 +43,16 @@ private:
 /** Constructors **/
 template <class T, class D>
 CompressedStack<T,D>::CompressedStack(int size, int space)
+: mFirst(size,space)
+, mSecond(size,space)
 {
-   mSize = size;
-   mSpace = space;
-   mDepth = (int) ceil(log(size)/log(space)-.1); // - 1;
+  mSize = size;
+  mSpace = space;
+  mDepth = (int) ceil(log(size)/log(space)-.1); // - 1;
 
-   mPosition = 0;
+  mPosition = 0;
 
-   mFirst = Component<T,D>(mSpace, mDepth);
-   mSecond = Component<T,D>(mSpace, mDepth);
-   mCompressed = initBlock<T>(mSpace);
+  mCompressed = initBlock<T>(mSpace);
 }
 
 /** IO **/
@@ -95,13 +95,15 @@ void CompressedStack<T,D>::push(Data<D> data)
 template <class T, class D>
 Data<D> CompressedStack<T,D>::pop()
 {
-
+  Data<D> d (1,1);
+  return d;
 }
 
 template <class T, class D>
 Data<D> CompressedStack<T,D>::top(int k)
 {
-
+  Data<D> d (1,1);
+  return d;
 }
 
 #endif /* COMPRESSEDSTACK */

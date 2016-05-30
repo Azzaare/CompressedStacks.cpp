@@ -11,7 +11,6 @@ template <class T, class D>
 class Component
 {
 public:
-  Component<T,D>();
   Component<T,D>(int space, int depth);
 
   // Setters
@@ -30,12 +29,6 @@ private:
 };
 
 /** Constructors **/
-template <class T, class D>
-Component<T,D>::Component()
-{
-  std::cout << "Using default constructor for Component" << std::endl;
-}
-
 template <class T, class D>
 Component<T,D>::Component(int space, int depth)
 {
