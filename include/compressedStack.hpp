@@ -68,7 +68,7 @@ std::string CompressedStack<T,D>::toString()
   str += "\t\tSecond Component\n";
   str += mSecond.toString();
   str += "\t\tFully Compressed\n";
-  str += toString();
+  str += blockToString(mCompressed);
   return str;
 }
 

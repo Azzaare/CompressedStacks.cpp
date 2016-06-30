@@ -79,7 +79,7 @@ std::string explicitToString(Explicit<D> xplicit)
   str = "{";
   for (typename Explicit<D>::iterator it = xplicit.begin() ; it != xplicit.end(); ++it)
     str += (*it).toString() + ",";
-  str.back() = ')';
+  str.back() = '}';
   return str;
 }
 

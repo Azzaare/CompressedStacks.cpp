@@ -17,6 +17,7 @@ public:
   Data<D> top(int k);
 
   // IO
+  std::string toString();
   void print();
   void println();
 
@@ -57,9 +58,16 @@ template <class D>
 
 /** IO **/
 template <class D>
+std::string NormalStack<D>::toString()
+{
+  std::string str;
+  str = "\tNormal Stack (Explicit Datas)\n\t\t";
+  return str;
+}
+template <class D>
 void NormalStack<D>::print()
 {
-  std::cout << "\tNormal Stack (Explicit Datas)\n\t\t";
+  std::cout << this->toString();
   printExplicit(mDatas);
 }
 template <class D>

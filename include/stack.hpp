@@ -14,6 +14,7 @@ public:
   virtual Data<D> top(int k) = 0;
 
   // IO
+  virtual std::string toString() = 0;
   virtual void print() = 0;
   virtual void println() = 0;
 };

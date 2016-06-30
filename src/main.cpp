@@ -56,28 +56,38 @@ void testCompressedStack()
   Levels<int> lvls = initLevels<int>(3, 3);
   Component<int, int> comp(3,5);
   CompressedStack<int, int> stack (81,3);
+  stack.println();
 }
 
 // Test problem
 void testProblem()
 {
-  std::string filePath = "../instances/test.csv";
-  Problem<int, int> problem (filePath, 5);
+  std::string filePath = "../instances/pushOnlyInput.csv";
 
+// Test on normal stack
+  Problem<int, int> problemNS (filePath, 1000);
+  problemNS.println();
+
+// Test on CompressedStack
+  Problem<int, int> problemCS (filePath, 1000, 3);
+  problemCS.println();
 
 }
 
 // Main
 int main(int argc, char const *argv[]) {
-  testSign();
-  testData();
-  testNormalStack();
-  testCompressedStack();
+// Test of different classes composing the stacks
+//  testSign();
+//  testData();
+//  testNormalStack();
+//  testCompressedStack();
+  testProblem();
 
-  createTestInput ct=createTestInput();
+// Intances generation, please comment when not in use
+/*  createTestInput ct=createTestInput();
   ct.createTestInputFiles(0,"../instances/pushOnlyInput.csv",1000,3, 5, 100, 0.2 );
   ct.createTestInputFiles(1,"../instances/CTInput.csv",1000,3);
-
+*/
 
   return 0;
 }
