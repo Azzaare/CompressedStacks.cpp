@@ -12,6 +12,11 @@
 template <class T, class D>
 class Problem
 {
+  /** Typedefs for handling pointer-to-function **/
+  typedef void (Problem::*ProblemVoidFn)();
+  typedef D (Problem::*ProblemDataFn)();
+  typedef bool (Problem::*ProblemBoolFn)();
+
 public:
   // Problem<T,D>(std::string fileName);
   Problem<T,D>(std::string fileName, int size);
@@ -23,7 +28,7 @@ public:
   // Setters
   void setReadInput(D (*functionPointer)());
   void setInitStack(void (*functionPointer)());
-  void setPopCondition(bool (*functionPointer)());
+  void setPopCondition(ProblemBoolFn functionPointer);
   void setPopAction(void (*functionPointer)());
   void setPushCondition(bool (*functionPointer)());
   void setPushAction(void (*functionPointer)());
@@ -151,7 +156,7 @@ void Problem<T,D>::setPopAction(void (*functionPointer)()){
   mPopAction = functionPointer;
 }
 template <class T, class D>
-void Problem<T,D>::setPopCondition(bool (*functionPointer)()){
+void Problem<T,D>::setPopCondition(ProblemBoolFn functionPointer){
   mPopConditon = functionPointer;
 }
 template <class T, class D>
