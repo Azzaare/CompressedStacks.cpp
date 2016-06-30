@@ -4,7 +4,7 @@
 #include "../include/normalStack.hpp"
 #include "../include/compressedStack.hpp"
 #include "../include/problem.hpp"
-#include "../sources/createTestInput.h"
+#include "../include/createTestInput.hpp"
 #include <string>
 
 // Test Signature
@@ -75,8 +75,8 @@ int main(int argc, char const *argv[]) {
   testCompressedStack();
 
   createTestInput ct=createTestInput();
-  ct.createTestInputFiles(0,"/home/yago/code/CompressedStacks.cpp/instances/pushOnlyInput.csv",1000,3, 5, 100, 0.2 );
-  ct.createTestInputFiles(1,"/home/yago/code/CompressedStacks.cpp/instances/CTInput.csv",1000,3);
+  ct.createTestInputFiles(0,"../instances/pushOnlyInput.csv",1000,3, 5, 100, 0.2 );
+  ct.createTestInputFiles(1,"../instances/CTInput.csv",1000,3);
 
 
   return 0;
