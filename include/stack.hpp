@@ -12,6 +12,7 @@ public:
   virtual Data<D> pop() = 0;
   virtual void push(Data<D> data) = 0;
   virtual Data<D> top(int k) = 0;
+  virtual bool isempty() = 0;
 
   // IO
   virtual std::string toString() = 0;

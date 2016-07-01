@@ -55,7 +55,7 @@ template <class D>
 std::string Data<D>::toString()
 {
   std::string str;
-  str = std::to_string(mIndex);
+  str = std::to_string(mIndex) + "<-" + std::to_string(mData);
   return str;
 }
 template <class D>

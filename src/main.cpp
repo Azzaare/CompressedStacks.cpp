@@ -6,6 +6,7 @@
 #include "../include/problem.hpp"
 #include "../include/createTestInput.hpp"
 #include <string>
+#include <vector>
 
 // Test Signature
 void testSign()
@@ -59,19 +60,62 @@ void testCompressedStack()
   stack.println();
 }
 
+// Class for test instance
+class Instance: public Problem<int,int>{
+public:
+  Instance(std::string filePath, int size):Problem<int,int>(filePath, size){}
+  Instance(std::string filePath, int size, int space):Problem<int,int>(filePath, size, space){}
+private:
+  // Functions to run the stack
+  int readInput(std::vector<std::string> line){
+    int value = std::stoi(line[0]);
+    setContext(std::stoi(line[1]));
+    return value;
+
+  }
+  void initStack(){
+    std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
+    setContext(0);
+    std::cout << "Debug 3 : size = " << line.size() << std::endl;
+    std::cout << "Implement mInitStack for your instance" << std::endl;
+  }
+  bool popCondition(int data){
+    if (getContext() > 0) {
+      std::cout << "Pop! : Context = " << (getContext()) << std::endl;
+      return true;
+    }
+    return false;
+  }
+  void popAction(Data<int> elt){
+    setContext(getContext() - 1);
+  }
+  bool pushCondition(int data){
+    if (data > 0) {
+      std::cout << "Push!" << std::endl;
+      return true;
+    }
+    std::cout << "No Push!" << std::endl;
+    return false;
+  }
+  void pushAction(Data<int> elt){
+    std::cout << "Implement mPushAction for your instance" << std::endl;
+  }
+};
+
+
 // Test problem
 void testProblem()
 {
   std::string filePath = "../instances/pushOnlyInput.csv";
 
-// Test on normal stack
-  Problem<int, int> problemNS (filePath, 1000);
-  problemNS.println();
+  // Test on normal stack
+  Instance testNS(filePath, 1000);
+  testNS.run();
+  testNS.println();
 
-// Test on CompressedStack
-  Problem<int, int> problemCS (filePath, 1000, 3);
-  problemCS.println();
-
+  // Test on CompressedStack
+//  Instance testCS(filePath, 1000, 3);
+//  testCS.println();
 }
 
 // Main

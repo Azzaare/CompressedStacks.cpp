@@ -15,6 +15,7 @@ public:
   Data<D> pop();
   void push(Data<D> data);
   Data<D> top(int k);
+  bool isempty();
 
   // IO
   std::string toString();
@@ -36,6 +37,12 @@ NormalStack<D>::NormalStack(int size)
 
 /** Stack internal methods **/
 template <class D>
+  bool NormalStack<D>::isempty()
+  {
+    return mDatas.empty();
+  }
+
+template <class D>
   Data<D> NormalStack<D>::pop()
   {
     Data<D> data = mDatas.back();
@@ -44,9 +51,12 @@ template <class D>
   }
 
 template <class D>
-  void NormalStack<D>::push(Data<D> data)
+  void NormalStack<D>::push(Data<D> elt)
   {
-    mDatas.push_back(data);
+    std::cout << "Ultra Push! : data = " << (elt.getData()) << std::endl;
+    mDatas.push_back(elt);
+    std::cout << "Size of the stack : " << (mDatas.size()) << std::endl;
+    println();
   }
 
 template <class D>

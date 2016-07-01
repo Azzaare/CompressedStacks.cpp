@@ -19,6 +19,7 @@ public:
   Data<D> top(int k);
   void push(Data<D> data);
   Data<D> pop();
+  bool isempty();
 
   // IO
   std::string toString();
@@ -86,6 +87,11 @@ void CompressedStack<T,D>::println()
 }
 
 /** Pushes, pops and accesses **/
+template <class T, class D>
+bool CompressedStack<T,D>::isempty(){
+  return true;
+}
+
 template <class T, class D>
 void CompressedStack<T,D>::push(Data<D> data)
 {
