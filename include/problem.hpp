@@ -69,7 +69,7 @@ Problem<T,D>::Problem(std::string fileName, int size)
   mInput.open(fileName, std::ifstream::in);
   mOutput = nullptr;
 
-  mContext = nullptr;
+  mContext = new T();
   mIndex = 0;
 
   mStack = new NormalStack<T> (size);
@@ -117,13 +117,10 @@ std::vector<std::string> Problem<T,D>::readLine()
   std::vector<std::string> line;
   size_t pos=std::string::npos;
   getline(mInput,str);
-  std::cout << "Debug 4 : " << str << std::endl;
   while (true){
     pos=str.find_first_of(",");
     line.push_back(str.substr(0,pos));
-    std::cout << "Debug 4.2 : " << str << " and pos = " << pos << std::endl;
     str.erase(0,pos+1);
-    std::cout << "Debug 4.1 : " << str << " and pos = " << pos << std::endl;
     if (pos=std::string::npos){
       line.push_back(str.substr(0,pos));
       str.erase(0,pos);
@@ -139,13 +136,10 @@ template <class T, class D>
 void Problem<T,D>::run() {
   initStack();
   while ((mInput.good())) {
-    std::cout << "Debug 1" << std::endl;
     std::vector<std::string> line = readLine();
     if ( (line.front()== "-1") || (line.front()=="") ) {
       break;
     }
-    std::cout << "Debug 2 : size = " << line.size() << std::endl;
-    std::cout << "Context = " << (line.back()) << std::endl;
     D data = readInput(line);
     mIndex++; // Might have to move
     while ( (emptystack()) && (popCondition(data)) ) {
@@ -156,7 +150,6 @@ void Problem<T,D>::run() {
       Data<D> elt (mIndex,data);
       pushAction(elt);
       push(elt);
-      println();
     }
   }
 }
@@ -189,10 +182,10 @@ void Problem<T,D>::setOutput(std::string fileName){
 
 template <class T, class D>
 void Problem<T,D>::setContext(T context){
-  std::cout << "setContext, T = " << context << std::endl;
-  mContext = &context;
-  std::cout << "setContext, *mContext = " << (*mContext) << std::endl;
-  std::cout << "setContext, *mContext = " << getContext() << std::endl;
+//  std::cout << "setContext, T = " << context << std::endl;
+  *mContext = context;
+//  std::cout << "setContext, *mContext = " << (*mContext) << std::endl;
+//  std::cout << "setContext, *mContext = " << getContext() << std::endl;
 }
 
 /** Getters **/

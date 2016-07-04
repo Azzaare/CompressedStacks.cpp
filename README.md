@@ -1,10 +1,11 @@
 # CompressedStacks.cpp
 ```cpp
 // Class for test instance
-// T is the type of the context and D is the type of the input data. Please change it on 1st and 3rd lines.
+// T is the type of the context and D is the type of the input data. Please change it on 1st, 3rd, 4th, 18th, and 25th lines.
 class Instance: public Problem<T,D>{
 public:
   Instance(std::string filePath, int size):Problem<T,D>(filePath, size){}
+  Instance(std::string filePath, int size, int space):Problem<T,D>(filePath, size, space){}
 private:
   // Functions to implement according to the problem and input
   int mReadInput(){

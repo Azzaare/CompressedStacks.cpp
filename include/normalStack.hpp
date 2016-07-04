@@ -53,10 +53,7 @@ template <class D>
 template <class D>
   void NormalStack<D>::push(Data<D> elt)
   {
-    std::cout << "Ultra Push! : data = " << (elt.getData()) << std::endl;
     mDatas.push_back(elt);
-    std::cout << "Size of the stack : " << (mDatas.size()) << std::endl;
-    println();
   }
 
 template <class D>

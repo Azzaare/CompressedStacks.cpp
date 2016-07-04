@@ -74,14 +74,11 @@ private:
 
   }
   void initStack(){
+    setContext(10);
     std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
-    setContext(0);
-    std::cout << "Debug 3 : size = " << line.size() << std::endl;
-    std::cout << "Implement mInitStack for your instance" << std::endl;
   }
   bool popCondition(int data){
     if (getContext() > 0) {
-      std::cout << "Pop! : Context = " << (getContext()) << std::endl;
       return true;
     }
     return false;
@@ -91,10 +88,8 @@ private:
   }
   bool pushCondition(int data){
     if (data > 0) {
-      std::cout << "Push!" << std::endl;
       return true;
     }
-    std::cout << "No Push!" << std::endl;
     return false;
   }
   void pushAction(Data<int> elt){
