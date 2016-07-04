@@ -5,7 +5,7 @@
 class Instance: public Problem<T,D>{
 public:
   Instance(std::string filePath, int size):Problem<T,D>(filePath, size){}
-  Instance(std::string filePath, int size, int space):Problem<T,D>(filePath, size, space){}
+  Instance(std::string filePath, int size, int space, int buffer):Problem<T,D>(filePath, size, space){}
 private:
   // Functions to implement according to the problem and input
   int mReadInput(){
