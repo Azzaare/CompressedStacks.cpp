@@ -5,6 +5,7 @@
 #include "sign.hpp"
 #include "stack.hpp"
 #include <string>
+#include <memory>
 
 /* Component of a Compressed Stack */
 template <class T, class D>
@@ -17,14 +18,22 @@ public:
   void setSignature(Signature<T> sign);
   void setLastSign(int index);
 
+  // Push and pop
+  void push(std::shared_ptr<Data<D>> elt);
+  Data<D> top();
+
   // IO
   std::string toString();
   void print();
   void println();
 
+  // State
+  bool isempty();
+  bool isExplicitEmpty();
+
 private:
   Levels<T> mPartial;
-  Explicit<D> mExplicit;
+  ExplicitPointer<D> mExplicit;
   Signature<T>* mSign;
 };
 
@@ -37,8 +46,8 @@ Component<T,D>::Component(int space, int depth)
   Levels<T> partial = initLevels<T>(space, depth);
   mPartial = partial;
 
-  Explicit<D> xplicit;
-  xplicit = initExplicit<D>();
+  ExplicitPointer<D> xplicit =
+  xplicit = initExplicitPointer<D>();
   xplicit.reserve(space);
   mExplicit = xplicit;
 }
@@ -65,10 +74,41 @@ std::string Component<T,D>::toString()
   std::string str;
   str = levelsToStringInComponent(mPartial);
   str += "\t\t\tExplicit->\n";
-  str += explicitToString(mExplicit);
+  str += explicitPointerToString(mExplicit);
   str += "\t\t\tSignature->\n";
   //str += (&mSign).toString() + "\n";
   return str;
+}
+
+/* State of the component */
+template <class T, class D>
+bool Component<T,D>::isempty(){
+  if (mSign == nullptr) {
+    return true;
+  }
+  return false;
+}
+
+template <class T, class D>
+bool Component<T,D>::isExplicitEmpty(){
+  return (mExplicit.empty());
+}
+
+/** Push and pop **/
+template <class T, class D>
+void Component<T,D>::push(std::shared_ptr<Data<D>> elt){
+  mExplicit.push_back(elt);
+}
+
+template <class T, class D>
+Data<D> Component<T,D>::top(){
+  return *(mExplicit.back());
+}
+
+/** Setters **/
+template <class T, class D>
+void Component<T,D>::setSignature(Signature<T> sign){
+  *mSign = sign;
 }
 
 #endif /* COMPONENT */

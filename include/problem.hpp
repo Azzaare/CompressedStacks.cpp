@@ -9,6 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <memory>
 
 template <class T, class D>
 class Problem
@@ -16,7 +17,7 @@ class Problem
 public:
   // Problem<T,D>(std::string fileName);
   Problem<T,D>(std::string fileName, int size);
-  Problem<T,D>(std::string fileName, int size, int space);
+  Problem<T,D>(std::string fileName, int size, int space, int buffer);
 
   // Running the stack
   void run();
@@ -56,7 +57,7 @@ private:
   virtual void pushAction(Data<D> elt) {};
 
   // Problem internal during run
-  T* mContext;
+  std::shared_ptr<T> mContext;
 
   // Stack: Normal or Compressed
   Stack<D>* mStack;
@@ -69,22 +70,23 @@ Problem<T,D>::Problem(std::string fileName, int size)
   mInput.open(fileName, std::ifstream::in);
   mOutput = nullptr;
 
-  mContext = new T();
+  mContext = (nullptr);
   mIndex = 0;
 
   mStack = new NormalStack<T> (size);
 }
 
 template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size, int space)
+Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
 {
   mInput.open(fileName, std::ifstream::in);
   mOutput = nullptr;
 
-  mContext = nullptr;
+  mContext = (nullptr);
   mIndex = 0;
-
-  mStack = new CompressedStack<T,D> (size, space);
+  std::cout << "Debug Problem 1" << std::endl;
+  mStack = new CompressedStack<T,D> (size, space, buffer, mContext);
+  std::cout << "Debug Problem 2" << std::endl;
 }
 
 /** IO **/

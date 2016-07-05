@@ -11,7 +11,9 @@
 // Test Signature
 void testSign()
 {
-  Signature<int> sign (1, 0, 1);
+  std::streampos position = int(0);
+  std::shared_ptr<int> context (new int (1));
+  Signature<int> sign (1, position, context);
   sign.println();
 }
 
@@ -56,7 +58,8 @@ void testCompressedStack()
   Block<int> block = initBlock<int>(5);
   Levels<int> lvls = initLevels<int>(3, 3);
   Component<int, int> comp(3,5);
-  CompressedStack<int, int> stack (81,3);
+  std::shared_ptr<int> c (new int(10));
+  CompressedStack<int, int> stack (81,3,0,c);
   stack.println();
 }
 
@@ -64,7 +67,7 @@ void testCompressedStack()
 class Instance: public Problem<int,int>{
 public:
   Instance(std::string filePath, int size):Problem<int,int>(filePath, size){}
-  Instance(std::string filePath, int size, int space):Problem<int,int>(filePath, size, space){}
+  Instance(std::string filePath, int size, int space, int buffer):Problem<int,int>(filePath, size, space, buffer){}
 private:
   // Functions to run the stack
   int readInput(std::vector<std::string> line){
@@ -104,13 +107,15 @@ void testProblem()
   std::string filePath = "../instances/pushOnlyInput.csv";
 
   // Test on normal stack
-  Instance testNS(filePath, 1000);
-  testNS.run();
-  testNS.println();
+//  Instance testNS(filePath, 1000);
+//  testNS.run();
+//  testNS.println();
 
   // Test on CompressedStack
-//  Instance testCS(filePath, 1000, 3);
-//  testCS.println();
+  std::cout << "Debug testProblem 1" << std::endl;
+  Instance testCS(filePath, 1000, 3, 0);
+  std::cout << "Debug testProblem 2" << std::endl;
+  testCS.println();
 }
 
 // Main

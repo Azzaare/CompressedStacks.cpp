@@ -5,13 +5,14 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <memory>
 
 template <class T>
 class Signature
 {
 public:
   // Constructors
-  Signature<T>(int index, int position, T context);
+  Signature<T>(int index, std::streampos position, std::shared_ptr<T> context);
 
   // Setters
   void setLast(int index);
@@ -19,8 +20,8 @@ public:
   // Getters
   int getFirst();
   int getLast();
-  int getPosition();
-  T getContext();
+  std::streampos getPosition();
+  std::shared_ptr<T> getContext();
 
   // IO
   std::string toString();
@@ -30,8 +31,8 @@ public:
 private:
   int mFirst;
   int mLast;
-  int mPosition;
-  T mContext;
+  std::streampos mPosition;
+  std::shared_ptr<T> mContext;
 };
 
 /* Derived types: Block and Levels */
@@ -46,7 +47,7 @@ template<class T> Levels<T> initLevels(int space, int depth);
 /** Constructors **/
 // Signature
 template <class T>
-Signature<T>::Signature(int index, int position, T context)
+Signature<T>::Signature(int index, std::streampos position, std::shared_ptr<T> context)
 {
   mFirst = index;
   mLast = index;
@@ -95,12 +96,12 @@ int Signature<T>::getLast()
   return mLast;
 }
 template <class T>
-int Signature<T>::getPosition()
+std::streampos Signature<T>::getPosition()
 {
   return mPosition;
 }
 template <class T>
-T Signature<T>::getContext()
+std::shared_ptr<T> Signature<T>::getContext()
 {
   return mContext;
 }

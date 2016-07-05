@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <memory>
 
 template <class D>
 class Data
@@ -29,6 +30,9 @@ private:
 
 template<class D> using Explicit = std::vector<Data<D>>;
 template<class D> Explicit<D> initExplicit();
+
+template<class D> using ExplicitPointer = std::vector<std::shared_ptr<Data<D>>>;
+template<class D> ExplicitPointer<D> initExplicitPointer();
 
 /** Constructors **/
 template <class D>
@@ -82,7 +86,6 @@ std::string explicitToString(Explicit<D> xplicit)
   str.back() = '}';
   return str;
 }
-
 template <class D>
 void printExplicit(Explicit<D> xplicit)
 {
@@ -97,12 +100,43 @@ void printlnExplicit(Explicit<D> xplicit)
   std::cout << "\n";
 }
 
+template <class D>
+std::string explicitPointerToString(ExplicitPointer<D> xpointer)
+{
+  std::string str;
+  str = "{";
+  for (typename ExplicitPointer<D>::iterator it = xpointer.begin() ; it != xpointer.end(); ++it)
+    str += (*(*it)).toString() + ",";
+  str.back() = '}';
+  return str;
+}
+template <class D>
+void printExplicitPointer(ExplicitPointer<D> xpointer)
+{
+  std::string str;
+  str = ExplicitPointerToString(xpointer);
+  std::cout << str;
+}
+template <class D>
+void printlnExplicitPointer(ExplicitPointer<D> xpointer)
+{
+  printExplicit(xpointer);
+  std::cout << "\n";
+}
+
 // Explicit constructor
 template <class D>
 Explicit<D> initExplicit()
 {
   Explicit<D> xplicit;
   return xplicit;
+}
+
+template <class D>
+ExplicitPointer<D> initExplicitPointer()
+{
+  ExplicitPointer<D> xpointer;
+  return xpointer;
 }
 
 #endif /* DATA */
