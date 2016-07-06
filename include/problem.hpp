@@ -5,7 +5,6 @@
 #include "stack.hpp"
 #include "compressedStack.hpp"
 #include "normalStack.hpp"
-//#include <stdbool.h>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -15,9 +14,10 @@ template <class T, class D>
 class Problem
 {
 public:
-  // Problem<T,D>(std::string fileName);
+  // Members functions
   Problem<T,D>(std::string fileName, int size);
   Problem<T,D>(std::string fileName, int size, int space, int buffer);
+  virtual ~Problem<T,D>() {}
 
   // Running the stack
   void run();
@@ -39,28 +39,28 @@ public:
   void println();
 
 protected:
+  void initStackIntern();
   std::vector<std::string> readLine();
   int mIndex;
 
 private:
   // Input/Ouput
   std::ifstream mInput;
-  std::ofstream* mOutput; // output file is optional
+  std::shared_ptr<std::ofstream> mOutput; // output file is optional
 
   // Stack Functions: defined by user
   virtual D readInput(std::vector<std::string> line) = 0;
-  virtual void initStack() = 0;
+  virtual std::shared_ptr<T> initStack() = 0;
   virtual bool popCondition(D data) = 0;
   virtual void popAction(Data<D> elt) {};
   virtual bool pushCondition(D data) = 0;
-  //virtual void pushAction() = 0;
   virtual void pushAction(Data<D> elt) {};
 
   // Problem internal during run
   std::shared_ptr<T> mContext;
 
   // Stack: Normal or Compressed
-  Stack<D>* mStack;
+  std::shared_ptr<Stack<D>> mStack;
 };
 
 /** Constructors **/
@@ -73,7 +73,7 @@ Problem<T,D>::Problem(std::string fileName, int size)
   mContext = (nullptr);
   mIndex = 0;
 
-  mStack = new NormalStack<T> (size);
+  mStack = std::shared_ptr<Stack<D>> (new NormalStack<T> (size));
 }
 
 template <class T, class D>
@@ -84,31 +84,33 @@ Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
 
   mContext = (nullptr);
   mIndex = 0;
-  std::cout << "Debug Problem 1" << std::endl;
-  mStack = new CompressedStack<T,D> (size, space, buffer, mContext);
-  std::cout << "Debug Problem 2" << std::endl;
+
+  mStack = std::shared_ptr<Stack<D>> (new CompressedStack<T,D> (size, space, buffer, mContext));
 }
 
 /** IO **/
 template <class T, class D>
 std::string Problem<T,D>::toString(){
   std::string str;
+  std::cout << "Debug Problem::toString 1" << std::endl;
   str = "Problem with an actual index of " + std::to_string(mIndex);
+  std::cout << "Debug Problem::toString 2" << std::endl;
   str += ", with a stack of type\n";
-  str += (*mStack).toString();
+  str += mStack->toString();
+  std::cout << "Debug Problem::toString 3" << std::endl;
   return str;
 }
 
 template <class T, class D>
 void Problem<T,D>::print()
 {
-  std::cout << this->toString();
+  std::cout << toString();
 }
 
 template <class T, class D>
 void Problem<T,D>::println()
 {
-  this->print();
+  print();
   std::cout << std::endl;
 }
 
@@ -123,7 +125,7 @@ std::vector<std::string> Problem<T,D>::readLine()
     pos=str.find_first_of(",");
     line.push_back(str.substr(0,pos));
     str.erase(0,pos+1);
-    if (pos=std::string::npos){
+    if (pos==std::string::npos){
       line.push_back(str.substr(0,pos));
       str.erase(0,pos);
       break;
@@ -136,7 +138,7 @@ std::vector<std::string> Problem<T,D>::readLine()
 /** Running the stack **/
 template <class T, class D>
 void Problem<T,D>::run() {
-  initStack();
+  initStackIntern();
   while ((mInput.good())) {
     std::vector<std::string> line = readLine();
     if ( (line.front()== "-1") || (line.front()=="") ) {
@@ -159,19 +161,19 @@ void Problem<T,D>::run() {
 /** Push, pop, and top **/
 template <class T, class D>
 void Problem<T,D>::push(Data<D> elt){
-  (*mStack).push(elt);
+  mStack->push(elt);
 }
 template <class T, class D>
 Data<D> Problem<T,D>::pop(){
-  return (*mStack).pop();
+  return mStack->pop();
 }
 template <class T, class D>
 Data<D> Problem<T,D>::top(int k){
-  return (*mStack).top(k);
+  return mStack->top(k);
 }
 template <class T, class D>
 bool Problem<T,D>::emptystack(){
-  return (*mStack).isempty();
+  return mStack->isempty();
 }
 
 /** Setters **/
@@ -188,6 +190,11 @@ void Problem<T,D>::setContext(T context){
   *mContext = context;
 //  std::cout << "setContext, *mContext = " << (*mContext) << std::endl;
 //  std::cout << "setContext, *mContext = " << getContext() << std::endl;
+}
+
+template <class T, class D>
+void Problem<T,D>::initStackIntern(){
+  mContext = initStack();
 }
 
 /** Getters **/

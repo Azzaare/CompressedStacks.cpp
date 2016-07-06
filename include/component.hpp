@@ -15,7 +15,7 @@ public:
   Component<T,D>(int space, int depth);
 
   // Setters
-  void setSignature(Signature<T> sign);
+  void setSignature(std::shared_ptr<Signature<T>> sign);
   void setLastSign(int index);
 
   // Push and pop
@@ -34,20 +34,19 @@ public:
 private:
   Levels<T> mPartial;
   ExplicitPointer<D> mExplicit;
-  Signature<T>* mSign;
+  std::shared_ptr<Signature<T>> mSign;
 };
 
 /** Constructors **/
 template <class T, class D>
 Component<T,D>::Component(int space, int depth)
 {
-  mSign = nullptr;
+  mSign = std::shared_ptr<Signature<T>> (nullptr);
 
   Levels<T> partial = initLevels<T>(space, depth);
   mPartial = partial;
 
-  ExplicitPointer<D> xplicit =
-  xplicit = initExplicitPointer<D>();
+  ExplicitPointer<D> xplicit = initExplicitPointer<D>();
   xplicit.reserve(space);
   mExplicit = xplicit;
 }
@@ -72,9 +71,12 @@ template <class T, class D>
 std::string Component<T,D>::toString()
 {
   std::string str;
+  std::cout << "Debug Component::toString 1" << std::endl;
   str = levelsToStringInComponent(mPartial);
+  std::cout << "Debug Component::toString 2" << std::endl;
   str += "\t\t\tExplicit->\n";
   str += explicitPointerToString(mExplicit);
+  std::cout << "Debug Component::toString 3" << std::endl;
   str += "\t\t\tSignature->\n";
   //str += (&mSign).toString() + "\n";
   return str;
@@ -83,10 +85,8 @@ std::string Component<T,D>::toString()
 /* State of the component */
 template <class T, class D>
 bool Component<T,D>::isempty(){
-  if (mSign == nullptr) {
-    return true;
-  }
-  return false;
+  bool b = bool (mSign);
+  return !b;
 }
 
 template <class T, class D>
@@ -107,8 +107,8 @@ Data<D> Component<T,D>::top(){
 
 /** Setters **/
 template <class T, class D>
-void Component<T,D>::setSignature(Signature<T> sign){
-  *mSign = sign;
+void Component<T,D>::setSignature(std::shared_ptr<Signature<T>> sign){
+  mSign = sign;
 }
 
 #endif /* COMPONENT */

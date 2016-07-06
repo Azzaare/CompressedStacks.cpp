@@ -7,6 +7,7 @@
 #include "../include/createTestInput.hpp"
 #include <string>
 #include <vector>
+#include <memory>
 
 // Test Signature
 void testSign()
@@ -76,9 +77,10 @@ private:
     return value;
 
   }
-  void initStack(){
-    setContext(10);
+  std::shared_ptr<int> initStack(){
+    std::shared_ptr<int> context (new int (10));
     std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
+    return context;
   }
   bool popCondition(int data){
     if (getContext() > 0) {
@@ -112,14 +114,12 @@ void testProblem()
 //  testNS.println();
 
   // Test on CompressedStack
-  std::cout << "Debug testProblem 1" << std::endl;
   Instance testCS(filePath, 1000, 3, 0);
-  std::cout << "Debug testProblem 2" << std::endl;
   testCS.println();
 }
 
-// Main
-int main(int argc, char const *argv[]) {
+// Main //int main(int argc, char const *argv[]) {
+int main() {
 // Test of different classes composing the stacks
 //  testSign();
 //  testData();

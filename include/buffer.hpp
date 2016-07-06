@@ -13,7 +13,7 @@ class Buffer
 {
 public:
   // Constructor
-  Buffer<D>(int size);
+  Buffer<D>(int size = 0);
 
   // Getters
   Data<D> top(int k);

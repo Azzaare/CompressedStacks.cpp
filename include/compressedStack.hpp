@@ -42,7 +42,7 @@ private:
   int mDepth; // Depth (#levels of compression) based on size and space
 
   // Position of previous input (before reading)
-  int mPosition;
+  std::streampos mPosition;
 
   // First, Second, and Compressed components
   Component<T,D> mFirst;
@@ -63,17 +63,14 @@ CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shar
 , mSecond(size,space)
 , mBuffer(buffer)
 {
-  std::cout << "Debug CompressedStack 1" << std::endl;
   mSize = size;
   mSpace = space;
   mDepth = (int) ceil(log(size)/log(space)-.1); // - 1;
 
   mPosition = 0;
 
-  std::cout << "Debug CompressedStack 2" << std::endl;
   mCompressed = initBlock<T>(mSpace);
 
-  std::cout << "Debug CompressedStack 3" << std::endl;
   mContext = context;
 }
 
@@ -82,16 +79,22 @@ template <class T, class D>
 std::string CompressedStack<T,D>::toString()
 {
   std::string str;
+  std::cout << "Debug CompressedStack::toString 1" << std::endl;
   str = "\tCompressed Stack with " + std::to_string(mSize) + " elements, ";
   str += std::to_string(mSpace) + " space order, ";
   str += std::to_string(mDepth) + " depth.\n";
   str += "\t\tFirst Component\n";
+  std::cout << "Debug CompressedStack::toString 2" << std::endl;
   str += mFirst.toString();
   str += "\t\tSecond Component\n";
+  std::cout << "Debug CompressedStack::toString 3" << std::endl;
   str += mSecond.toString();
   str += "\t\tFully Compressed\n";
+  std::cout << "Debug CompressedStack::toString 4" << std::endl;
   str += blockToString(mCompressed);
+  std::cout << "Debug CompressedStack::toString 5" << std::endl;
   str += mBuffer.toString();
+  std::cout << "Debug CompressedStack::toString 6" << std::endl;
   return str;
 }
 
@@ -134,7 +137,7 @@ void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<D>> elt){
   std::shared_ptr<Data<D>> ptr = elt;
   if (mFirst.isempty()) {
     mFirst.push(ptr);
-    Signature<T> sign(ptr->getIndex(), mPosition, mContext);
+    std::shared_ptr<Signature<T>> sign (new Signature<T> (ptr->getIndex(), mPosition, mContext));
     mFirst.setSignature(sign);
   }
   else {
