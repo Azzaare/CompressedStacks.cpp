@@ -1,15 +1,23 @@
 #ifndef SIGN
 #define SIGN
 
-/*** Signature : Header ***/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include <vector>
 #include <string>
 #include <iostream>
 #include <memory>
 
+/*==============================================================================
+  Class      : template (T context)
+  Extensions :
+  Aliases    : Block, Levels
+  Friends   ->
+            <-
+==============================================================================*/
 template <class T>
-class Signature
-{
+class Signature{
 public:
   // Constructors
   Signature<T>(int index, std::streampos position, std::shared_ptr<T> context);
@@ -45,11 +53,11 @@ template<class T> Block<T> initBlock(int space);
 template<class T> using Levels = std::vector<Block<T>>;
 template<class T> Levels<T> initLevels(int space, int depth);
 
-/** Constructors **/
-// Signature
+/*==============================================================================
+  Constructors : Signature, initBlock, initLevels
+==============================================================================*/
 template <class T>
-Signature<T>::Signature(int index, std::streampos position, std::shared_ptr<T> context)
-{
+Signature<T>::Signature(int index, std::streampos position, std::shared_ptr<T> context){
   mFirst = index;
   mLast = index;
   mPosition = position;
@@ -57,8 +65,7 @@ Signature<T>::Signature(int index, std::streampos position, std::shared_ptr<T> c
 }
 
 template <class T>
-Signature<T>::Signature(Block<T> block)
-{
+Signature<T>::Signature(Block<T> block){
   Signature<T> frontSign = block.front();
   Signature<T> backSign = block.back();
   mFirst = frontSign.getFirst();
@@ -68,16 +75,14 @@ Signature<T>::Signature(Block<T> block)
 }
 
 template <class T>
-Block<T> initBlock(int space)
-{
+Block<T> initBlock(int space){
   Block<T> block;
   block.reserve(space);
   return block;
 }
 
 template <class T>
-Levels<T> initLevels(int space, int depth)
-{
+Levels<T> initLevels(int space, int depth){
   Levels<T> levels;
   for (int lvl = 1; lvl < depth; lvl++)
    {
@@ -89,61 +94,47 @@ Levels<T> initLevels(int space, int depth)
    return levels;
 }
 
-/** Setters **/
+/*==============================================================================
+  Setters
+==============================================================================*/
 template <class T>
-void Signature<T>::setLast(int index)
-{
+void Signature<T>::setLast(int index){
   mLast = index;
 }
 
-/** Getters **/
+/*==============================================================================
+  Getters
+==============================================================================*/
 template <class T>
-int Signature<T>::getFirst()
-{
+int Signature<T>::getFirst(){
   return mFirst;
 }
 template <class T>
-int Signature<T>::getLast()
-{
+int Signature<T>::getLast(){
   return mLast;
 }
 template <class T>
-std::streampos Signature<T>::getPosition()
-{
+std::streampos Signature<T>::getPosition(){
   return mPosition;
 }
 template <class T>
-std::shared_ptr<T> Signature<T>::getContext()
-{
+std::shared_ptr<T> Signature<T>::getContext(){
   return mContext;
 }
 
-/** IO **/
+/*==============================================================================
+  IO : toString, blockToString, levelsToString
+==============================================================================*/
 template <class T>
-std::string Signature<T>::toString()
-{
+std::string Signature<T>::toString(){
   std::string str;
   str = "(" + std::to_string(mFirst) + ",";
   str += std::to_string(mLast) + ")";
   return str;
 }
-template <class T>
-void Signature<T>::print()
-{
-  std::string str;
-  str = this->toString();
-  std::cout << str;
-}
-template <class T>
-void Signature<T>::println()
-{
-  this->print();
-  std::cout << "\n";
-}
 
 template<class T>
-std::string blockToString(Block<T> block)
-{
+std::string blockToString(Block<T> block){
   std::string str;
   str = "[";
   for (typename Block<T>::iterator it = block.begin() ; it != block.end(); ++it)
@@ -155,8 +146,7 @@ std::string blockToString(Block<T> block)
 }
 
 template<class T>
-std::string levelsToString(Levels<T> levels)
-{
+std::string levelsToString(Levels<T> levels){
   std::string str;
   return str;
 }

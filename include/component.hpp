@@ -1,16 +1,23 @@
 #ifndef COMPONENT
 #define COMPONENT
 
-/**** Compressed Stack: declarations ****/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "sign.hpp"
 #include "stack.hpp"
 #include <string>
 #include <memory>
 
-/* Component of a Compressed Stack */
+/*==============================================================================
+  Class      : template (T context, D datas)
+  Extensions :
+  Aliases    :
+  Friends   ->
+            <-
+==============================================================================*/
 template <class T, class D>
-class Component
-{
+class Component{
 public:
   Component<T,D>(int space, int depth);
 
@@ -50,10 +57,11 @@ private:
   std::shared_ptr<Signature<T>> mSign;
 };
 
-/** Constructors **/
+/*==============================================================================
+  Constructors
+==============================================================================*/
 template <class T, class D>
-Component<T,D>::Component(int space, int depth)
-{
+Component<T,D>::Component(int space, int depth){
   mSign = std::shared_ptr<Signature<T>> (nullptr);
 
   Levels<T> partial = initLevels<T>(space, depth);
@@ -64,10 +72,11 @@ Component<T,D>::Component(int space, int depth)
   mExplicit = xplicit;
 }
 
-/** IO **/
+/*==============================================================================
+  IO
+==============================================================================*/
 template <class T>
-std::string levelsToStringInComponent(Levels<T> levels)
-{
+std::string levelsToStringInComponent(Levels<T> levels){
   std::string str;
   str = "";
   int index = 0;
@@ -81,8 +90,7 @@ std::string levelsToStringInComponent(Levels<T> levels)
 }
 
 template <class T, class D>
-std::string Component<T,D>::toString()
-{
+std::string Component<T,D>::toString(){
   std::string str;
   str = levelsToStringInComponent(mPartial);
   str += "\t\t\tExplicit->\n";
@@ -115,7 +123,9 @@ bool Component<T,D>::isExplicitEmpty(){
   return (mExplicit.empty());
 }
 
-/** Push and pop **/
+/*==============================================================================
+  Stack Functions: push, pop, top, topIndex
+==============================================================================*/
 template <class T, class D>
 void Component<T,D>::pushExplicit(std::shared_ptr<Data<D>> elt){
   mExplicit.push_back(elt);
@@ -147,7 +157,9 @@ int Component<T,D>::topIndex(int lvl){
   return index;
 }
 
-/** Setters **/
+/*==============================================================================
+  Setters
+==============================================================================*/
 template <class T, class D>
 void Component<T,D>::setSignature(std::shared_ptr<Signature<T>> sign){
   mSign = sign;
@@ -169,7 +181,9 @@ void Component<T,D>::clearExplicit(int space){
   mExplicit.reserve(space);
 }
 
-// Getters
+/*==============================================================================
+  Getters
+==============================================================================*/
 template <class T, class D>
 Signature<T> Component<T,D>::getSign(){
   return *mSign;

@@ -1,12 +1,20 @@
 #ifndef STACK
 #define STACK
 
-/** Stack : interface **/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "data.hpp"
 
+/*==============================================================================
+  Class      : abstract, template (T context, D datas)
+  Extensions : Instance
+  Aliases    :
+  Friends   ->
+            <- NormalStack
+==============================================================================*/
 template <class D>
-class Stack
-{
+class Stack{
 public:
   // Member functions
 //  virtual Stack<D>() = 0;
@@ -20,8 +28,6 @@ public:
 
   // IO
   virtual std::string toString() = 0;
-  virtual void print() = 0;
-  virtual void println() = 0;
 };
 
 #endif /* STACK */

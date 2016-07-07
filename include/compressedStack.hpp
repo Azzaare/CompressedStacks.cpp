@@ -1,7 +1,9 @@
 #ifndef COMPRESSEDSTACK
 #define COMPRESSEDSTACK
 
-/**** Compressed Stack: declarations ****/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "sign.hpp"
 #include "stack.hpp"
 #include "component.hpp"
@@ -11,10 +13,15 @@
 #include <cmath>
 #include <memory>
 
-/* Compressed Stack itself */
+/*==============================================================================
+  Class      : template (T context, D datas)
+  Extensions :
+  Aliases    :
+  Friends   ->
+            <-
+==============================================================================*/
 template <class T, class D>
-class CompressedStack: public Stack<D>
-{
+class CompressedStack: public Stack<D>{
 public:
   CompressedStack<T,D>(int size, int space, int buffer, std::shared_ptr<T> context, std::streampos position);
 
@@ -56,13 +63,12 @@ private:
   std::shared_ptr<T> mContext;
 };
 
-/** Constructors **/
+/*==============================================================================
+  Constructors
+==============================================================================*/
 template <class T, class D>
 CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shared_ptr<T> context, std::streampos position)
-: mFirst(size,space)
-, mSecond(size,space)
-, mBuffer(buffer)
-{
+:mFirst(size,space), mSecond(size,space), mBuffer(buffer){
   mSize = size;
   mSpace = space;
   mDepth = (int) ceil(log(size)/log(space)-.1); // - 1;
@@ -74,10 +80,11 @@ CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shar
   mContext = context;
 }
 
-/** IO **/
+/*==============================================================================
+  IO : toString
+==============================================================================*/
 template <class T, class D>
-std::string CompressedStack<T,D>::toString()
-{
+std::string CompressedStack<T,D>::toString(){
   std::string str;
   str = "\tCompressed Stack with " + std::to_string(mSize) + " elements, ";
   str += std::to_string(mSpace) + " space order, ";
@@ -93,19 +100,19 @@ std::string CompressedStack<T,D>::toString()
 }
 
 template <class T, class D>
-void CompressedStack<T,D>::print()
-{
+void CompressedStack<T,D>::print(){
   std::cout << this->toString();
 }
 
 template <class T, class D>
-void CompressedStack<T,D>::println()
-{
+void CompressedStack<T,D>::println(){
   this->print();
   std::cout << std::endl;
 }
 
-/** Pushes, pops and accesses **/
+/*==============================================================================
+  Stack Functions: push, pop, isempty
+==============================================================================*/
 template <class T, class D>
 bool CompressedStack<T,D>::isempty(){
   return (mFirst.isempty() && mSecond.isempty());
@@ -195,15 +202,13 @@ void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<D>> elt, int lvl)
 }
 
 template <class T, class D>
-Data<D> CompressedStack<T,D>::pop()
-{
+Data<D> CompressedStack<T,D>::pop(){
   Data<D> d (1,1);
   return d;
 }
 
 template <class T, class D>
-Data<D> CompressedStack<T,D>::top(int k)
-{
+Data<D> CompressedStack<T,D>::top(int k){
   if (k == 0) {
     return top();
   }
@@ -211,8 +216,7 @@ Data<D> CompressedStack<T,D>::top(int k)
 }
 
 template <class T, class D>
-Data<D> CompressedStack<T,D>::top()
-{
+Data<D> CompressedStack<T,D>::top(){
   if (mFirst.isExplicitEmpty()) {
     return mSecond.top();
   }

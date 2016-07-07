@@ -1,69 +1,13 @@
 // Main file of the compressed stack library
-#include "../include/sign.hpp"
-#include "../include/data.hpp"
-#include "../include/normalStack.hpp"
-#include "../include/compressedStack.hpp"
+
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "../include/problem.hpp"
 #include "../include/createTestInput.hpp"
 #include <string>
 #include <vector>
 #include <memory>
-
-// Test Signature
-void testSign()
-{
-  std::streampos position = int(0);
-  std::shared_ptr<int> context (new int (1));
-  Signature<int> sign (1, position, context);
-  sign.println();
-}
-
-// Test data
-void testData()
-{
-  Data<int> d (1,2);
-  d.println();
-
-  Data<int> d1 (1,2);
-  Data<int> d2 (2,3);
-  Data<int> d3 (3,5);
-  Data<int> d4 (4,12);
-  Data<int> d5 (5,892);
-
-  Explicit<int> xplicit = initExplicit<int>();
-  xplicit.push_back(d1);
-  xplicit.back();
-  xplicit.pop_back();
-}
-
-// Test normal stack
-void testNormalStack()
-{
-  NormalStack<int> stack (5);
-  Data<int> d1 (1,2);
-  Data<int> d2 (2,3);
-  Data<int> d3 (3,5);
-  Data<int> d4 (4,12);
-  Data<int> d5 (5,892);
-  stack.push(d1);
-  stack.push(d2);
-  stack.push(d3);
-  stack.push(d4);
-  stack.push(d5);
-  stack.println();
-}
-
-// Test normal stack
-void testCompressedStack()
-{
-  Block<int> block = initBlock<int>(5);
-  Levels<int> lvls = initLevels<int>(3, 3);
-  Component<int, int> comp(3,5);
-  std::shared_ptr<int> c (new int(10));
-  std::streampos p (0);
-  CompressedStack<int, int> stack (81,3,0,c,p);
-  stack.println();
-}
 
 // Class for test instance
 class Instance: public Problem<int,int>{

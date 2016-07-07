@@ -1,7 +1,9 @@
 #ifndef PROBLEM
 #define PROBLEM
 
-/**** Problem : declaration ****/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "stack.hpp"
 #include "compressedStack.hpp"
 #include "normalStack.hpp"
@@ -10,9 +12,15 @@
 #include <string>
 #include <memory>
 
+/*==============================================================================
+  Class      : abstract, template (T context, D datas)
+  Extensions : Instance
+  Aliases    :
+  Friends   ->
+            <- NormalStack
+==============================================================================*/
 template <class T, class D>
-class Problem
-{
+class Problem{
 public:
   // Members functions
   Problem<T,D>(std::string fileName, int size);
@@ -63,22 +71,22 @@ private:
   std::shared_ptr<Stack<D>> mStack;
 };
 
-/** Constructors **/
+/*==============================================================================
+  Constructors : with NormalStack or CompressedStack
+==============================================================================*/
 template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size)
-{
+Problem<T,D>::Problem(std::string fileName, int size){
   mInput.open(fileName, std::ifstream::in);
   mOutput = nullptr;
 
   mContext = (nullptr);
   mIndex = 0;
 
-  mStack = std::shared_ptr<Stack<D>> (new NormalStack<T> (size));
+  mStack = std::shared_ptr<Stack<D>> (new NormalStack<T,D> (size));
 }
 
 template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
-{
+Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer){
   mInput.open(fileName, std::ifstream::in);
   std::streampos position = mInput.tellg();
 
@@ -90,7 +98,9 @@ Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
   mStack = std::shared_ptr<Stack<D>> (new CompressedStack<T,D> (size, space, buffer, mContext, position));
 }
 
-/** IO **/
+/*==============================================================================
+  IO : toString, print, println
+==============================================================================*/
 template <class T, class D>
 std::string Problem<T,D>::toString(){
   std::string str;
@@ -101,21 +111,18 @@ std::string Problem<T,D>::toString(){
 }
 
 template <class T, class D>
-void Problem<T,D>::print()
-{
+void Problem<T,D>::print(){
   std::cout << toString();
 }
 
 template <class T, class D>
-void Problem<T,D>::println()
-{
+void Problem<T,D>::println(){
   print();
   std::cout << std::endl;
 }
 
 template <class T, class D>
-std::vector<std::string> Problem<T,D>::readLine()
-{
+std::vector<std::string> Problem<T,D>::readLine(){
   std::string str;
   std::vector<std::string> line;
   size_t pos=std::string::npos;
@@ -134,9 +141,11 @@ std::vector<std::string> Problem<T,D>::readLine()
 }
 
 
-/** Running the stack **/
+/*==============================================================================
+  Stack Functions: run, push, pop, top
+==============================================================================*/
 template <class T, class D>
-void Problem<T,D>::run() {
+void Problem<T,D>::run(){
   initStackIntern();
   while ((mInput.good())) {
     std::vector<std::string> line = readLine();
@@ -157,7 +166,6 @@ void Problem<T,D>::run() {
   }
 }
 
-/** Push, pop, and top **/
 template <class T, class D>
 void Problem<T,D>::push(Data<D> elt){
   mStack->push(elt);

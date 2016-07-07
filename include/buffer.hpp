@@ -1,16 +1,24 @@
 #ifndef BUFFER
 #define BUFFER
 
-/** Buffer class : declaration **/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "data.hpp"
 #include <vector>
 #include <string>
 #include <iostream>
 #include <memory>
 
+/*==============================================================================
+  Class      : template (D datas)
+  Extensions :
+  Aliases    :
+  Friends   ->
+            <-
+==============================================================================*/
 template <class D>
-class Buffer
-{
+class Buffer{
 public:
   // Constructor
   Buffer<D>(int size = 0);
@@ -40,12 +48,11 @@ private:
   ExplicitPointer<D> mExplicit;
 };
 
-
-
-/** Constructors **/
+/*==============================================================================
+  Constructors
+==============================================================================*/
 template <class D>
-Buffer<D>::Buffer(int size)
-{
+Buffer<D>::Buffer(int size){
   mSize = size;
   mStart = 0;
 
@@ -54,21 +61,19 @@ Buffer<D>::Buffer(int size)
   mExplicit = xplicit;
 }
 
-/** Getters **/
+/*==============================================================================
+  Getters
+==============================================================================*/
 template <class D>
-int Buffer<D>::getSize()
-{
+int Buffer<D>::getSize(){
   return mSize;
 }
 template <class D>
-int Buffer<D>::getStart()
-{
+int Buffer<D>::getStart(){
   return mStart;
 }
-
 template <class D>
-Data<D> Buffer<D>::top(int k)
-{
+Data<D> Buffer<D>::top(int k){
   if (k < getSize()) {
     int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
     return *(mExplicit[index]);
@@ -76,43 +81,43 @@ Data<D> Buffer<D>::top(int k)
   throw "Access to a top element bigger than the size of the buffer";
 }
 
-/** Setters **/
+/*==============================================================================
+  Setters
+==============================================================================*/
 template <class D>
-void Buffer<D>::setStart(int start)
-{
+void Buffer<D>::setStart(int start){
   mStart = start;
 }
 template <class D>
-void Buffer<D>::setStart()
-{
+void Buffer<D>::setStart(){
   mStart = (mStart + 1) % mSize;
 }
 template <class D>
-void Buffer<D>::setData(std::shared_ptr<Data<D>> elt, int id)
-{
+void Buffer<D>::setData(std::shared_ptr<Data<D>> elt, int id){
   int index = (id + mStart - 1) % mSize; // -1 match the start of vectors at 0
   mExplicit[index] = elt;
 }
 
-/** Push and Pop**/
+/*==============================================================================
+  Stack Functions: push, pop
+==============================================================================*/
 template <class D>
-void Buffer<D>::push(std::shared_ptr<Data<D>> elt)
-{
+void Buffer<D>::push(std::shared_ptr<Data<D>> elt){
   if (mSize > 0) {
     setData(elt, mStart+1);
   }
 }
 
 template <class D>
-void Buffer<D>::pop()
-{
+void Buffer<D>::pop(){
   setStart();
 }
 
-/** IO **/
+/*==============================================================================
+  IO : toString
+==============================================================================*/
 template <class D>
-std::string Buffer<D>::toString()
-{
+std::string Buffer<D>::toString(){
   std::string str;
   str = "\t\tBuffer size is " + std::to_string(mSize);
   str += " and start at index " + std::to_string(mStart) + "\n";
@@ -120,15 +125,13 @@ std::string Buffer<D>::toString()
   return str;
 }
 template <class D>
-void Buffer<D>::print()
-{
+void Buffer<D>::print(){
   std::string str;
   str = this->toString();
   std::cout << str;
 }
 template <class D>
-void Buffer<D>::println()
-{
+void Buffer<D>::println(){
   this->print();
   std::cout << "\n";
 }
