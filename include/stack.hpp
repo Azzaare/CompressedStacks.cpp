@@ -8,22 +8,22 @@
 
 /*==============================================================================
   Class      : abstract, template (T context, D datas)
-  Extensions : Instance
+  Extensions : NormalStack, CompressedStack
   Aliases    :
   Friends   ->
-            <- NormalStack
+            <-
 ==============================================================================*/
-template <class D>
+template <class T, class D>
 class Stack{
 public:
   // Member functions
-//  virtual Stack<D>() = 0;
-  virtual ~Stack<D>() {};
+//  virtual Stack<T,D>() = 0;
+  virtual ~Stack<T,D>() {};
 
   // Common stack functions
-  virtual Data<D> pop() = 0;
-  virtual void push(Data<D> data) = 0;
-  virtual Data<D> top(int k) = 0;
+  virtual Data<T,D> pop() = 0;
+  virtual void push(Data<T,D> data) = 0;
+  virtual Data<T,D> top(int k) = 0;
   virtual bool isempty() = 0;
 
   // IO

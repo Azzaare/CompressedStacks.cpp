@@ -10,34 +10,28 @@
 #include <memory>
 
 /*==============================================================================
-  Class      : template (T context)
+  Class      : template (T context, D datas)
   Extensions :
   Aliases    : Block, Levels
-  Friends   ->
+  Friends   -> Component, CompressedStack
             <-
 ==============================================================================*/
-template <class T>
+template <class T, class D> class Component; // Required for the friendship
+template <class T, class D> class CompressedStack; // Required for the friendship
+template <class T, class D>
 class Signature{
+  friend class Component<T,D>;
+  friend class CompressedStack<T,D>;
+
 public:
-  // Constructors
-  Signature<T>(int index, std::streampos position, std::shared_ptr<T> context);
-  Signature<T>(std::vector<Signature<T>> block);
-
-  // Setters
-  void setLast(int index);
-
-  // Getters
-  int getFirst();
-  int getLast();
-  std::streampos getPosition();
-  std::shared_ptr<T> getContext();
-
   // IO
   std::string toString();
-  void print();
-  void println();
 
 private:
+  // Constructors
+  Signature<T,D>(int index, std::streampos position, std::shared_ptr<T> context);
+  Signature<T,D>(std::vector<Signature<T,D>> block);
+
   int mFirst;
   int mLast;
   std::streampos mPosition;
@@ -46,47 +40,47 @@ private:
 
 /* Derived types: Block and Levels */
 // A Partially Compressed Block is composed of the signatures of its SubBlocks
-template<class T> using Block = std::vector<Signature<T>>;
-template<class T> Block<T> initBlock(int space);
+template<class T, class D> using Block = std::vector<Signature<T,D>>;
+template<class T, class D> Block<T,D> initBlock(int space);
 
 // Each level of compressed Blocks (first and second) are stored in Levels
-template<class T> using Levels = std::vector<Block<T>>;
-template<class T> Levels<T> initLevels(int space, int depth);
+template<class T, class D> using Levels = std::vector<Block<T,D>>;
+template<class T, class D> Levels<T,D> initLevels(int space, int depth);
 
 /*==============================================================================
   Constructors : Signature, initBlock, initLevels
 ==============================================================================*/
-template <class T>
-Signature<T>::Signature(int index, std::streampos position, std::shared_ptr<T> context){
+template <class T, class D>
+Signature<T,D>::Signature(int index, std::streampos position, std::shared_ptr<T> context){
   mFirst = index;
   mLast = index;
   mPosition = position;
   mContext = context;
 }
 
-template <class T>
-Signature<T>::Signature(Block<T> block){
-  Signature<T> frontSign = block.front();
-  Signature<T> backSign = block.back();
+template <class T, class D>
+Signature<T,D>::Signature(Block<T,D> block){
+  Signature<T,D> frontSign = block.front();
+  Signature<T,D> backSign = block.back();
   mFirst = frontSign.getFirst();
   mLast = backSign.getLast();
   mPosition = frontSign.getPosition();
   mContext = frontSign.getContext();
 }
 
-template <class T>
-Block<T> initBlock(int space){
-  Block<T> block;
+template <class T, class D>
+Block<T,D> initBlock(int space){
+  Block<T,D> block;
   block.reserve(space);
   return block;
 }
 
-template <class T>
-Levels<T> initLevels(int space, int depth){
-  Levels<T> levels;
+template <class T, class D>
+Levels<T,D> initLevels(int space, int depth){
+  Levels<T,D> levels;
   for (int lvl = 1; lvl < depth; lvl++)
    {
-    Block<T> block = initBlock<T>(space);
+    Block<T,D> block = initBlock<T,D>(space);
     levels.push_back(block);
    }
    levels.reserve(depth-1);
@@ -95,59 +89,25 @@ Levels<T> initLevels(int space, int depth){
 }
 
 /*==============================================================================
-  Setters
+  IO : toString, blockToString
 ==============================================================================*/
-template <class T>
-void Signature<T>::setLast(int index){
-  mLast = index;
-}
-
-/*==============================================================================
-  Getters
-==============================================================================*/
-template <class T>
-int Signature<T>::getFirst(){
-  return mFirst;
-}
-template <class T>
-int Signature<T>::getLast(){
-  return mLast;
-}
-template <class T>
-std::streampos Signature<T>::getPosition(){
-  return mPosition;
-}
-template <class T>
-std::shared_ptr<T> Signature<T>::getContext(){
-  return mContext;
-}
-
-/*==============================================================================
-  IO : toString, blockToString, levelsToString
-==============================================================================*/
-template <class T>
-std::string Signature<T>::toString(){
+template <class T, class D>
+std::string Signature<T,D>::toString(){
   std::string str;
   str = "(" + std::to_string(mFirst) + ",";
   str += std::to_string(mLast) + ")";
   return str;
 }
 
-template<class T>
-std::string blockToString(Block<T> block){
+template<class T, class D>
+std::string blockToString(Block<T,D> block){
   std::string str;
   str = "[";
-  for (typename Block<T>::iterator it = block.begin() ; it != block.end(); ++it)
+  for (typename Block<T,D>::iterator it = block.begin() ; it != block.end(); ++it)
   {
     str += "\t\t\t\t" + (*it).toString() + "\n";
   }
   str.back() = ']';
-  return str;
-}
-
-template<class T>
-std::string levelsToString(Levels<T> levels){
-  std::string str;
   return str;
 }
 

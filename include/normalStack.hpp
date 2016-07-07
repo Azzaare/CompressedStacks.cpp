@@ -15,7 +15,7 @@
 ==============================================================================*/
 template <class T, class D> class Problem; // Required for the friendship
 template <class T, class D>
-class NormalStack: public Stack<D>{
+class NormalStack: public Stack<T,D>{
   friend class Problem<T,D>;
 
 public:
@@ -26,12 +26,12 @@ public:
   std::string toString();
 
 private:
-  Explicit<D> mDatas; // vector of Data
+  Explicit<T,D> mDatas; // vector of Data
 
   // Stack common methods
-  Data<D> pop();
-  void push(Data<D> data);
-  Data<D> top(int k);
+  Data<T,D> pop();
+  void push(Data<T,D> data);
+  Data<T,D> top(int k);
   bool isempty();
 };
 
@@ -40,8 +40,8 @@ private:
 ==============================================================================*/
 template <class T, class D>
 NormalStack<T,D>::NormalStack(int size){
-  Explicit<D> datas;
-  datas = initExplicit<D>();
+  Explicit<T,D> datas;
+  datas = initExplicit<T,D>();
   mDatas = datas;
 }
 
@@ -54,19 +54,19 @@ bool NormalStack<T,D>::isempty(){
 }
 
 template <class T, class D>
-Data<D> NormalStack<T,D>::pop(){
-  Data<D> data = mDatas.back();
+Data<T,D> NormalStack<T,D>::pop(){
+  Data<T,D> data = mDatas.back();
   mDatas.pop_back();
   return data;
 }
 
 template <class T, class D>
-void NormalStack<T,D>::push(Data<D> elt){
+void NormalStack<T,D>::push(Data<T,D> elt){
   mDatas.push_back(elt);
 }
 
 template <class T, class D>
-Data<D> NormalStack<T,D>::top(int k){
+Data<T,D> NormalStack<T,D>::top(int k){
   int index = mDatas.size() - k;
   return mDatas.at(index);
 }

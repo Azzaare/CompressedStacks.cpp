@@ -17,7 +17,7 @@
   Extensions : Instance
   Aliases    :
   Friends   ->
-            <- NormalStack
+            <- NormalStack, CompressedStack
 ==============================================================================*/
 template <class T, class D>
 class Problem{
@@ -29,9 +29,9 @@ public:
 
   // Running the stack
   void run();
-  void push(Data<D>);
-  Data<D> pop();
-  Data<D> top(int k);
+  void push(Data<T,D>);
+  Data<T,D> pop();
+  Data<T,D> top(int k);
   bool emptystack();
 
   // Setters
@@ -60,15 +60,15 @@ private:
   virtual D readInput(std::vector<std::string> line) = 0;
   virtual std::shared_ptr<T> initStack() = 0;
   virtual bool popCondition(D data) = 0;
-  virtual void popAction(Data<D> elt) {};
+  virtual void popAction(Data<T,D> elt) {};
   virtual bool pushCondition(D data) = 0;
-  virtual void pushAction(Data<D> elt) {};
+  virtual void pushAction(Data<T,D> elt) {};
 
   // Problem internal during run
   std::shared_ptr<T> mContext;
 
   // Stack: Normal or Compressed
-  std::shared_ptr<Stack<D>> mStack;
+  std::shared_ptr<Stack<T,D>> mStack;
 };
 
 /*==============================================================================
@@ -82,7 +82,7 @@ Problem<T,D>::Problem(std::string fileName, int size){
   mContext = (nullptr);
   mIndex = 0;
 
-  mStack = std::shared_ptr<Stack<D>> (new NormalStack<T,D> (size));
+  mStack = std::shared_ptr<Stack<T,D>> (new NormalStack<T,D> (size));
 }
 
 template <class T, class D>
@@ -95,7 +95,7 @@ Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer){
   mContext = (nullptr);
   mIndex = 0;
 
-  mStack = std::shared_ptr<Stack<D>> (new CompressedStack<T,D> (size, space, buffer, mContext, position));
+  mStack = std::shared_ptr<Stack<T,D>> (new CompressedStack<T,D> (size, space, buffer, mContext, position));
 }
 
 /*==============================================================================
@@ -155,11 +155,11 @@ void Problem<T,D>::run(){
     D data = readInput(line);
     mIndex++; // Might have to move
     while ( (emptystack()) && (popCondition(data)) ) {
-      Data<D> elt = pop();
+      Data<T,D> elt = pop();
       popAction(elt);
     }
     if (pushCondition(data)) {
-      Data<D> elt (mIndex,data);
+      Data<T,D> elt (mIndex,data);
       pushAction(elt);
       push(elt);
     }
@@ -167,15 +167,15 @@ void Problem<T,D>::run(){
 }
 
 template <class T, class D>
-void Problem<T,D>::push(Data<D> elt){
+void Problem<T,D>::push(Data<T,D> elt){
   mStack->push(elt);
 }
 template <class T, class D>
-Data<D> Problem<T,D>::pop(){
+Data<T,D> Problem<T,D>::pop(){
   return mStack->pop();
 }
 template <class T, class D>
-Data<D> Problem<T,D>::top(int k){
+Data<T,D> Problem<T,D>::top(int k){
   return mStack->top(k);
 }
 template <class T, class D>

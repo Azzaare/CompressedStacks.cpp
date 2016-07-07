@@ -17,30 +17,30 @@
   Class      : template (T context, D datas)
   Extensions :
   Aliases    :
-  Friends   ->
-            <-
+  Friends   -> Problem
+            <- Signature, Component, Buffer, Data
 ==============================================================================*/
+template <class T, class D> class Problem; // Required for the friendship
 template <class T, class D>
-class CompressedStack: public Stack<D>{
-public:
+class CompressedStack: public Stack<T,D>{
+  friend class Problem<T,D>;
+
+private:
   CompressedStack<T,D>(int size, int space, int buffer, std::shared_ptr<T> context, std::streampos position);
 
   // Internals
-  Data<D> top(int k);
-  void push(Data<D> data);
-  Data<D> pop();
+  Data<T,D> top(int k);
+  void push(Data<T,D> data);
+  Data<T,D> pop();
   bool isempty();
 
   // IO
   std::string toString();
-  void print();
-  void println();
 
-private:
   // Push Internals
-  void pushExplicit(std::shared_ptr<Data<D>> elt);
-  void pushCompressed(std::shared_ptr<Data<D>> elt, int lvl);
-  Data<D> top();
+  void pushExplicit(std::shared_ptr<Data<T,D>> elt);
+  void pushCompressed(std::shared_ptr<Data<T,D>> elt, int lvl);
+  Data<T,D> top();
   int topIndex();
 
   // Structure constraints
@@ -54,10 +54,10 @@ private:
   // First, Second, and Compressed components
   Component<T,D> mFirst;
   Component<T,D> mSecond;
-  Block<T> mCompressed;
+  Block<T,D> mCompressed;
 
   // Buffer to read the top k elements
-  Buffer<D> mBuffer;
+  Buffer<T,D> mBuffer;
 
   // Pointer to the context in Problem
   std::shared_ptr<T> mContext;
@@ -75,7 +75,7 @@ CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shar
 
   mPosition = position;
 
-  mCompressed = initBlock<T>(mSpace);
+  mCompressed = initBlock<T,D>(mSpace);
 
   mContext = context;
 }
@@ -99,17 +99,6 @@ std::string CompressedStack<T,D>::toString(){
   return str;
 }
 
-template <class T, class D>
-void CompressedStack<T,D>::print(){
-  std::cout << this->toString();
-}
-
-template <class T, class D>
-void CompressedStack<T,D>::println(){
-  this->print();
-  std::cout << std::endl;
-}
-
 /*==============================================================================
   Stack Functions: push, pop, isempty
 ==============================================================================*/
@@ -120,9 +109,9 @@ bool CompressedStack<T,D>::isempty(){
 
 // Function push that push the data in explicit and index in partial/compressed
 template <class T, class D>
-void CompressedStack<T,D>::push(Data<D> elt){
+void CompressedStack<T,D>::push(Data<T,D> elt){
   // update the buffer (if buffer size is bigger than 0)
-  std::shared_ptr<Data<D>> ptr_elt (new Data<D>(elt));
+  std::shared_ptr<Data<T,D>> ptr_elt (new Data<T,D>(elt));
   mBuffer.push(ptr_elt);
   // update the explicit Blocks, with possibly shifting first to second
   pushExplicit(ptr_elt);
@@ -134,16 +123,16 @@ void CompressedStack<T,D>::push(Data<D> elt){
 
 // Function push for the Explicit members of the stack
 template <class T, class D>
-void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<D>> elt){
-  int index = elt->getIndex();
-  std::shared_ptr<Data<D>> eltPtr = elt;
-  Signature<T> sign (index, mPosition, mContext);
+void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<T,D>> elt){
+  int index = elt->mIndex;
+  std::shared_ptr<Data<T,D>> eltPtr = elt;
+  Signature<T,D> sign (index, mPosition, mContext);
 
   // If the explicit datas of component 1 are empty we push
   if (mFirst.isExplicitEmpty()) {
     mFirst.pushExplicit(eltPtr);
-    std::shared_ptr<Signature<T>> signPtr(&sign);
-    mFirst.setSignature(signPtr);
+    std::shared_ptr<Signature<T,D>> signPtr(&sign);
+    mFirst.mSign = signPtr;
   }
   // We check if thoses explicit datas are full
   else {
@@ -151,19 +140,20 @@ void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<D>> elt){
     int startBlock = headIndex - (headIndex - 1) % mSpace;
     if (index - startBlock < mSpace) {
       mFirst.pushExplicit(eltPtr);
-      mFirst.setLastSign(index);
+      (*mFirst.mSign).mLast = index;
     } else {
       if ((mDepth == 1) && (!(mSecond.isExplicitEmpty()))) {
         if (mCompressed.empty()) {
-          mCompressed.push_back(mSecond.getSign());
+          mCompressed.push_back(*mSecond.mSign);
         } else {
-          (mCompressed.back()).setLast(mSecond.getLastSign());
+          // Compress mSecond into mCompressed
+          (mCompressed.back()).mLast = (*mSecond.mSign).mLast;
         }
       }
-      std::shared_ptr<Signature<T>> signPtr = mFirst.getSignPtr();
-      mSecond.setSignature(signPtr);
-      mFirst.setSignature(signPtr);
-      mSecond.setExplicit(mFirst.getExplicit());
+      std::shared_ptr<Signature<T,D>> signPtr = mFirst.mSign;
+      mSecond.mSign = signPtr;
+      mFirst.mSign = signPtr;
+      mSecond.mExplicit = mFirst.mExplicit;
       mFirst.clearExplicit(mSpace);
       mFirst.pushExplicit(eltPtr);
     }
@@ -172,13 +162,13 @@ void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<D>> elt){
 
 // Function push for the part. and fully compressed members of the stack
 template <class T, class D>
-void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<D>> elt, int lvl){
+void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<T,D>> elt, int lvl){
   int distSubBlock = std::pow(mSpace,(mDepth - lvl));
   int distBlock = distSubBlock * mSpace;
-  int index = elt->getIndex();
+  int index = elt->mIndex;
 
   if (mFirst.isempty(lvl)) {
-    Signature<T> sign (index, mPosition, mContext);
+    Signature<T,D> sign (index, mPosition, mContext);
     mFirst.push(sign, lvl);
   } else {
     int headIndex = mFirst.topIndex(lvl);
@@ -202,13 +192,13 @@ void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<D>> elt, int lvl)
 }
 
 template <class T, class D>
-Data<D> CompressedStack<T,D>::pop(){
-  Data<D> d (1,1);
+Data<T,D> CompressedStack<T,D>::pop(){
+  Data<T,D> d (1,1);
   return d;
 }
 
 template <class T, class D>
-Data<D> CompressedStack<T,D>::top(int k){
+Data<T,D> CompressedStack<T,D>::top(int k){
   if (k == 0) {
     return top();
   }
@@ -216,7 +206,7 @@ Data<D> CompressedStack<T,D>::top(int k){
 }
 
 template <class T, class D>
-Data<D> CompressedStack<T,D>::top(){
+Data<T,D> CompressedStack<T,D>::top(){
   if (mFirst.isExplicitEmpty()) {
     return mSecond.top();
   }
@@ -225,7 +215,7 @@ Data<D> CompressedStack<T,D>::top(){
 // Top index of a Compressed Stack
 template <class T, class D>
 int topIndex(){
-  Data<D> elt = CompressedStack<T,D>::top();
+  Data<T,D> elt = CompressedStack<T,D>::top();
   return elt.getIndex();
 }
 
