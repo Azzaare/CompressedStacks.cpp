@@ -16,7 +16,7 @@ template <class T, class D>
 class CompressedStack: public Stack<D>
 {
 public:
-  CompressedStack<T,D>(int size, int space, int buffer, std::shared_ptr<T> context);
+  CompressedStack<T,D>(int size, int space, int buffer, std::shared_ptr<T> context, std::streampos position);
 
   // Internals
   Data<D> top(int k);
@@ -58,7 +58,7 @@ private:
 
 /** Constructors **/
 template <class T, class D>
-CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shared_ptr<T> context)
+CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shared_ptr<T> context, std::streampos position)
 : mFirst(size,space)
 , mSecond(size,space)
 , mBuffer(buffer)
@@ -67,7 +67,7 @@ CompressedStack<T,D>::CompressedStack(int size, int space, int buffer, std::shar
   mSpace = space;
   mDepth = (int) ceil(log(size)/log(space)-.1); // - 1;
 
-  mPosition = 0;
+  mPosition = position;
 
   mCompressed = initBlock<T>(mSpace);
 
@@ -79,22 +79,16 @@ template <class T, class D>
 std::string CompressedStack<T,D>::toString()
 {
   std::string str;
-  std::cout << "Debug CompressedStack::toString 1" << std::endl;
   str = "\tCompressed Stack with " + std::to_string(mSize) + " elements, ";
   str += std::to_string(mSpace) + " space order, ";
   str += std::to_string(mDepth) + " depth.\n";
   str += "\t\tFirst Component\n";
-  std::cout << "Debug CompressedStack::toString 2" << std::endl;
   str += mFirst.toString();
   str += "\t\tSecond Component\n";
-  std::cout << "Debug CompressedStack::toString 3" << std::endl;
   str += mSecond.toString();
   str += "\t\tFully Compressed\n";
-  std::cout << "Debug CompressedStack::toString 4" << std::endl;
   str += blockToString(mCompressed);
-  std::cout << "Debug CompressedStack::toString 5" << std::endl;
   str += mBuffer.toString();
-  std::cout << "Debug CompressedStack::toString 6" << std::endl;
   return str;
 }
 
@@ -134,23 +128,70 @@ void CompressedStack<T,D>::push(Data<D> elt){
 // Function push for the Explicit members of the stack
 template <class T, class D>
 void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<D>> elt){
-  std::shared_ptr<Data<D>> ptr = elt;
-  if (mFirst.isempty()) {
-    mFirst.push(ptr);
-    std::shared_ptr<Signature<T>> sign (new Signature<T> (ptr->getIndex(), mPosition, mContext));
-    mFirst.setSignature(sign);
+  int index = elt->getIndex();
+  std::shared_ptr<Data<D>> eltPtr = elt;
+  Signature<T> sign (index, mPosition, mContext);
+
+  // If the explicit datas of component 1 are empty we push
+  if (mFirst.isExplicitEmpty()) {
+    mFirst.pushExplicit(eltPtr);
+    std::shared_ptr<Signature<T>> signPtr(&sign);
+    mFirst.setSignature(signPtr);
   }
+  // We check if thoses explicit datas are full
   else {
-    int headIndex = 0;
+    int headIndex = mFirst.topIndex();
+    int startBlock = headIndex - (headIndex - 1) % mSpace;
+    if (index - startBlock < mSpace) {
+      mFirst.pushExplicit(eltPtr);
+      mFirst.setLastSign(index);
+    } else {
+      if ((mDepth == 1) && (!(mSecond.isExplicitEmpty()))) {
+        if (mCompressed.empty()) {
+          mCompressed.push_back(mSecond.getSign());
+        } else {
+          (mCompressed.back()).setLast(mSecond.getLastSign());
+        }
+      }
+      std::shared_ptr<Signature<T>> signPtr = mFirst.getSignPtr();
+      mSecond.setSignature(signPtr);
+      mFirst.setSignature(signPtr);
+      mSecond.setExplicit(mFirst.getExplicit());
+      mFirst.clearExplicit(mSpace);
+      mFirst.pushExplicit(eltPtr);
+    }
   }
-
-
 }
 
 // Function push for the part. and fully compressed members of the stack
 template <class T, class D>
 void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<D>> elt, int lvl){
+  int distSubBlock = std::pow(mSpace,(mDepth - lvl));
+  int distBlock = distSubBlock * mSpace;
+  int index = elt->getIndex();
 
+  if (mFirst.isempty(lvl)) {
+    Signature<T> sign (index, mPosition, mContext);
+    mFirst.push(sign, lvl);
+  } else {
+    int headIndex = mFirst.topIndex(lvl);
+    int startBlock = headIndex - (headIndex - 1) % distBlock;
+    // distance of the new index and current block
+    int delta = index - startBlock + 1;
+    if (delta <= distBlock) {
+      // Distance with the current subblock
+      int startSubBlock = headIndex - (headIndex - 1) % distSubBlock;
+      int eta = index - startSubBlock + 1;
+      // compress new element in the top of the current Block
+      if (eta <= distSubBlock) {
+        int lengthSubBlock = 0;
+      } else {
+        /* code */
+      }
+    } else {
+      /* code */
+    }
+  }
 }
 
 template <class T, class D>

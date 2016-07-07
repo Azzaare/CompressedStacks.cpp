@@ -80,24 +80,23 @@ template <class T, class D>
 Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
 {
   mInput.open(fileName, std::ifstream::in);
+  std::streampos position = mInput.tellg();
+
   mOutput = nullptr;
 
   mContext = (nullptr);
   mIndex = 0;
 
-  mStack = std::shared_ptr<Stack<D>> (new CompressedStack<T,D> (size, space, buffer, mContext));
+  mStack = std::shared_ptr<Stack<D>> (new CompressedStack<T,D> (size, space, buffer, mContext, position));
 }
 
 /** IO **/
 template <class T, class D>
 std::string Problem<T,D>::toString(){
   std::string str;
-  std::cout << "Debug Problem::toString 1" << std::endl;
   str = "Problem with an actual index of " + std::to_string(mIndex);
-  std::cout << "Debug Problem::toString 2" << std::endl;
   str += ", with a stack of type\n";
   str += mStack->toString();
-  std::cout << "Debug Problem::toString 3" << std::endl;
   return str;
 }
 

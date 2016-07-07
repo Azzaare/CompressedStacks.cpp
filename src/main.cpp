@@ -60,7 +60,8 @@ void testCompressedStack()
   Levels<int> lvls = initLevels<int>(3, 3);
   Component<int, int> comp(3,5);
   std::shared_ptr<int> c (new int(10));
-  CompressedStack<int, int> stack (81,3,0,c);
+  std::streampos p (0);
+  CompressedStack<int, int> stack (81,3,0,c,p);
   stack.println();
 }
 

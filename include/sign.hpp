@@ -13,6 +13,7 @@ class Signature
 public:
   // Constructors
   Signature<T>(int index, std::streampos position, std::shared_ptr<T> context);
+  Signature<T>(std::vector<Signature<T>> block);
 
   // Setters
   void setLast(int index);
@@ -53,6 +54,17 @@ Signature<T>::Signature(int index, std::streampos position, std::shared_ptr<T> c
   mLast = index;
   mPosition = position;
   mContext = context;
+}
+
+template <class T>
+Signature<T>::Signature(Block<T> block)
+{
+  Signature<T> frontSign = block.front();
+  Signature<T> backSign = block.back();
+  mFirst = frontSign.getFirst();
+  mLast = backSign.getLast();
+  mPosition = frontSign.getPosition();
+  mContext = frontSign.getContext();
 }
 
 template <class T>
