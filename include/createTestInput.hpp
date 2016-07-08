@@ -6,8 +6,9 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-
-
+#include "Point2D.h"
+#include <vector>
+#include <algorithm>
 
 #ifndef SMARTSTACK_CREATETESTINPUT_H
 #define SMARTSTACK_CREATETESTINPUT_H

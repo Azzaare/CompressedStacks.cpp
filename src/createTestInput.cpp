@@ -13,11 +13,12 @@ void createTestInput::createTestInputFiles(int code, string fileName,int n,int p
     ofstream outfile (fileName.c_str());
     srand(time(NULL));
 
+    // First write the problem parameters
+    outfile << n << "," << p << endl;
+
     switch(code){
         case 0  : // push only test
         {
-            // First write the problem parameters
-            outfile << n << "," << p << endl;
             // now create the actual file
             // pairs of elements (x,0 means push ) (0,1) means pop one (-1,-1) means pop the rest of the stack
 
@@ -42,13 +43,10 @@ void createTestInput::createTestInputFiles(int code, string fileName,int n,int p
                 i++;
             }
             outfile << -1 << "," << -1 << endl;
-            break; //optional
+            break;
         }
         case 1 :
         {
-            // First write the problem parameters
-            outfile << n << "," << p << endl;
-
             // now create the actual file
             // pairs of elements (x,0 means push ) (0,y) means pop y times (-1,-1) means pop the rest of the stack
 
@@ -82,11 +80,54 @@ void createTestInput::createTestInputFiles(int code, string fileName,int n,int p
                 outfile << number << "," << numPops << endl;
                 i++;
             }
-
-            outfile << -1 << "," << -1 << endl;
-            break; //optional
+            break;
         }
-        default : //Optional
+        case 2 :
+        {
+            // now create the actual file
+            // pairs of elements (x,0 means push ) (0,1) means pop one (-1,-1) means pop the rest of the stack
+
+            std::vector<Point2D>  pointsToSort = vector<Point2D>();
+
+            int i = 0;
+            while (i < n) {
+
+                // create output for the convex hull problem.
+                // in this case, max and min stand for the maximum and minimum values of x and y
+                // generate a random point in the (min,max)2 range
+
+                double randomx = (double) rand() / RAND_MAX;
+                randomx=min+(max-min)*randomx;
+                double randomy = (double) rand() / RAND_MAX;
+                randomy=min+(max-min)*randomy;
+
+          //      cout<<"generated point "<<randomx<<" "<<randomy<<" "<<pointsToSort.size()<<endl;
+
+                pointsToSort.push_back(Point2D(randomx,randomy));
+                i++;
+            }
+
+
+            //sort the vector
+            std::sort(pointsToSort.begin(),pointsToSort.end());
+
+
+
+            // add first the point (min,min)
+            outfile << min << "," << min << endl;
+
+            // add the sorted points
+            for(int i=0;i<pointsToSort.size();i++)
+            {
+                outfile << pointsToSort[i].GetX() << "," << pointsToSort[i].GetY() << endl;
+            }
+
+            // add finally (max,min)
+            outfile << max << "," << min << endl;
+
+            break;
+        }
+            default : //Optional
         {throw (" createTestInput::createTestInputFiles WRONG CODE ");}
     }
 
