@@ -5,6 +5,7 @@
   Includes
 ==============================================================================*/
 #include "stack.hpp"
+#include <memory>
 
 /*==============================================================================
   Class      : template (D datas)
@@ -30,9 +31,12 @@ private:
 
   // Stack common methods
   Data<T,D> pop();
-  void push(Data<T,D> data);
+  void push(const Data<T,D> &data);
   Data<T,D> top(int k);
   bool isempty();
+
+  // Setters
+  void setContext(std::shared_ptr<T> context){}
 };
 
 /*==============================================================================
@@ -61,7 +65,7 @@ Data<T,D> NormalStack<T,D>::pop(){
 }
 
 template <class T, class D>
-void NormalStack<T,D>::push(Data<T,D> elt){
+void NormalStack<T,D>::push(const Data<T,D> &elt){
   mDatas.push_back(elt);
 }
 

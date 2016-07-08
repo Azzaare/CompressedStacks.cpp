@@ -62,10 +62,10 @@ template <class T, class D>
 Signature<T,D>::Signature(Block<T,D> block){
   Signature<T,D> frontSign = block.front();
   Signature<T,D> backSign = block.back();
-  mFirst = frontSign.getFirst();
-  mLast = backSign.getLast();
-  mPosition = frontSign.getPosition();
-  mContext = frontSign.getContext();
+  mFirst = frontSign.mFirst;
+  mLast = backSign.mLast;
+  mPosition = frontSign.mPosition;
+  mContext = frontSign.mContext;
 }
 
 template <class T, class D>

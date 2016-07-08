@@ -17,7 +17,7 @@
   Extensions : Instance
   Aliases    :
   Friends   ->
-            <- NormalStack, CompressedStack
+            <- NormalStack, CompressedStack, Data
 ==============================================================================*/
 template <class T, class D>
 class Problem{
@@ -35,8 +35,7 @@ public:
   bool emptystack();
 
   // Setters
-  void setOutput(std::string fileName);
-  void setContext(T context);
+  void setContext(const T &context);
 
   //Getters
   T getContext();
@@ -54,7 +53,7 @@ protected:
 private:
   // Input/Ouput
   std::ifstream mInput;
-  std::shared_ptr<std::ofstream> mOutput; // output file is optional
+  std::ofstream mOutput; // output file is optional
 
   // Stack Functions: defined by user
   virtual D readInput(std::vector<std::string> line) = 0;
@@ -75,27 +74,20 @@ private:
   Constructors : with NormalStack or CompressedStack
 ==============================================================================*/
 template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size){
+Problem<T,D>::Problem(std::string fileName, int size)
+: mIndex(0)
+, mContext(nullptr)
+, mStack(new NormalStack<T,D> (size)){
   mInput.open(fileName, std::ifstream::in);
-  mOutput = nullptr;
-
-  mContext = (nullptr);
-  mIndex = 0;
-
-  mStack = std::shared_ptr<Stack<T,D>> (new NormalStack<T,D> (size));
 }
 
 template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer){
+Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
+: mIndex(0)
+, mContext(nullptr){
   mInput.open(fileName, std::ifstream::in);
   std::streampos position = mInput.tellg();
-
-  mOutput = nullptr;
-
-  mContext = (nullptr);
-  mIndex = 0;
-
-  mStack = std::shared_ptr<Stack<T,D>> (new CompressedStack<T,D> (size, space, buffer, mContext, position));
+  mStack = std::shared_ptr<Stack<T,D>> (new CompressedStack<T,D> (size, space, buffer, mContext));
 }
 
 /*==============================================================================
@@ -185,18 +177,9 @@ bool Problem<T,D>::emptystack(){
 
 /** Setters **/
 template <class T, class D>
-void Problem<T,D>::setOutput(std::string fileName){
-  std::ofstream ofstr;
-  ofstr.open(fileName, std::ofstream::out);
-  mOutput = &ofstr;
-}
-
-template <class T, class D>
-void Problem<T,D>::setContext(T context){
-//  std::cout << "setContext, T = " << context << std::endl;
-  *mContext = context;
-//  std::cout << "setContext, *mContext = " << (*mContext) << std::endl;
-//  std::cout << "setContext, *mContext = " << getContext() << std::endl;
+void Problem<T,D>::setContext(const T &context){
+  mContext = std::make_shared<T>(context);
+  mStack->setContext(mContext);
 }
 
 template <class T, class D>

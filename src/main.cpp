@@ -65,6 +65,8 @@ void testProblem()
   // Test on CompressedStack
   Instance testCS(filePath, 1000, 3, 0);
   testCS.println();
+  testCS.run();
+  testCS.println();
 }
 
 /*==============================================================================

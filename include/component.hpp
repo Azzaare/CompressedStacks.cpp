@@ -44,15 +44,15 @@ private:
 
   Levels<T,D> mPartial;
   ExplicitPointer<T,D> mExplicit;
-  std::shared_ptr<Signature<T,D>> mSign;
+  Signature<T,D> mSign;
 };
 
 /*==============================================================================
   Constructors
 ==============================================================================*/
 template <class T, class D>
-Component<T,D>::Component(int space, int depth){
-  mSign = std::shared_ptr<Signature<T,D>> (nullptr);
+Component<T,D>::Component(int space, int depth)
+:mSign(0, std::streampos (0), std::shared_ptr<T>(nullptr)){
 
   Levels<T,D> partial = initLevels<T,D>(space, depth);
   mPartial = partial;
@@ -95,14 +95,14 @@ std::string Component<T,D>::toString(){
 ==============================================================================*/
 template <class T, class D>
 bool Component<T,D>::isempty(){
-  bool b = bool (mSign);
+  bool b = bool (mSign.mContext);
   return !b;
 }
 
 template <class T, class D>
 bool Component<T,D>::isempty(int lvl){
   bool b;
-  if (lvl > mPartial.size()) {
+  if (lvl > int(mPartial.size())) {
     b = isExplicitEmpty();
   } else {
     b = (mPartial[lvl]).empty();
