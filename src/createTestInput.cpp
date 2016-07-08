@@ -117,9 +117,9 @@ void createTestInput::createTestInputFiles(int code, string fileName,int n,int p
             outfile << min << "," << min << endl;
 
             // add the sorted points
-            for(int i=0;i<pointsToSort.size();i++)
+            for(int j=0;j< (int) pointsToSort.size();j++)
             {
-                outfile << pointsToSort[i].GetX() << "," << pointsToSort[i].GetY() << endl;
+                outfile << pointsToSort[j].GetX() << "," << pointsToSort[j].GetY() << endl;
             }
 
             // add finally (max,min)

@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include "buffer.hpp"
 
 /*==============================================================================
   Class      : template (T context, D datas)
@@ -29,13 +30,14 @@ public:
 
 private:
   // Constructors
-  Signature<T,D>(int index, std::streampos position, std::shared_ptr<T> context);
+  Signature<T,D>(int index, std::streampos position, std::shared_ptr<T> context, Buffer<T,D> buffer);
   Signature<T,D>(std::vector<Signature<T,D>> block);
 
   int mFirst;
   int mLast;
   std::streampos mPosition;
   std::shared_ptr<T> mContext;
+  Buffer<T,D> mBuffer;
 };
 
 /* Derived types: Block and Levels */
@@ -51,11 +53,12 @@ template<class T, class D> Levels<T,D> initLevels(int space, int depth);
   Constructors : Signature, initBlock, initLevels
 ==============================================================================*/
 template <class T, class D>
-Signature<T,D>::Signature(int index, std::streampos position, std::shared_ptr<T> context){
+Signature<T,D>::Signature(int index, std::streampos position, std::shared_ptr<T> context, Buffer<T,D> buffer){
   mFirst = index;
   mLast = index;
   mPosition = position;
   mContext = context;
+  mBuffer = buffer;
 }
 
 template <class T, class D>
@@ -66,6 +69,7 @@ Signature<T,D>::Signature(Block<T,D> block){
   mLast = backSign.mLast;
   mPosition = frontSign.mPosition;
   mContext = frontSign.mContext;
+  mBuffer = frontSign.mBuffer;
 }
 
 template <class T, class D>

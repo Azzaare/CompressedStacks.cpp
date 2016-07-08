@@ -5,8 +5,8 @@
 #include <iostream>
 #include<string>
 
-#ifndef SMARTSTACK_POINT2D_H
-#define SMARTSTACK_POINT2D_H
+#ifndef SMARTSTACK_POINT2D
+#define SMARTSTACK_POINT2D
 
 
 class Point2D {
@@ -45,4 +45,4 @@ public:
 };
 
 
-#endif //SMARTSTACK_POINT2D_H
+#endif //SMARTSTACK_POINT2D

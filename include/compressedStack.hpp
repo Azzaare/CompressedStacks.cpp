@@ -214,7 +214,7 @@ template <class T, class D>
 void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<T,D>> elt){
   int index = elt->mIndex;
   std::shared_ptr<Data<T,D>> eltPtr = elt;
-  Signature<T,D> sign (index, mPosition, mContext);
+  Signature<T,D> sign (index, mPosition, mContext, mBuffer);
 
   // If the explicit datas of component 1 are empty we push
   if (mFirst.isExplicitEmpty()) {
@@ -252,7 +252,7 @@ void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<T,D>> elt, int lv
   int distSubBlock = std::pow(mSpace,(mDepth - lvl));
   int distBlock = distSubBlock * mSpace;
   int index = elt->mIndex;
-  Signature<T,D> sign (index, position, mContext);
+  Signature<T,D> sign (index, position, mContext, mBuffer);
 
   if (mFirst.isempty(lvl)) {
     mFirst.push(sign, lvl);

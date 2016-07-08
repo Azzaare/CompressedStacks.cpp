@@ -6,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "Point2D.h"
+#include "Point2D.hpp"
 #include <vector>
 #include <algorithm>
 

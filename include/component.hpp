@@ -52,7 +52,7 @@ private:
 ==============================================================================*/
 template <class T, class D>
 Component<T,D>::Component(int space, int depth)
-:mSign(0, std::streampos (0), std::shared_ptr<T>(nullptr)){
+:mSign(0, std::streampos (0), std::shared_ptr<T>(nullptr), Buffer<T,D>(0)){
 
   Levels<T,D> partial = initLevels<T,D>(space, depth);
   mPartial = partial;
