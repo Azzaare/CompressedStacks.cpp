@@ -16,11 +16,14 @@
   Class      : abstract, template (T context, D datas)
   Extensions : Instance
   Aliases    :
-  Friends   ->
+  Friends   -> CompressedStack
             <- NormalStack, CompressedStack, Data
 ==============================================================================*/
+template <class T, class D> class CompressedStack; // Required for the friendship
 template <class T, class D>
 class Problem{
+  friend class CompressedStack<T,D>;
+
 public:
   // Members functions
   Problem<T,D>(std::string fileName, int size);
@@ -29,6 +32,7 @@ public:
 
   // Running the stack
   void run();
+  void run(int limit);
   void push(Data<T,D>);
   Data<T,D> pop();
   Data<T,D> top(int k);
@@ -36,9 +40,11 @@ public:
 
   // Setters
   void setContext(const T &context);
+  void setIndex(int index);
 
   //Getters
   T getContext();
+  int getIndex();
 
   // IO
   std::string toString();
@@ -159,12 +165,34 @@ void Problem<T,D>::run(){
 }
 
 template <class T, class D>
+void Problem<T,D>::run(int limit){
+  for (int i = 0; i < limit; i++) {
+    std::vector<std::string> line = readLine();
+    if ( (line.front()== "-1") || (line.front()=="") ) {
+      break;
+    }
+    D data = readInput(line);
+    mIndex++; // Might have to move
+    while ((emptystack()) && (popCondition(data))) {
+      Data<T,D> elt = pop();
+      popAction(elt);
+    }
+    if (pushCondition(data)) {
+      Data<T,D> elt (mIndex,data);
+      pushAction(elt);
+      push(elt);
+    }
+  }
+}
+
+template <class T, class D>
 void Problem<T,D>::push(Data<T,D> elt){
-  mStack->push(elt);
+  std::streampos position = mInput.tellg();
+  mStack->push(elt, position);
 }
 template <class T, class D>
 Data<T,D> Problem<T,D>::pop(){
-  return mStack->pop();
+  return mStack->pop(*this);
 }
 template <class T, class D>
 Data<T,D> Problem<T,D>::top(int k){
@@ -175,7 +203,9 @@ bool Problem<T,D>::emptystack(){
   return mStack->isempty();
 }
 
-/** Setters **/
+/*==============================================================================
+  Setters
+==============================================================================*/
 template <class T, class D>
 void Problem<T,D>::setContext(const T &context){
   mContext = std::make_shared<T>(context);
@@ -183,14 +213,26 @@ void Problem<T,D>::setContext(const T &context){
 }
 
 template <class T, class D>
+void Problem<T,D>::setIndex(int index){
+  mIndex = index;
+}
+
+template <class T, class D>
 void Problem<T,D>::initStackIntern(){
   mContext = initStack();
 }
 
-/** Getters **/
+/*==============================================================================
+  Getters
+==============================================================================*/
 template <class T, class D>
 T Problem<T,D>::getContext(){
   return *mContext;
+}
+
+template <class T, class D>
+int Problem<T,D>::getIndex(){
+  return mIndex;
 }
 
 #endif /* PROBLEM */

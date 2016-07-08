@@ -30,13 +30,22 @@ private:
   Explicit<T,D> mDatas; // vector of Data
 
   // Stack common methods
-  Data<T,D> pop();
-  void push(const Data<T,D> &data);
+  Data<T,D> pop(Problem<T,D> &problem);
+  void push(const Data<T,D> &data, std::streampos position);
   Data<T,D> top(int k);
   bool isempty();
 
+  bool isSecondEmpty();
+
+  void compress();
+
   // Setters
   void setContext(std::shared_ptr<T> context){}
+
+  // Getters
+  Block<T,D> getFirstPartial(int lvl);
+  Block<T,D> getCompressed();
+  ExplicitPointer<T,D> getFirstExplicit();
 };
 
 /*==============================================================================
@@ -58,14 +67,14 @@ bool NormalStack<T,D>::isempty(){
 }
 
 template <class T, class D>
-Data<T,D> NormalStack<T,D>::pop(){
+Data<T,D> NormalStack<T,D>::pop(Problem<T,D> &problem){
   Data<T,D> data = mDatas.back();
   mDatas.pop_back();
   return data;
 }
 
 template <class T, class D>
-void NormalStack<T,D>::push(const Data<T,D> &elt){
+void NormalStack<T,D>::push(const Data<T,D> &elt, std::streampos position){
   mDatas.push_back(elt);
 }
 
@@ -73,6 +82,33 @@ template <class T, class D>
 Data<T,D> NormalStack<T,D>::top(int k){
   int index = mDatas.size() - k;
   return mDatas.at(index);
+}
+
+template <class T, class D>
+bool NormalStack<T,D>::isSecondEmpty(){
+  return isempty();
+}
+
+template <class T, class D>
+void NormalStack<T,D>::compress(){
+}
+
+/*==============================================================================
+  Getters
+==============================================================================*/
+template <class T, class D>
+Block<T,D> NormalStack<T,D>::getFirstPartial(int lvl){
+  return initBlock<T,D>(0);
+}
+
+template <class T, class D>
+Block<T,D> NormalStack<T,D>::getCompressed(){
+  return initBlock<T,D>(0);
+}
+
+template <class T, class D>
+ExplicitPointer<T,D> NormalStack<T,D>::getFirstExplicit(){
+  return initExplicitPointer<T,D>();
 }
 
 /*==============================================================================
