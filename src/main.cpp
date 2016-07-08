@@ -1,70 +1,21 @@
 // Main file of the compressed stack library
-#include "../include/sign.hpp"
-#include "../include/data.hpp"
-#include "../include/normalStack.hpp"
-#include "../include/compressedStack.hpp"
+
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "../include/problem.hpp"
 #include "../include/createTestInput.hpp"
 #include <string>
 #include <vector>
+#include <memory>
 
-// Test Signature
-void testSign()
-{
-  Signature<int> sign (1, 0, 1);
-  sign.println();
-}
-
-// Test data
-void testData()
-{
-  Data<int> d (1,2);
-  d.println();
-
-  Data<int> d1 (1,2);
-  Data<int> d2 (2,3);
-  Data<int> d3 (3,5);
-  Data<int> d4 (4,12);
-  Data<int> d5 (5,892);
-
-  Explicit<int> xplicit = initExplicit<int>();
-  xplicit.push_back(d1);
-  xplicit.back();
-  xplicit.pop_back();
-}
-
-// Test normal stack
-void testNormalStack()
-{
-  NormalStack<int> stack (5);
-  Data<int> d1 (1,2);
-  Data<int> d2 (2,3);
-  Data<int> d3 (3,5);
-  Data<int> d4 (4,12);
-  Data<int> d5 (5,892);
-  stack.push(d1);
-  stack.push(d2);
-  stack.push(d3);
-  stack.push(d4);
-  stack.push(d5);
-  stack.println();
-}
-
-// Test normal stack
-void testCompressedStack()
-{
-  Block<int> block = initBlock<int>(5);
-  Levels<int> lvls = initLevels<int>(3, 3);
-  Component<int, int> comp(3,5);
-  CompressedStack<int, int> stack (81,3);
-  stack.println();
-}
-
-// Class for test instance
+/*==============================================================================
+  Instantiation of a problem
+==============================================================================*/
 class Instance: public Problem<int,int>{
 public:
   Instance(std::string filePath, int size):Problem<int,int>(filePath, size){}
-  Instance(std::string filePath, int size, int space):Problem<int,int>(filePath, size, space){}
+  Instance(std::string filePath, int size, int space, int buffer):Problem<int,int>(filePath, size, space, buffer){}
 private:
   // Functions to run the stack
   int readInput(std::vector<std::string> line){
@@ -73,9 +24,10 @@ private:
     return value;
 
   }
-  void initStack(){
-    setContext(10);
+  std::shared_ptr<int> initStack(){
+    std::shared_ptr<int> context (new int (10));
     std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
+    return context;
   }
   bool popCondition(int data){
     if (getContext() > 0) {
@@ -83,7 +35,7 @@ private:
     }
     return false;
   }
-  void popAction(Data<int> elt){
+  void popAction(Data<int,int> elt){
     setContext(getContext() - 1);
   }
   bool pushCondition(int data){
@@ -92,28 +44,35 @@ private:
     }
     return false;
   }
-  void pushAction(Data<int> elt){
+  void pushAction(Data<int,int> elt){
     std::cout << "Implement mPushAction for your instance" << std::endl;
   }
 };
 
-
+/*==============================================================================
+  Test functions
+==============================================================================*/
 // Test problem
 void testProblem()
 {
   std::string filePath = "../instances/pushOnlyInput.csv";
 
   // Test on normal stack
-  Instance testNS(filePath, 1000);
-  testNS.run();
-  testNS.println();
+//  Instance testNS(filePath, 1000);
+//  testNS.run();
+//  testNS.println();
 
   // Test on CompressedStack
-//  Instance testCS(filePath, 1000, 3);
-//  testCS.println();
+  Instance testCS(filePath, 1000, 3, 0);
+  testCS.println();
+  testCS.run();
+  testCS.println();
 }
 
-// Main
+/*==============================================================================
+  Main function
+==============================================================================*/
+// Main //int main(int argc, char const *argv[]) {
 int main() {
   testProblem();
 

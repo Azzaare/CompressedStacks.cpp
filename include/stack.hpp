@@ -1,23 +1,46 @@
 #ifndef STACK
 #define STACK
 
-/** Stack : interface **/
+/*==============================================================================
+  Includes
+==============================================================================*/
 #include "data.hpp"
+#include "sign.hpp"
+#include <memory>
 
-template <class D>
-class Stack
-{
+/*==============================================================================
+  Class      : abstract, template (T context, D datas)
+  Extensions : NormalStack, CompressedStack
+  Aliases    :
+  Friends   ->
+            <-
+==============================================================================*/
+template <class T, class D>
+class Stack{
 public:
+  // Member functions
+//  virtual Stack<T,D>() = 0;
+  virtual ~Stack<T,D>() {};
+
   // Common stack functions
-  virtual Data<D> pop() = 0;
-  virtual void push(Data<D> data) = 0;
-  virtual Data<D> top(int k) = 0;
+  virtual Data<T,D> pop(Problem<T,D> &problem) = 0;
+  virtual void push(const Data<T,D> &data, std::streampos position) = 0;
+  virtual Data<T,D> top(int k) = 0;
   virtual bool isempty() = 0;
+
+  virtual bool isSecondEmpty() = 0;
+  virtual void compress() = 0;
+
+  // Getters
+  virtual Block<T,D> getFirstPartial(int lvl) = 0;
+  virtual Block<T,D> getCompressed() = 0;
+  virtual ExplicitPointer<T,D> getFirstExplicit() = 0;
+
+  // Setters
+  virtual void setContext(std::shared_ptr<T> context) = 0;
 
   // IO
   virtual std::string toString() = 0;
-  virtual void print() = 0;
-  virtual void println() = 0;
 };
 
 #endif /* STACK */
