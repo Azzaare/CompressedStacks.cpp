@@ -15,9 +15,11 @@
             <-
 ==============================================================================*/
 template <class T, class D> class Problem; // Required for the friendship
+template <class T, class D> class CompareStacks; // Required for the friendship
 template <class T, class D>
 class NormalStack: public Stack<T,D>{
   friend class Problem<T,D>;
+  friend class CompareStacks<T,D>;
 
 public:
   // Constructors
@@ -31,7 +33,9 @@ private:
 
   // Stack common methods
   Data<T,D> pop(Problem<T,D> &problem);
+  Data<T,D> pop();
   void push(const Data<T,D> &data, std::streampos position);
+  void push(const Data<T,D> &data);
   Data<T,D> top(int k);
   bool isempty();
 
@@ -72,9 +76,19 @@ Data<T,D> NormalStack<T,D>::pop(Problem<T,D> &problem){
   mDatas.pop_back();
   return data;
 }
+template <class T, class D>
+Data<T,D> NormalStack<T,D>::pop(){
+  Data<T,D> data = mDatas.back();
+  mDatas.pop_back();
+  return data;
+}
 
 template <class T, class D>
 void NormalStack<T,D>::push(const Data<T,D> &elt, std::streampos position){
+  mDatas.push_back(elt);
+}
+template <class T, class D>
+void NormalStack<T,D>::push(const Data<T,D> &elt){
   mDatas.push_back(elt);
 }
 

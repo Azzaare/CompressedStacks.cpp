@@ -4,6 +4,7 @@
   Includes
 ==============================================================================*/
 #include "../include/problem.hpp"
+#include "../include/compare.hpp"
 #include "../include/createTestInput.hpp"
 #include <string>
 #include <vector>
@@ -16,6 +17,45 @@ class Instance: public Problem<int,int>{
 public:
   Instance(std::string filePath, int size):Problem<int,int>(filePath, size){}
   Instance(std::string filePath, int size, int space, int buffer):Problem<int,int>(filePath, size, space, buffer){}
+private:
+  // Functions to run the stack
+  int readInput(std::vector<std::string> line){
+    int value = std::stoi(line[0]);
+    setContext(std::stoi(line[1]));
+    return value;
+
+  }
+  std::shared_ptr<int> initStack(){
+    std::shared_ptr<int> context (new int (10));
+    std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
+    return context;
+  }
+  bool popCondition(int data){
+    if (getContext() > 0) {
+      return true;
+    }
+    return false;
+  }
+  void popAction(Data<int,int> elt){
+    setContext(getContext() - 1);
+  }
+  bool pushCondition(int data){
+    if (data > 0) {
+      return true;
+    }
+    return false;
+  }
+  void pushAction(Data<int,int> elt){
+    std::cout << "Implement mPushAction for your instance" << std::endl;
+  }
+};
+
+/*==============================================================================
+  Instantiation of a comparison
+==============================================================================*/
+class Comparison: public CompareStacks<int,int>{
+public:
+  Comparison(std::string filePath, int size, int space, int buffer):CompareStacks<int,int>(filePath, size, space, buffer){}
 private:
   // Functions to run the stack
   int readInput(std::vector<std::string> line){
@@ -69,12 +109,20 @@ void testProblem()
   testCS.println();
 }
 
+void testCompare(){
+  std::string filePath = "../instances/pushOnlyInput.csv";
+
+  Comparison comp(filePath, 1000, 3, 0);
+  comp.runCompare();
+}
 /*==============================================================================
   Main function
 ==============================================================================*/
 // Main //int main(int argc, char const *argv[]) {
 int main() {
-  testProblem();
+//  testProblem();
+
+  testCompare();
 
 // Intances generation, please comment when not in use
 /*  createTestInput ct=createTestInput();

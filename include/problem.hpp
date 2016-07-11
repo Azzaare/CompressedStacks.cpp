@@ -20,9 +20,11 @@
             <- NormalStack, CompressedStack, Data
 ==============================================================================*/
 template <class T, class D> class CompressedStack; // Required for the friendship
+template <class T, class D> class CompareStacks; // Required for the friendship
 template <class T, class D>
 class Problem{
   friend class CompressedStack<T,D>;
+  friend class CompareStacks<T,D>;
 
 public:
   // Members functions

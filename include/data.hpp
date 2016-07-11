@@ -19,11 +19,13 @@
 template <class T, class D> class Component; // Required for the friendship
 template <class T, class D> class CompressedStack; // Required for the friendship
 template <class T, class D> class Problem; // Required for the friendship
+template <class T, class D> class CompareStacks; // Required for the friendship
 template <class T, class D>
 class Data{
   friend class Component<T,D>;
   friend class CompressedStack<T,D>;
   friend class Problem<T,D>;
+  friend class CompareStacks<T,D>;
 
 public:
   // IO
