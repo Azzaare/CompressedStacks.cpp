@@ -32,6 +32,7 @@ private:
 
   // Getters
   Data<T,D> top(int k);
+  std::shared_ptr<Data<T,D>> getPointer(int k);
 
   // Setters
   void setStart();
@@ -39,7 +40,7 @@ private:
 
   // Push and Pop
   void push(std::shared_ptr<Data<T,D>> elt);
-  void pop();
+  void pop(std::shared_ptr<Data<T,D>> elt);
 
   // IO
   std::string toString();
@@ -75,6 +76,15 @@ Data<T,D> Buffer<T,D>::top(int k){
   throw "Access to a top element bigger than the size of the buffer";
 }
 
+template <class T, class D>
+std::shared_ptr<Data<T,D>> Buffer<T,D>::getPointer(int k){
+  if (k < mSize) {
+    int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
+    return mExplicit[index];
+  }
+  throw "Access to a top element bigger than the size of the buffer";
+}
+
 /*==============================================================================
   Setters
 ==============================================================================*/
@@ -99,8 +109,9 @@ void Buffer<T,D>::push(std::shared_ptr<Data<T,D>> elt){
 }
 
 template <class T, class D>
-void Buffer<T,D>::pop(){
+void Buffer<T,D>::pop(std::shared_ptr<Data<T,D>> elt){
   setStart();
+  setData(elt, mSize);
 }
 
 /*==============================================================================

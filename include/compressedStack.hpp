@@ -45,6 +45,7 @@ private:
   Block<T,D> getFirstPartial(int lvl);
   Block<T,D> getCompressed();
   ExplicitPointer<T,D> getFirstExplicit();
+  std::shared_ptr<Data<T,D>> getExplicitData(int k);
 
   // IO
   std::string toString();
@@ -58,6 +59,7 @@ private:
   void resetBlock(Signature<T,D> sign, int lvl);
 
   // Pop Internals
+  void popBuffer();
   void reconstruct(Problem<T,D> &problem);
   void reconstruct(Problem<T,D> &problem,const Signature<T,D> &sign, int lvl);
   void popFirst();
@@ -141,6 +143,15 @@ Block<T,D> CompressedStack<T,D>::getCompressed(){
 template <class T, class D>
 ExplicitPointer<T,D> CompressedStack<T,D>::getFirstExplicit(){
   return mFirst.mExplicit;
+}
+
+template <class T, class D>
+std::shared_ptr<Data<T,D>> CompressedStack<T,D>::getExplicitData(int k){
+  if (k <= (int) mFirst.mExplicit.size()) {
+    return mFirst.mExplicit[k-1];
+  } else {
+    return mFirst.mSign.mBuffer.getPointer(k - 1 - mFirst.mExplicit.size());
+  }
 }
 
 /*==============================================================================
@@ -425,7 +436,14 @@ void CompressedStack<T,D>::reconstruct(Problem<T,D> &problem, const Signature<T,
 }
 
 template <class T, class D>
+void CompressedStack<T,D>::popBuffer(){
+  std::shared_ptr<Data<T,D>> elt = getExplicitData(mBuffer.mSize);
+  mBuffer.pop(elt);
+}
+
+template <class T, class D>
 Data<T,D> CompressedStack<T,D>::pop(Problem<T,D> &problem){
+  popBuffer();
   std::shared_ptr<Data<T,D>> elt;
   if (mFirst.mExplicit.empty()) {
     if (mSecond.mExplicit.empty()) {
