@@ -28,7 +28,7 @@ private:
   void clearExplicit(int space);
 
   // Push and pop
-  void pushExplicit(std::shared_ptr<Data<T,D>> elt);
+  void pushExplicit(SPData<T,D> elt);
   void push(Signature<T,D> sign, int lvl);
   Data<T,D> top();
   Signature<T,D> top(int lvl);
@@ -116,7 +116,7 @@ bool Component<T,D>::isExplicitEmpty(){
 }
 
 template <class T, class D>
-void Component<T,D>::pushExplicit(std::shared_ptr<Data<T,D>> elt){
+void Component<T,D>::pushExplicit(SPData<T,D> elt){
   mExplicit.push_back(elt);
 }
 template <class T, class D>

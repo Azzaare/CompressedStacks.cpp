@@ -39,10 +39,12 @@ private:
   D mData;
 };
 
+template<class T, class D> using SPData = std::shared_ptr<Data<T,D>>;
+
 template<class T, class D> using Explicit = std::vector<Data<T,D>>;
 template<class T, class D> Explicit<T,D> initExplicit();
 
-template<class T, class D> using ExplicitPointer = std::vector<std::shared_ptr<Data<T,D>>>;
+template<class T, class D> using ExplicitPointer = std::vector<SPData<T,D>>;
 template<class T, class D> ExplicitPointer<T,D> initExplicitPointer();
 
 /*==============================================================================

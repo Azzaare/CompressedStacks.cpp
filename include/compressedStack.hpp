@@ -45,14 +45,14 @@ private:
   Block<T,D> getFirstPartial(int lvl);
   Block<T,D> getCompressed();
   ExplicitPointer<T,D> getFirstExplicit();
-  std::shared_ptr<Data<T,D>> getExplicitData(int k);
+  SPData<T,D> getExplicitData(int k);
 
   // IO
   std::string toString();
 
   // Push Internals
-  void pushExplicit(std::shared_ptr<Data<T,D>> elt);
-  void pushCompressed(std::shared_ptr<Data<T,D>> elt, int lvl, std::streampos position);
+  void pushExplicit(SPData<T,D> elt);
+  void pushCompressed(SPData<T,D> elt, int lvl, std::streampos position);
   Data<T,D> top();
   int topIndex();
   void compress();
@@ -146,7 +146,7 @@ ExplicitPointer<T,D> CompressedStack<T,D>::getFirstExplicit(){
 }
 
 template <class T, class D>
-std::shared_ptr<Data<T,D>> CompressedStack<T,D>::getExplicitData(int k){
+SPData<T,D> CompressedStack<T,D>::getExplicitData(int k){
   if (k <= (int) mFirst.mExplicit.size()) {
     return mFirst.mExplicit[k-1];
   } else {
@@ -209,7 +209,7 @@ void CompressedStack<T,D>::resetBlock(Signature<T,D> sign, int lvl){
 template <class T, class D>
 void CompressedStack<T,D>::push(const Data<T,D> &elt, std::streampos position){
   // update the buffer (if buffer size is bigger than 0)
-  std::shared_ptr<Data<T,D>> ptr_elt = std::make_shared<Data<T,D>>(elt);
+  SPData<T,D> ptr_elt = std::make_shared<Data<T,D>>(elt);
   mBuffer.push(ptr_elt);
   // update the explicit Blocks, with possibly shifting first to second
   pushExplicit(ptr_elt);
@@ -222,9 +222,9 @@ void CompressedStack<T,D>::push(const Data<T,D> &elt, std::streampos position){
 
 // Function push for the Explicit members of the stack
 template <class T, class D>
-void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<T,D>> elt){
+void CompressedStack<T,D>::pushExplicit(SPData<T,D> elt){
   int index = elt->mIndex;
-  std::shared_ptr<Data<T,D>> eltPtr = elt;
+  SPData<T,D> eltPtr = elt;
   Signature<T,D> sign (index, mPosition, mContext, mBuffer);
 
   // If the explicit datas of component 1 are empty we push
@@ -259,7 +259,7 @@ void CompressedStack<T,D>::pushExplicit(std::shared_ptr<Data<T,D>> elt){
 
 // Function push for the part. and fully compressed members of the stack
 template <class T, class D>
-void CompressedStack<T,D>::pushCompressed(std::shared_ptr<Data<T,D>> elt, int lvl, std::streampos position){
+void CompressedStack<T,D>::pushCompressed(SPData<T,D> elt, int lvl, std::streampos position){
   int distSubBlock = std::pow(mSpace,(mDepth - lvl));
   int distBlock = distSubBlock * mSpace;
   int index = elt->mIndex;
@@ -437,14 +437,14 @@ void CompressedStack<T,D>::reconstruct(Problem<T,D> &problem, const Signature<T,
 
 template <class T, class D>
 void CompressedStack<T,D>::popBuffer(){
-  std::shared_ptr<Data<T,D>> elt = getExplicitData(mBuffer.mSize);
+  SPData<T,D> elt = getExplicitData(mBuffer.mSize);
   mBuffer.pop(elt);
 }
 
 template <class T, class D>
 Data<T,D> CompressedStack<T,D>::pop(Problem<T,D> &problem){
   popBuffer();
-  std::shared_ptr<Data<T,D>> elt;
+  SPData<T,D> elt;
   if (mFirst.mExplicit.empty()) {
     if (mSecond.mExplicit.empty()) {
       // Reconstruct the compressed stack with the first available signature

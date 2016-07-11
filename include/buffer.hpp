@@ -32,15 +32,15 @@ private:
 
   // Getters
   Data<T,D> top(int k);
-  std::shared_ptr<Data<T,D>> getPointer(int k);
+  SPData<T,D> getPointer(int k);
 
   // Setters
   void setStart();
-  void setData(std::shared_ptr<Data<T,D>> elt, int index);
+  void setData(SPData<T,D> elt, int index);
 
   // Push and Pop
-  void push(std::shared_ptr<Data<T,D>> elt);
-  void pop(std::shared_ptr<Data<T,D>> elt);
+  void push(SPData<T,D> elt);
+  void pop(SPData<T,D> elt);
 
   // IO
   std::string toString();
@@ -77,7 +77,7 @@ Data<T,D> Buffer<T,D>::top(int k){
 }
 
 template <class T, class D>
-std::shared_ptr<Data<T,D>> Buffer<T,D>::getPointer(int k){
+SPData<T,D> Buffer<T,D>::getPointer(int k){
   if (k < mSize) {
     int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
     return mExplicit[index];
@@ -93,7 +93,7 @@ void Buffer<T,D>::setStart(){
   mStart = (mStart + 1) % mSize;
 }
 template <class T, class D>
-void Buffer<T,D>::setData(std::shared_ptr<Data<T,D>> elt, int id){
+void Buffer<T,D>::setData(SPData<T,D> elt, int id){
   int index = (id + mStart - 1) % mSize; // -1 match the start of vectors at 0
   mExplicit[index] = elt;
 }
@@ -102,14 +102,14 @@ void Buffer<T,D>::setData(std::shared_ptr<Data<T,D>> elt, int id){
   Stack Functions: push, pop
 ==============================================================================*/
 template <class T, class D>
-void Buffer<T,D>::push(std::shared_ptr<Data<T,D>> elt){
+void Buffer<T,D>::push(SPData<T,D> elt){
   if (mSize > 0) {
     setData(elt, mStart+1);
   }
 }
 
 template <class T, class D>
-void Buffer<T,D>::pop(std::shared_ptr<Data<T,D>> elt){
+void Buffer<T,D>::pop(SPData<T,D> elt){
   setStart();
   setData(elt, mSize);
 }
