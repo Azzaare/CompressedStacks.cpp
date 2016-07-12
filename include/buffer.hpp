@@ -119,10 +119,12 @@ void Buffer<T,D>::pop(SPData<T,D> elt){
 ==============================================================================*/
 template <class T, class D>
 std::string Buffer<T,D>::toString(){
-  std::string str;
-  str = "\t\tBuffer size is " + std::to_string(mSize);
-  str += " and start at index " + std::to_string(mStart) + "\n";
-  str += explicitPointerToString(mExplicit);
+  std::string str = "";
+  if (mSize > 0) {
+    str = "\t\tBuffer size is " + std::to_string(mSize);
+    str += " and start at index " + std::to_string(mStart) + "\n";
+    str += "\t\t\t" + explicitPointerToString(mExplicit);
+  }
   return str;
 }
 

@@ -20,12 +20,14 @@ template <class T, class D> class Component; // Required for the friendship
 template <class T, class D> class CompressedStack; // Required for the friendship
 template <class T, class D> class Problem; // Required for the friendship
 template <class T, class D> class CompareStacks; // Required for the friendship
+class Comparison; // Required for the friendship
 template <class T, class D>
 class Data{
   friend class Component<T,D>;
   friend class CompressedStack<T,D>;
   friend class Problem<T,D>;
   friend class CompareStacks<T,D>;
+  friend class Comparison;
 
 public:
   // IO
@@ -96,11 +98,16 @@ std::string explicitToString(Explicit<T,D> xplicit)
 template <class T, class D>
 std::string explicitPointerToString(ExplicitPointer<T,D> xpointer)
 {
-  std::string str;
-  str = "{";
+  std::string str = "";
   for (typename ExplicitPointer<T,D>::iterator it = xpointer.begin() ; it != xpointer.end(); ++it)
-    str += (*(*it)).toString() + ",";
-  str.back() = '}';
+    if (str == "") {
+      str += "{" + (*(*it)).toString();
+    } else {
+      str += "," + (*(*it)).toString();
+    }
+    if (str != "") {
+      str += '}';
+    }
   return str;
 }
 

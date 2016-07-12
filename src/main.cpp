@@ -38,6 +38,7 @@ private:
   }
   void popAction(Data<int,int> elt){
     setContext(getContext() - 1);
+//    std::cout << "Pop : " << elt.toString() << std::endl;
   }
   bool pushCondition(int data){
     if (data > 0) {
@@ -46,13 +47,14 @@ private:
     return false;
   }
   void pushAction(Data<int,int> elt){
-    std::cout << "Implement mPushAction for your instance" << std::endl;
+//  std::cout << "Push : " << elt.toString() << std::endl;
   }
 };
 
 /*==============================================================================
   Instantiation of a comparison
 ==============================================================================*/
+
 class Comparison: public CompareStacks<int,int>{
 public:
   Comparison(std::string filePath, int size, int space, int buffer):CompareStacks<int,int>(filePath, size, space, buffer){}
@@ -85,7 +87,7 @@ private:
     return false;
   }
   void pushAction(Data<int,int> elt){
-    std::cout << "Implement mPushAction for your instance" << std::endl;
+  std::cout << "I am pushing " << elt.toString() << std::endl;
   }
 };
 
@@ -104,13 +106,13 @@ void testProblem()
 
   // Test on CompressedStack
   Instance testCS(filePath, 1000, 3, 0);
-  testCS.println();
+//  testCS.println();
   testCS.run();
   testCS.println();
 }
 
 void testCompare(){
-  std::string filePath = "../instances/pushOnlyInput.csv";
+  std::string filePath = "../instances/CTInput.csv";
 
   Comparison comp(filePath, 1000, 3, 0);
   comp.runCompare();
@@ -120,9 +122,9 @@ void testCompare(){
 ==============================================================================*/
 // Main //int main(int argc, char const *argv[]) {
 int main() {
-//  testProblem();
+  testProblem();
 
-  testCompare();
+//  testCompare();
 
 // Intances generation, please comment when not in use
 /*  createTestInput ct=createTestInput();

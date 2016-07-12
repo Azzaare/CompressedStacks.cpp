@@ -41,6 +41,7 @@ private:
   bool isempty();
   bool isempty(int lvl);
   bool isExplicitEmpty();
+  bool single(int lvl);
 
   Levels<T,D> mPartial;
   ExplicitPointer<T,D> mExplicit;
@@ -73,8 +74,8 @@ std::string levelsToString(Levels<T,D> levels){
   for (typename Levels<T,D>::iterator it = levels.begin() ; it != levels.end(); ++it)
   {
     index++;
-    str += "\t\t\tLevel" + std::to_string(index) + "->\n";
-    str += "\t\t\t\t" + blockToString(*it) + "\n";
+    str += "\t\t\tLevel " + std::to_string(index) + "   ->";
+    str += " " + blockToString(*it) + "\n";
   }
   return str;
 }
@@ -83,10 +84,10 @@ template <class T, class D>
 std::string Component<T,D>::toString(){
   std::string str;
   str = levelsToString(mPartial);
-  str += "\t\t\tExplicit->\n";
+  str += "\t\t\tExplicit  -> ";
   str += explicitPointerToString(mExplicit);
-  str += "\t\t\tSignature->\n";
-  //str += (&mSign).toString() + "\n";
+  str += "\n\t\t\tSignature -> ";
+  str += mSign.toString() + "\n";
   return str;
 }
 
@@ -140,6 +141,14 @@ int Component<T,D>::topIndex(int lvl){
   } else {
     return top(lvl).mLast;
   }
+}
+
+template <class T, class D>
+bool Component<T,D>::single(int lvl){
+  if (mPartial[lvl].empty()) {
+    return false;
+  }
+  return (mPartial[lvl].back().single());
 }
 
 /*==============================================================================

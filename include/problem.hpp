@@ -21,10 +21,12 @@
 ==============================================================================*/
 template <class T, class D> class CompressedStack; // Required for the friendship
 template <class T, class D> class CompareStacks; // Required for the friendship
+class Comparison; // Required for the friendship
 template <class T, class D>
 class Problem{
   friend class CompressedStack<T,D>;
   friend class CompareStacks<T,D>;
+  friend class Comparison;
 
 public:
   // Members functions
@@ -35,7 +37,7 @@ public:
   // Running the stack
   void run();
   void run(int limit);
-  void push(Data<T,D>);
+  void push(Data<T,D> elt);
   Data<T,D> pop();
   Data<T,D> top(int k);
   bool emptystack();
@@ -147,14 +149,16 @@ std::vector<std::string> Problem<T,D>::readLine(){
 template <class T, class D>
 void Problem<T,D>::run(){
   initStackIntern();
-  while ((mInput.good())) {
+  while (mInput.good()) {
+    std::streampos position = mInput.tellg();
+    (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
     if ( (line.front()== "-1") || (line.front()=="") ) {
       break;
     }
     D data = readInput(line);
     mIndex++; // Might have to move
-    while ( (emptystack()) && (popCondition(data)) ) {
+    while ( (!(emptystack())) && (popCondition(data)) ) {
       Data<T,D> elt = pop();
       popAction(elt);
     }
@@ -169,6 +173,8 @@ void Problem<T,D>::run(){
 template <class T, class D>
 void Problem<T,D>::run(int limit){
   for (int i = 0; i < limit; i++) {
+    std::streampos position = mInput.tellg();
+    (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
     if ( (line.front()== "-1") || (line.front()=="") ) {
       break;
@@ -189,8 +195,7 @@ void Problem<T,D>::run(int limit){
 
 template <class T, class D>
 void Problem<T,D>::push(Data<T,D> elt){
-  std::streampos position = mInput.tellg();
-  mStack->push(elt, position);
+  mStack->push(elt);
 }
 template <class T, class D>
 Data<T,D> Problem<T,D>::pop(){

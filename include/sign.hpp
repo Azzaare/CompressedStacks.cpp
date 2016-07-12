@@ -33,6 +33,9 @@ private:
   Signature<T,D>(int index, std::streampos position, std::shared_ptr<T> context, Buffer<T,D> buffer);
   Signature<T,D>(std::vector<Signature<T,D>> block);
 
+  // Getters
+  bool single();
+
   int mFirst;
   int mLast;
   std::streampos mPosition;
@@ -93,6 +96,14 @@ Levels<T,D> initLevels(int space, int depth){
 }
 
 /*==============================================================================
+  Getters : single
+==============================================================================*/
+template <class T, class D>
+bool Signature<T,D>::single(){
+  return (mLast == mFirst);
+}
+
+/*==============================================================================
   IO : toString, blockToString
 ==============================================================================*/
 template <class T, class D>
@@ -105,13 +116,18 @@ std::string Signature<T,D>::toString(){
 
 template<class T, class D>
 std::string blockToString(Block<T,D> block){
-  std::string str;
-  str = "[";
+  std::string str = "";
   for (typename Block<T,D>::iterator it = block.begin() ; it != block.end(); ++it)
   {
-    str += "\t\t\t\t" + (*it).toString() + "\n";
+    if (str == "") {
+      str += "[" + (*it).toString();
+    } else {
+      str += "," + (*it).toString();
+    }
   }
-  str.back() = ']';
+    if (str != "") {
+      str += ']';
+    }
   return str;
 }
 
