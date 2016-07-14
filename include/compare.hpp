@@ -23,6 +23,13 @@ public:
   // Compare the stacks
   void runCompare(int buffer = 0);
 
+  // IO
+  void printCompare(){
+    std::string str = Problem<T,D>::toString();
+    str += "\n" + (*mNormalStack).toString();
+    std::cout << str << std::endl;
+  }
+
 private:
   // Stack Functions: defined by user
   virtual D readInput(std::vector<std::string> line) = 0;
@@ -54,57 +61,60 @@ CompareStacks<T,D>::CompareStacks(std::string fileName, int size, int space, int
 ==============================================================================*/
 template <class T, class D>
 Data<T,D> CompareStacks<T,D>::popCompare(){
-  std::cout << "Debug CompareStacks::pop 1" << std::endl;
   return Problem<T,D>::mStack->pop(*this);
-  std::cout << "Debug CompareStacks::pop 2" << std::endl;
 }
 
 template <class T, class D>
 void CompareStacks<T,D>::runCompare(int buffer){
-  Problem<T,D>::initStackIntern();
-  while ((Problem<T,D>::mInput.good())) {
-    std::streampos position = Problem<T,D>::mInput.tellg();
-    for (int i = 1; i <= buffer; i++) {
-      bool bIndex = Problem<T,D>::top(i).mIndex == mNormalStack->top(i).mIndex;
-      bool bData = Problem<T,D>::top(i).mData == mNormalStack->top(i).mData;
-      if (!bIndex || !bData) {
-        throw "The top $(i)st elements are different";
+  try {
+    Problem<T,D>::initStackIntern();
+    while ((Problem<T,D>::mInput.good())) {
+      std::streampos position = Problem<T,D>::mInput.tellg();
+      (*Problem<T,D>::mStack).setPosition(position);
+      for (int i = 1; i <= buffer; i++) {
+        bool bIndex = Problem<T,D>::top(i).mIndex == mNormalStack->top(i).mIndex;
+        bool bData = Problem<T,D>::top(i).mData == mNormalStack->top(i).mData;
+        if (!bIndex || !bData) {
+          Problem<T,D>::println();
+          std::cout << mNormalStack->toString() << std::endl;
+          throw "The top $(i)st elements are different";
+        }
+      }
+      std::vector<std::string> line = Problem<T,D>::readLine();
+      if ( (line.front()== "-1") || (line.front()=="") ) {
+        break;
+      }
+      D data = readInput(line);
+      Problem<T,D>::mIndex++; // Might have to move
+      if ((*Problem<T,D>::mStack).isempty() != mNormalStack->isempty()) {
+        (*Problem<T,D>::mStack).isempty();
+        Problem<T,D>::println();
+        std::cout << mNormalStack->toString() << std::endl;
+        (*Problem<T,D>::mStack).isempty();
+        throw "One stack is empty and not the other";
+      }
+      while ( (!(Problem<T,D>::emptystack())) && (popCondition(data)) ) {
+        Data<T,D> elt = Problem<T,D>::pop();
+        Data<T,D> eltNormal = mNormalStack->pop();
+        popAction(elt);
+        bool bIndex = elt.mIndex == eltNormal.mIndex;
+        bool bData = elt.mData == eltNormal.mData;
+        if (!bIndex || !bData) {
+          Problem<T,D>::println();
+          std::cout << *Problem<T,D>::mContext << std::endl;;
+          std::cout << mNormalStack->toString() << std::endl;
+          throw "The two elements popped are different";
+        }
+      }
+      if (pushCondition(data)) {
+        Data<T,D> elt (Problem<T,D>::mIndex,data);
+        pushAction(elt);
+        Problem<T,D>::push(elt);
+        mNormalStack->push(elt);
       }
     }
-    std::vector<std::string> line = Problem<T,D>::readLine();
-    if ( (line.front()== "-1") || (line.front()=="") ) {
-      break;
-    }
-    D data = readInput(line);
-    Problem<T,D>::mIndex++; // Might have to move
-    std::cout << "Debug runCompare 1" << std::endl;
-    if (Problem<T,D>::emptystack() != mNormalStack->isempty()) {
-      throw "One stack is empty and not the other";
-    }
-    std::cout << "Debug runCompare 2" << std::endl;
-    while ( (!(Problem<T,D>::emptystack())) && (popCondition(data)) ) {
-      std::cout << "Debug runCompare 2.1" << std::endl;
-      Data<T,D> elt = popCompare();
-      std::cout << "Debug runCompare 2.2" << std::endl;
-      Data<T,D> eltNormal = mNormalStack->pop();
-        std::cout << "Debug runCompare 2.3" << std::endl;
-      bool bIndex = elt.mIndex == eltNormal.mIndex;
-      bool bData = elt.mData == eltNormal.mData;
-        std::cout << "Debug runCompare 2.4" << std::endl;
-      if (!bIndex || !bData) {
-        throw "The two elements popped are different";
-      }
-        std::cout << "Debug runCompare 2.5" << std::endl;
-      popAction(elt);
-        std::cout << "Debug runCompare 2.6" << std::endl;
-    }
-    std::cout << "Debug runCompare 3" << std::endl;
-    if (pushCondition(data)) {
-      Data<T,D> elt (Problem<T,D>::mIndex,data);
-      pushAction(elt);
-      Problem<T,D>::push(elt);
-      mNormalStack->push(elt);
-    }
+  } catch (char const * e) {
+    std::cout << e << std::endl;
   }
 }
 

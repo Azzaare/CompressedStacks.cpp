@@ -38,6 +38,7 @@ private:
   Data<T,D> pop();
   void push(const Data<T,D> &data);
   Data<T,D> top(int k);
+  Data<T,D> top();
   bool isempty();
 
   bool isSecondEmpty();
@@ -97,6 +98,11 @@ Data<T,D> NormalStack<T,D>::top(int k){
 }
 
 template <class T, class D>
+Data<T,D> NormalStack<T,D>::top(){
+  return top(1);
+}
+
+template <class T, class D>
 bool NormalStack<T,D>::isSecondEmpty(){
   return isempty();
 }
@@ -131,6 +137,7 @@ std::string NormalStack<T,D>::toString()
 {
   std::string str;
   str = "\tNormal Stack (Explicit Datas)\n\t\t";
+  str += explicitToString(mDatas);
   return str;
 }
 

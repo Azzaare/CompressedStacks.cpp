@@ -96,14 +96,17 @@ std::string Component<T,D>::toString(){
 ==============================================================================*/
 template <class T, class D>
 bool Component<T,D>::isempty(){
-  bool b = bool (mSign.mContext);
-  return !b;
+  bool b = true;
+  for (int lvl = 0; lvl <= int(mPartial.size()); lvl++){
+    b = b && isempty(lvl);
+  }
+  return b;
 }
 
 template <class T, class D>
 bool Component<T,D>::isempty(int lvl){
   bool b;
-  if (lvl > int(mPartial.size())) {
+  if (lvl >= int(mPartial.size())) {
     b = isExplicitEmpty();
   } else {
     b = (mPartial[lvl]).empty();

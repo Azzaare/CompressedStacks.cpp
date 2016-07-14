@@ -26,6 +26,7 @@ public:
   virtual Data<T,D> pop(Problem<T,D> &problem) = 0;
   virtual void push(const Data<T,D> &data) = 0;
   virtual Data<T,D> top(int k) = 0;
+  virtual Data<T,D> top() = 0;
   virtual bool isempty() = 0;
 
   virtual bool isSecondEmpty() = 0;
