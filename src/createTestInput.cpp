@@ -14,7 +14,10 @@ void createTestInput::createTestInputFiles(int code, string fileName,int n,int p
     srand(time(NULL));
 
     // First write the problem parameters
-    outfile << n << "," << p << endl;
+    outfile << "HEADER " << endl;
+    outfile <<"n "<< n<< endl;
+    outfile <<"p "<< p<< endl;
+    outfile << "/HEADER " << endl;
 
     switch(code){
         case 0  : // push only test

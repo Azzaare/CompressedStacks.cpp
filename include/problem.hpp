@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <exception>
 
 /*==============================================================================
   Class      : abstract, template (T context, D datas)
@@ -26,8 +27,9 @@ class Problem{
 
 public:
   // Members functions
-  Problem<T,D>(std::string fileName, int size);
-  Problem<T,D>(std::string fileName, int size, int space, int buffer);
+  Problem<T,D>(std::string fileName);
+  //Problem<T,D>(std::string fileName, int size);
+  //Problem<T,D>(std::string fileName, int size, int space, int buffer);
   virtual ~Problem<T,D>() {}
 
   // Running the stack
@@ -54,6 +56,7 @@ public:
 protected:
   void initStackIntern();
   std::vector<std::string> readLine();
+  std::vector<std::string> readHeader();
   int mIndex;
 
 private:
@@ -80,6 +83,44 @@ private:
   Constructors : with NormalStack or CompressedStack
 ==============================================================================*/
 template <class T, class D>
+Problem<T,D>::Problem(std::string fileName)
+        : mIndex(0)
+        , mContext(nullptr) {
+   mInput.open(fileName, std::ifstream::in);
+
+  std::vector<std::string> parameters=readHeader();
+
+  int n,p,b;
+  bool foundP=false;
+  bool foundBuffer=false;
+
+  for(unsigned int i=0;i<parameters.size();i=i+2)
+  {
+    if(parameters[i].compare("n")==0) n=stoi(parameters[i+1]);
+    if(parameters[i].compare("p")==0)
+    {
+      foundP=true;
+      p=stoi(parameters[i+1]);
+    }
+    if(parameters[i].compare("b")==0)
+    {
+      foundBuffer=true;
+      b=stoi(parameters[i+1]);
+    }
+  }
+
+//  std::cout << "reading all shit n,p,b,foundP,foundBuffer "<<n<<" "<<p<<" "<<b<<" "<<foundP<<" "<<foundBuffer<<std::endl;
+
+  if(foundBuffer&&!foundP)throw("Problem<T,D>::Problem(std::string fileName), wrong header format ");
+  if(!foundP) mStack= std::shared_ptr<Stack<T,D>> (new NormalStack<T,D> (n)); //space not provided, normal stack
+  else // space was provided, compressed stack
+  {
+    if(!foundBuffer) b=0;
+    mStack = std::shared_ptr<Stack<T,D>> (new CompressedStack<T,D> (n, p, b, mContext));
+  }
+}
+
+/*template <class T, class D>
 Problem<T,D>::Problem(std::string fileName, int size)
 : mIndex(0)
 , mContext(nullptr)
@@ -94,7 +135,8 @@ Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
   mInput.open(fileName, std::ifstream::in);
   std::streampos position = mInput.tellg();
   mStack = std::shared_ptr<Stack<T,D>> (new CompressedStack<T,D> (size, space, buffer, mContext));
-}
+
+}*/
 
 /*==============================================================================
   IO : toString, print, println
@@ -138,6 +180,25 @@ std::vector<std::string> Problem<T,D>::readLine(){
   return line;
 }
 
+template <class T, class D>
+std::vector<std::string> Problem<T,D>::readHeader(){
+  std::string str;
+  std::vector<std::string> line;
+  size_t pos=std::string::npos;
+
+  getline(mInput,str); // to read the first HEADER LINE
+
+  getline(mInput,str);
+  while (str.compare("/HEADER ")!=0){
+    pos=str.find_first_of(" ");
+    line.push_back(str.substr(0,pos));
+    line.push_back(str.substr(pos+1,str.size()-pos-1));
+    getline(mInput,str);
+
+  }
+  return line;
+}
+
 
 /*==============================================================================
   Stack Functions: run, push, pop, top
@@ -150,7 +211,7 @@ void Problem<T,D>::run(){
     if ( (line.front()== "-1") || (line.front()=="") ) {
       break;
     }
-    D data = readInput(line);
+     D data = readInput(line);
     mIndex++; // Might have to move
     while ( (emptystack()) && (popCondition(data)) ) {
       Data<T,D> elt = pop();
@@ -161,6 +222,7 @@ void Problem<T,D>::run(){
       pushAction(elt);
       push(elt);
     }
+
   }
 }
 
