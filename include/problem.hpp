@@ -172,8 +172,8 @@ void Problem<T,D>::run(){
 
 template <class T, class D>
 void Problem<T,D>::run(int limit){
-  std::cout << "Popping in the reconstruction process, limit = " << limit << std::endl;
-  for (int i = 0; i < limit; i++) {
+  int testIndex = mIndex;
+  while (mInput.good() && (mIndex < limit)) {
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
@@ -182,10 +182,10 @@ void Problem<T,D>::run(int limit){
     }
     D data = readInput(line);
     mIndex++; // Might have to move
+
     while ((!emptystack()) && (popCondition(data))) {
       Data<T,D> elt = pop();
       popAction(elt);
-//      println();
     }
     if (pushCondition(data)) {
       Data<T,D> elt (mIndex,data);

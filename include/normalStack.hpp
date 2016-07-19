@@ -44,15 +44,18 @@ private:
   bool isSecondEmpty();
 
   void compress();
+  void copyContent(CompressedStack<T,D> &stack) {}
 
   // Setters
   void setContext(std::shared_ptr<T> context){}
   void setPosition(std::streampos position){}
+  void setCompressed(Block<T,D> block){}
 
   // Getters
   Block<T,D> getFirstPartial(int lvl);
   Block<T,D> getCompressed();
   ExplicitPointer<T,D> getFirstExplicit();
+  Signature<T,D> getFirstSign();
 };
 
 /*==============================================================================
@@ -127,6 +130,12 @@ Block<T,D> NormalStack<T,D>::getCompressed(){
 template <class T, class D>
 ExplicitPointer<T,D> NormalStack<T,D>::getFirstExplicit(){
   return initExplicitPointer<T,D>();
+}
+
+template <class T, class D>
+Signature<T,D> NormalStack<T,D>::getFirstSign(){
+  Signature<T,D> sign(0, std::streampos (0), std::shared_ptr<T>(nullptr), Buffer<T,D>(0));
+  return sign;
 }
 
 /*==============================================================================

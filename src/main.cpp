@@ -77,10 +77,8 @@ private:
     return false;
   }
   void popAction(Data<int,int> elt){
-    std::cout << "I am poping " << elt.toString() << std::endl;
-    std::cout << "Context (before pop) = " << getContext() << std::endl;
+    std::cout << elt.toString() << " <<<< Pop!" << std::endl;
     setContext(getContext() - 1);
-    std::cout << "Context (after pop) = " << getContext() << std::endl;
   }
   bool pushCondition(int data){
     if (data > 0) {
@@ -89,8 +87,7 @@ private:
     return false;
   }
   void pushAction(Data<int,int> elt){
-  std::cout << "I am pushing " << elt.toString() << std::endl;
-  std::cout << "Context (push) = " << getContext() << std::endl;
+  std::cout << "Push >>>> " << elt.toString() << std::endl;
   }
 };
 
@@ -103,22 +100,23 @@ void testProblem()
   std::string filePath = "../instances/CTInput.csv";
 
   // Test on normal stack
-//  Instance testNS(filePath, 1000);
-//  testNS.run();
-//  testNS.println();
+  Instance testNS(filePath, 1000);
+  testNS.run();
+  testNS.println();
 
   // Test on CompressedStack
-  Instance testCS(filePath, 1000, 3, 0);
+//  Instance testCS(filePath, 1000, 3, 0);
 //  testCS.println();
-  testCS.run();
-  testCS.println();
+//  testCS.run();
+//testCS.println();
 }
 
 void testCompare(){
   std::string filePath = "../instances/CTInput.csv";
 
-  Comparison comp(filePath, 1000, 12, 0);
+  Comparison comp(filePath, 1000, 3, 0);
   comp.runCompare();
+  comp.printCompare();
 }
 /*==============================================================================
   Main function
