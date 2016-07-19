@@ -15,8 +15,7 @@
 ==============================================================================*/
 class Instance: public Problem<int,int>{
 public:
-  Instance(std::string filePath, int size):Problem<int,int>(filePath, size){}
-  Instance(std::string filePath, int size, int space, int buffer):Problem<int,int>(filePath, size, space, buffer){}
+  Instance(std::string filePath):Problem<int,int>(filePath){ }
 private:
   // Functions to run the stack
   int readInput(std::vector<std::string> line){
@@ -27,18 +26,17 @@ private:
   }
   std::shared_ptr<int> initStack(){
     std::shared_ptr<int> context (new int (0));
-    std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
     return context;
   }
   bool popCondition(int data){
-    if (getContext() > 0) {
+    if ((getContext() > 0)){
       return true;
     }
     return false;
   }
   void popAction(Data<int,int> elt){
+    std::cout << elt.toString() << " <<<< Pop!" << std::endl;
     setContext(getContext() - 1);
-//    std::cout << "Pop : " << elt.toString() << std::endl;
   }
   bool pushCondition(int data){
     if (data > 0) {
@@ -47,7 +45,7 @@ private:
     return false;
   }
   void pushAction(Data<int,int> elt){
-//  std::cout << "Push : " << elt.toString() << std::endl;
+    std::cout << "Push >>>> " << elt.toString() << std::endl;
   }
 };
 
@@ -57,7 +55,7 @@ private:
 
 class Comparison: public CompareStacks<int,int>{
 public:
-  Comparison(std::string filePath, int size, int space, int buffer):CompareStacks<int,int>(filePath, size, space, buffer){}
+  Comparison(std::string filePath):CompareStacks<int,int>(filePath){}
 private:
   // Functions to run the stack
   int readInput(std::vector<std::string> line){
@@ -67,7 +65,6 @@ private:
   }
   std::shared_ptr<int> initStack(){
     std::shared_ptr<int> context (new int (0));
-    std::vector<std::string> line = readLine(); // Temporary measure to get rid of the first line
     return context;
   }
   bool popCondition(int data){
@@ -87,45 +84,64 @@ private:
     return false;
   }
   void pushAction(Data<int,int> elt){
-  std::cout << "Push >>>> " << elt.toString() << std::endl;
+    std::cout << "Push >>>> " << elt.toString() << std::endl;
   }
 };
 
 /*==============================================================================
   Test functions
 ==============================================================================*/
-// Test problem
-void testProblem()
+void testProblem(std::string filePath)
 {
-  std::string filePath = "../instances/CTInput.csv";
-
   // Test on normal stack
-  Instance testNS(filePath, 1000);
+  Instance testNS(filePath);
   testNS.run();
   testNS.println();
 
   // Test on CompressedStack
-//  Instance testCS(filePath, 1000, 3, 0);
-//  testCS.println();
-//  testCS.run();
-//testCS.println();
+  Instance testCS(filePath);
+  testCS.run();
+  testCS.println();
 }
 
-void testCompare(){
-  std::string filePath = "../instances/CTInput.csv";
+void testCompare(std::string filePath){
 
-  Comparison comp(filePath, 1000, 3, 0);
+  Comparison comp(filePath);
   comp.runCompare();
   comp.printCompare();
 }
 /*==============================================================================
   Main function
 ==============================================================================*/
-// Main //int main(int argc, char const *argv[]) {
-int main() {
-//  testProblem();
+int main(int argc, char *argv[]) {
 
-  testCompare();
+  // argv[0] is the file name, argv[1] is the code of what is to be done, 0 run the example contained in the file, others are create input: 1 push only, 2 CT, 3 CH
+  createTestInput ct=createTestInput();
+  std::string filename=argv[1];
+
+  switch(atoi(argv[2]))
+  {
+    case 0:
+          testProblem(filename);
+          testCompare(filename);
+    break;
+    case 1:
+      ct.createTestInputFiles(0,filename,atoi(argv[3]),atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atof(argv[7]) );
+
+         break;
+    case 2:
+      ct.createTestInputFiles(1,filename,atoi(argv[3]),atoi(argv[4]));
+
+      break;
+    case 3:
+      ct.createTestInputFiles(2,filename,atoi(argv[3]),atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
+
+     break;
+     default:
+          std::cout << "WRONG PROGRAM CODE";
+          exit(-1);
+      break;
+  }
 
 // Intances generation, please comment when not in use
 /*  createTestInput ct=createTestInput();
@@ -133,6 +149,7 @@ int main() {
   ct.createTestInputFiles(1,"/home/yago/code/CompressedStacks.cpp/instances/CTInput.csv",1000,3);
   ct.createTestInputFiles(2,"/home/yago/code/CompressedStacks.cpp/instances/CHInput.csv",100,3,-1, 11);
 */
+
 
   return 0;
 }

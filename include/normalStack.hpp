@@ -25,7 +25,7 @@ class NormalStack: public Stack<T,D>{
 
 public:
   // Constructors
-  NormalStack<T,D>(int size);
+  NormalStack<T,D>();
 
   // IO
   std::string toString();
@@ -62,7 +62,7 @@ private:
   Constructors
 ==============================================================================*/
 template <class T, class D>
-NormalStack<T,D>::NormalStack(int size){
+NormalStack<T,D>::NormalStack(){
   Explicit<T,D> datas;
   datas = initExplicit<T,D>();
   mDatas = datas;

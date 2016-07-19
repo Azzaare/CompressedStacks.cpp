@@ -18,7 +18,7 @@ template <class T, class D>
 class CompareStacks: public Problem<T,D>{
 public:
   // Members functions
-  CompareStacks<T,D>(std::string fileName, int size, int space, int buffer);
+  CompareStacks<T,D>(std::string fileName);
 
   // Compare the stacks
   void runCompare(int buffer = 0);
@@ -51,9 +51,9 @@ private:
 ==============================================================================*/
 
 template <class T, class D>
-CompareStacks<T,D>::CompareStacks(std::string fileName, int size, int space, int buffer)
-: Problem<T,D>(fileName, size, space, buffer)
-, mNormalStack(new NormalStack<T,D> (size)){
+CompareStacks<T,D>::CompareStacks(std::string fileName)
+: Problem<T,D>(fileName)
+, mNormalStack(new NormalStack<T,D> ()){
 }
 
 /*==============================================================================

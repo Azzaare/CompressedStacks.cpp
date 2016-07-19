@@ -2,11 +2,9 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/Point2D.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/sources/createTestInput.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/sources/Point2D.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/sources/createTestInput.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/sources/Point2D.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/createTestInput.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
