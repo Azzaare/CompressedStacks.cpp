@@ -76,6 +76,7 @@ private:
   Signature<T,D> getFirstSign();
   Block<T,D> getSmartCompress(int lvl);
   Signature<T,D> getBottomSign();
+  Signature<T,D> getTop2Partial(int lvl);
 
   // IO
   std::string toString();
@@ -157,6 +158,20 @@ void CompressedStack<T,D>::setCompressed(Block<T,D> block){
 template <class T, class D>
 Block<T,D> CompressedStack<T,D>::getFirstPartial(int lvl){
   return mFirst.mPartial[lvl];
+}
+
+template <class T, class D>
+Signature<T,D> CompressedStack<T,D>::getTop2Partial(int lvl){
+  int sizeFirst = mFirst.mPartial[lvl].size();
+  int sizeSecond = mSecond.mPartial[lvl].size();
+  if (sizeFirst + sizeSecond < 2) {
+    throw "Incorrect access in smartIndex/getTop2Partial";
+  }
+  if (sizeFirst >= 2) {
+    return mFirst.mPartial[lvl][sizeFirst - 2];
+  } else {
+    return mSecond.mPartial[lvl][sizeSecond + sizeFirst - 2];
+  }
 }
 
 template <class T, class D>
@@ -388,7 +403,8 @@ void CompressedStack<T,D>::pushCompressed(SPData<T,D> elt, int lvl, int headInde
     int delta = index - startBlock;
     if (delta < distBlock) {
       // Distance with the current subblock
-      int startSubBlock = headIndex - (headIndex - 1) % distSubBlock;
+      int headSubBlock = mFirst.mPartial[lvl].back().mLast;
+      int startSubBlock = headSubBlock - (headSubBlock - 1) % distSubBlock;
       int eta = index - startSubBlock;
       // compress new element in the top of the current Block
       if (eta < distSubBlock) {
@@ -500,24 +516,11 @@ int CompressedStack<T,D>::smartIndex(int index){
   }
 
   for (int lvl = mDepth - 2; lvl >= 0; lvl--) {
-    if (mFirst.mPartial[lvl].empty()) {
-      if (!mSecond.single(lvl)) {
-        return (index - (index % (int) std::pow(mSpace, mDepth - lvl - 1)));
-      } else {
-        int size = mSecond.mPartial[lvl].size();
-        if (size > 1) {
-          return mSecond.mPartial[lvl][size-2].mLast;
-        }
-      }
-    } else {
-      if (!mFirst.single(lvl)) {
-        return (index - (index % (int) std::pow(mSpace, mDepth - lvl - 1)));
-      } else {
-        int size = mFirst.mPartial[lvl].size();
-        if (size > 1) {
-          return mFirst.mPartial[lvl][size-2].mLast;
-        }
-      }
+    if (!mFirst.single(lvl)) {
+
+    }
+    if (mFirst.mPartial[lvl].size() + mSecond.mPartial[lvl].size() > 1) {
+      return getTop2Partial(lvl).mLast;
     }
   }
 
@@ -601,7 +604,7 @@ void CompressedStack<T,D>::emptyFirst(int index, int lvl){
 
 template <class T, class D>
 void CompressedStack<T,D>::emptySecond(int index, int lvl){
-  if (mFirst.single(lvl)) {
+  if (mFirst.single(lvl) || !mFirst.mPartial[lvl].empty()) {
     emptyFirst(index, lvl);
   } else {
     if (mSecond.single(lvl)) {
@@ -632,9 +635,13 @@ Data<T,D> CompressedStack<T,D>::pop(Problem<T,D> &problem){
   SPData<T,D> elt;
   if (mFirst.mExplicit.empty() && mSecond.mExplicit.empty()) {
     // Reconstruct the compressed stack with the first available signature
-      reconstruct(problem);
+    reconstruct(problem);
   }
   if (mFirst.mExplicit.empty()) {
+    if (mSecond.mExplicit.empty()) {
+      problem.println();
+//      exit(0);
+    }
     elt = mSecond.mExplicit.back();
     popSecond((*elt).mIndex);
   } else {
@@ -664,7 +671,11 @@ template <class T, class D>
 int CompressedStack<T,D>::topIndex(){
   if (mFirst.mExplicit.empty()) {
     if (mSecond.mExplicit.empty()) {
-      return mCompressed.back().mLast;
+      if (!mCompressed.empty()) {
+        return mCompressed.back().mLast;
+      } else {
+        return 0;
+      }
     }
     return (*(mSecond.mExplicit.back())).mIndex;
   }

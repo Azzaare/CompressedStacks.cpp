@@ -94,7 +94,7 @@ Problem<T,D>::Problem(std::string fileName)
 
   std::vector<std::string> parameters=readHeader();
 
-  int n,p,b;
+  int p,b,n=0;
   bool foundP=false;
   bool foundBuffer=false;
 
