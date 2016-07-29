@@ -214,7 +214,7 @@ void Problem<T,D>::run(){
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
-    if ( (line.front()== "-1") || (line.front()=="") ) {
+    if (line.front()=="") {
       break;
     }
      D data = readInput(line);
@@ -228,20 +228,17 @@ void Problem<T,D>::run(){
       pushAction(elt);
       push(elt);
     }
-
   }
 }
 
 template <class T, class D>
 void Problem<T,D>::run(int limit){
   int testIndex = mIndex;
-  while (mInput.good() && (mIndex < limit)) {
+  while (mInput.good() && mIndex < limit) {
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
-    if ( (line.front()== "-1") || (line.front()=="") ) {
-      break;
-    }
+
     D data = readInput(line);
     mIndex++; // Might have to move
 

@@ -368,7 +368,7 @@ void CompressedStack<T,D>::pushExplicit(SPData<T,D> elt){
       mFirst.mSign.mLast = index;
     } else {
       if ((mDepth == 1) && (!(mSecond.isExplicitEmpty()))) {
-        int distCompressed = mSpace*mSpace;
+        int distCompressed = mSpace;
         int startCompressed = headIndex - (headIndex - 1) % distCompressed;
         if (index - startCompressed < distCompressed) {
           mCompressed.back().mLast = headIndex;
@@ -414,7 +414,7 @@ void CompressedStack<T,D>::pushCompressed(SPData<T,D> elt, int lvl, int headInde
       }
     } else {
       if (lvl == 0 && (!mSecond.mPartial[0].empty())) {
-        int distCompressed = std::pow(mSpace, mDepth + 1);
+        int distCompressed = std::pow(mSpace, mDepth);
         int startCompressed = headIndex - (headIndex - 1) % distCompressed;
         int gamma = index - startCompressed;
         if (gamma < distCompressed && !mCompressed.empty()) {
@@ -458,11 +458,16 @@ void CompressedStack<T,D>::reconstruct(Problem<T,D> &problem){
 // Reconstruct an auxiliary stack based on the signature found above
 template <class T, class D>
 void CompressedStack<T,D>::reconstruct(Problem<T,D> &problem, const Signature<T,D> &sign, int lvl){
+  Signature<T,D> sign2 = sign;
+  std::cout << "Reconstruct on " << sign2.toString() << std::endl;
+
   std::streampos posReminder = problem.mInput.tellg();
   int indexReminder = problem.mIndex;
+  std::ios_base::iostate eofbitReminder = problem.mInput.rdstate();
 
   problem.mContext = std::make_shared<T>(*sign.mContext);
   problem.mIndex = sign.mFirst - 1;
+  problem.mInput.clear();
   problem.mInput.seekg(sign.mPosition);
 
   int auxSize = std::pow(mSpace, mDepth - lvl + 1);
@@ -490,13 +495,14 @@ void CompressedStack<T,D>::reconstruct(Problem<T,D> &problem, const Signature<T,
   problem.mIndex = indexReminder;
   problem.mInput.seekg(posReminder);
   problem.mContext = mContext;
+  problem.mInput.setstate(eofbitReminder);
 }
 
 template <class T, class D>
 void CompressedStack<T,D>::copyContent(CompressedStack<T,D> &stack) {
   stack.mFirst = mFirst;
   stack.mSecond = mSecond;
-  stack.mCompressed = mCompressed;
+  stack.mCompressed.pop_back();
   stack.mBuffer = mBuffer;
 }
 
@@ -570,6 +576,10 @@ template <class T, class D>
 void CompressedStack<T,D>::propagateFirst(int index, int lvl){
   for (int i = 0; i <= lvl; i++) {
     int temp = std::min(mFirst.mPartial[i].back().mLast, index);
+    if (temp < mFirst.mPartial[i].back().mFirst) {
+      std::cout << "Debug Prop1" << std::endl << toString() << std::endl;
+      exit(0);
+    }
     mFirst.mPartial[i].back().mLast = temp;
   }
 }
@@ -635,12 +645,15 @@ Data<T,D> CompressedStack<T,D>::pop(Problem<T,D> &problem){
   SPData<T,D> elt;
   if (mFirst.mExplicit.empty() && mSecond.mExplicit.empty()) {
     // Reconstruct the compressed stack with the first available signature
+    std::cout << "Begin reconstruct with mDepth = " << mDepth << std::endl;
     reconstruct(problem);
+    std::cout << "End reconstruct with mDepth = " << mDepth << std::endl;
   }
   if (mFirst.mExplicit.empty()) {
     if (mSecond.mExplicit.empty()) {
+      std::cout << "Empty after reconstruct" << std::endl;
       problem.println();
-//      exit(0);
+      exit(0);
     }
     elt = mSecond.mExplicit.back();
     popSecond((*elt).mIndex);

@@ -36,6 +36,7 @@ private:
   }
   void popAction(Data<int,int> elt){
     std::cout << elt.toString() << " <<<< Pop!" << std::endl;
+    println();
     setContext(getContext() - 1);
   }
   bool pushCondition(int data){
@@ -46,6 +47,7 @@ private:
   }
   void pushAction(Data<int,int> elt){
     std::cout << "Push >>>> " << elt.toString() << std::endl;
+    println();
   }
 };
 
@@ -94,13 +96,16 @@ private:
 void testProblem(std::string filePath)
 {
   // Test on normal stack
-  Instance testNS(filePath);
-  testNS.run();
-  testNS.println();
+//  Instance testNS(filePath);
+//  testNS.run();
+//  testNS.println();
 
   // Test on CompressedStack
+  std::cout << "Debug testProblem 1" << std::endl;
   Instance testCS(filePath);
+  std::cout << "Debug testProblem 2" << std::endl;
   testCS.run();
+  std::cout << "Debug testProblem 3" << std::endl;
   testCS.println();
 }
 
@@ -123,7 +128,7 @@ int main(int argc, char *argv[]) {
   {
     case 0:
           testProblem(filename);
-          testCompare(filename);
+//          testCompare(filename);
     break;
     case 1:
       ct.createTestInputFiles(0,filename,atoi(argv[3]),atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atof(argv[7]) );
