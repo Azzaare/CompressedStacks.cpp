@@ -14,57 +14,52 @@
   Friends   -> Problem
             <-
 ==============================================================================*/
-template <class T, class D> class Problem; // Required for the friendship
+template <class T, class D> class Problem;       // Required for the friendship
 template <class T, class D> class CompareStacks; // Required for the friendship
-class Comparison; // Required for the friendship
-template <class T, class D>
-class NormalStack: public Stack<T,D>{
-  friend class Problem<T,D>;
-  friend class CompareStacks<T,D>;
+class Comparison;                                // Required for the friendship
+template <class T, class D> class NormalStack : public Stack<T, D> {
+  friend class Problem<T, D>;
+  friend class CompareStacks<T, D>;
   friend class Comparison;
 
 public:
   // Constructors
-  NormalStack<T,D>();
+  NormalStack<T, D>();
 
   // IO
   std::string toString();
 
 private:
-  Explicit<T,D> mDatas; // vector of Data
+  Explicit<T, D> mDatas; // vector of Data
 
   // Stack common methods
-  Data<T,D> pop(Problem<T,D> &problem);
-  Data<T,D> pop();
-  void push(const Data<T,D> &data);
-  Data<T,D> top(int k);
-  Data<T,D> top();
-  bool isempty();
-
-  bool isSecondEmpty();
+  Data<T, D> pop(Problem<T, D> &problem);
+  Data<T, D> pop();
+  void push(const Data<T, D> &data);
+  Data<T, D> top(int k = 1);
+  bool empty(int lvl = -1, int component = 0);
 
   void compress();
-  void copyContent(CompressedStack<T,D> &stack) {}
+  void copyContent(CompressedStack<T, D> &stack) {}
 
   // Setters
-  void setContext(std::shared_ptr<T> context){}
-  void setPosition(std::streampos position){}
-  void setCompressed(Block<T,D> block){}
+  void setContext(std::shared_ptr<T> context) {}
+  void setPosition(std::streampos position) {}
+  void setCompressed(Block<T, D> block) {}
 
   // Getters
-  Block<T,D> getFirstPartial(int lvl);
-  Block<T,D> getCompressed();
-  ExplicitPointer<T,D> getFirstExplicit();
-  Signature<T,D> getFirstSign();
+  Block<T, D> getFirstPartial(int lvl);
+  Block<T, D> getCompressed();
+  ExplicitPointer<T, D> getFirstExplicit();
+  Signature<T, D> getFirstSign();
 };
 
 /*==============================================================================
   Constructors
 ==============================================================================*/
-template <class T, class D>
-NormalStack<T,D>::NormalStack(){
-  Explicit<T,D> datas;
-  datas = initExplicit<T,D>();
+template <class T, class D> NormalStack<T, D>::NormalStack() {
+  Explicit<T, D> datas;
+  datas = initExplicit<T, D>();
   mDatas = datas;
 }
 
@@ -72,78 +67,61 @@ NormalStack<T,D>::NormalStack(){
   Stack Functions: push, pop, top, isempty
 ==============================================================================*/
 template <class T, class D>
-bool NormalStack<T,D>::isempty(){
+bool NormalStack<T, D>::empty(int lvl, int component) {
   return mDatas.empty();
 }
 
 template <class T, class D>
-Data<T,D> NormalStack<T,D>::pop(Problem<T,D> &problem){
-  Data<T,D> data = mDatas.back();
+Data<T, D> NormalStack<T, D>::pop(Problem<T, D> &problem) {
+  Data<T, D> data = mDatas.back();
   mDatas.pop_back();
   return data;
 }
-template <class T, class D>
-Data<T,D> NormalStack<T,D>::pop(){
-  Data<T,D> data = mDatas.back();
+template <class T, class D> Data<T, D> NormalStack<T, D>::pop() {
+  Data<T, D> data = mDatas.back();
   mDatas.pop_back();
   return data;
 }
 
 template <class T, class D>
-void NormalStack<T,D>::push(const Data<T,D> &elt){
+void NormalStack<T, D>::push(const Data<T, D> &elt) {
   mDatas.push_back(elt);
 }
 
-template <class T, class D>
-Data<T,D> NormalStack<T,D>::top(int k){
+template <class T, class D> Data<T, D> NormalStack<T, D>::top(int k) {
   int index = mDatas.size() - k;
   return mDatas.at(index);
 }
 
-template <class T, class D>
-Data<T,D> NormalStack<T,D>::top(){
-  return top(1);
-}
-
-template <class T, class D>
-bool NormalStack<T,D>::isSecondEmpty(){
-  return isempty();
-}
-
-template <class T, class D>
-void NormalStack<T,D>::compress(){
-}
+template <class T, class D> void NormalStack<T, D>::compress() {}
 
 /*==============================================================================
   Getters
 ==============================================================================*/
 template <class T, class D>
-Block<T,D> NormalStack<T,D>::getFirstPartial(int lvl){
-  return initBlock<T,D>(0);
+Block<T, D> NormalStack<T, D>::getFirstPartial(int lvl) {
+  return initBlock<T, D>(0);
+}
+
+template <class T, class D> Block<T, D> NormalStack<T, D>::getCompressed() {
+  return initBlock<T, D>(0);
 }
 
 template <class T, class D>
-Block<T,D> NormalStack<T,D>::getCompressed(){
-  return initBlock<T,D>(0);
+ExplicitPointer<T, D> NormalStack<T, D>::getFirstExplicit() {
+  return initExplicitPointer<T, D>();
 }
 
-template <class T, class D>
-ExplicitPointer<T,D> NormalStack<T,D>::getFirstExplicit(){
-  return initExplicitPointer<T,D>();
-}
-
-template <class T, class D>
-Signature<T,D> NormalStack<T,D>::getFirstSign(){
-  Signature<T,D> sign(0, std::streampos (0), std::shared_ptr<T>(nullptr), Buffer<T,D>(0));
+template <class T, class D> Signature<T, D> NormalStack<T, D>::getFirstSign() {
+  Signature<T, D> sign(0, std::streampos(0), std::shared_ptr<T>(nullptr),
+                       Buffer<T, D>(0));
   return sign;
 }
 
 /*==============================================================================
   IO : toString
 ==============================================================================*/
-template <class T, class D>
-std::string NormalStack<T,D>::toString()
-{
+template <class T, class D> std::string NormalStack<T, D>::toString() {
   std::string str;
   str = "\tNormal Stack (Explicit Datas)\n\t\t";
   str += explicitToString(mDatas);
