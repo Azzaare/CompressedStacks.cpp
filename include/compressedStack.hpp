@@ -455,7 +455,6 @@ template <class T, class D> std::string CompressedStack<T, D>::toString() {
 // Function push that push the data in explicit and index in partial/compressed
 template <class T, class D>
 void CompressedStack<T, D>::push(const Data<T, D> &elt) {
-  int headIndex = getLast(mDepth);
   // update the buffer (if buffer size is bigger than 0)
   SPData<T, D> ptr_elt = std::make_shared<Data<T, D>>(elt);
   mBuffer.push(ptr_elt);
@@ -463,6 +462,7 @@ void CompressedStack<T, D>::push(const Data<T, D> &elt) {
   pushExplicit(ptr_elt);
   // update the compressed Blocks at each levels (including fully compressed)
   for (int lvl = mDepth - 1; lvl > 0; lvl--) {
+    int headIndex = getLast(lvl);
     pushCompressed(ptr_elt, lvl, headIndex);
   }
 }
@@ -525,8 +525,7 @@ void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
     int delta = index - startBlock;
     if (delta < distBlock) {
       // Distance with the current subblock
-      int headSubBlock = getLast(lvl);
-      int startSubBlock = headSubBlock - (headSubBlock - 1) % distSubBlock;
+      int startSubBlock = headIndex - (headIndex - 1) % distSubBlock;
       int eta = index - startSubBlock;
       // compress new element in the top of the current Block
       if (eta < distSubBlock) {
@@ -612,11 +611,12 @@ void CompressedStack<T, D>::compress(Block<T, D> block) {
 ==============================================================================*/
 template <class T, class D>
 void CompressedStack<T, D>::reconstruct(Problem<T, D> &problem) {
-  Signature<T, D> *sign;
+  Signature<T, D> *sign = new Signature<T,D>();
   int lvl;
   for (lvl = mDepth; lvl >= 0; lvl--) {
     if (lvl == 0) {
       sign = getSign(0);
+      break;
     } else {
       if (!empty(lvl, 1)) {
         sign = getSign(1, lvl);
@@ -627,7 +627,6 @@ void CompressedStack<T, D>::reconstruct(Problem<T, D> &problem) {
       }
     }
   }
-  std::cout << "Reconstruct on " << sign->toString() << std::endl;
 
   std::streampos posReminder = problem.mInput.tellg();
   int indexReminder = problem.mIndex;
@@ -638,7 +637,10 @@ void CompressedStack<T, D>::reconstruct(Problem<T, D> &problem) {
   problem.mInput.clear();
   problem.mInput.seekg(sign->mPosition);
 
-  int auxSize = std::pow(mSpace, mDepth - lvl + 1);
+  int auxSize = mSize;
+  if (lvl > 0) {
+    auxSize = std::pow(mSpace, mDepth - lvl + 1);
+  }
   std::shared_ptr<Stack<T, D>> auxStack =
       std::make_shared<CompressedStack<T, D>>(
           auxSize, mSpace, mBuffer.mSize, problem.mContext, sign->mPosition);
@@ -649,17 +651,16 @@ void CompressedStack<T, D>::reconstruct(Problem<T, D> &problem) {
   swap(problem.mStack, auxStack);
 
   if (lvl == 0) {
-    (*auxStack).copyContent(*this);
+    auxStack->copyContent(*this);
   } else {
     // Copy the First component of the reconstructed stack into the main stack
-    int auxDepth = int(ceil(log(auxSize) / log(mSpace) - .001)) - 1;
+    int auxDepth = int(ceil(log(auxSize) / log(mSpace) - .001) - 1);
     int delta = mDepth - auxDepth;
-    for (int i = 0; i < auxDepth - 1; i++) {
-      mSecond.mPartial[delta + i] = (*auxStack).getFirstPartial(i);
+    for (int i = 1; i < auxDepth; i++) {
+      mSecond.mPartial[delta + i - 1] = auxStack->getFirstPartial(i);
     }
-
-    mSecond.mExplicit = (*auxStack).getFirstExplicit();
-    mSecond.mSign = (*auxStack).getFirstSign();
+    mSecond.mExplicit = auxStack->getFirstExplicit();
+    mSecond.mSign = auxStack->getFirstSign();
   }
 
   problem.mIndex = indexReminder;
@@ -721,7 +722,7 @@ void CompressedStack<T, D>::popComponent(int index, int component) {
     setSign(component);
   } else {
     int newLast = getLast(mDepth);
-    setLast(newLast, component);
+    setLast(component, newLast);
   }
   if (mDepth > 1) {
     clear(index, mDepth - 1, component);
@@ -732,17 +733,18 @@ template <class T, class D>
 void CompressedStack<T, D>::clear(int index, int lvl, int component) {
   if (component == 2 && !empty(lvl, 1)) {
     clear(index, lvl, 1);
-  }
-  if (single(lvl, component)) {
-    pop_back(lvl, component);
-    if (lvl > 1) {
-      clear(index, lvl - 1, component);
-    } else if (empty(1, component)) {
-      setSign(component);
-    }
   } else {
-    int newLast = getLast(lvl + 1);
-    propagate(newLast, lvl, component);
+    if (single(lvl, component)) {
+      pop_back(lvl, component);
+      if (lvl > 1) {
+        clear(index, lvl - 1, component);
+      } else if (empty(1, component)) {
+        setSign(component);
+      }
+    } else {
+      int newLast = getLast(lvl + 1);
+      propagate(newLast, lvl, component);
+    }
   }
 }
 
