@@ -35,3 +35,12 @@ CMakeScripts
 Makefile
 cmake_install.cmake
 install_manifest.txt
+
+# Building directories + instances
+.gitignore
+.idea
+instances
+debug/*
+minsizerel/*
+release/*
+relwithdebinfo/*
