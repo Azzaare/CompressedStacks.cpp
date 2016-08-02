@@ -145,15 +145,5 @@ int main(int argc, char *argv[]) {
     exit(-1);
     break;
   }
-
-  // Intances generation, please comment when not in use
-  /*  createTestInput ct=createTestInput();
-    ct.createTestInputFiles(0,"/home/yago/code/CompressedStacks.cpp/instances/pushOnlyInput.csv",1000,3,
-    5, 100, 0.2 );
-    ct.createTestInputFiles(1,"/home/yago/code/CompressedStacks.cpp/instances/CTInput.csv",1000,3);
-    ct.createTestInputFiles(2,"/home/yago/code/CompressedStacks.cpp/instances/CHInput.csv",100,3,-1,
-    11);
-  */
-
   return 0;
 }

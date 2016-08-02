@@ -149,7 +149,7 @@ CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
 }
 
 /*==============================================================================
-   New Internals
+   Internals
     1) emptyExplicit (int lvl, int component) : test if the explicit part of
    component is empty. If component = 0, test on all component.
     2) back(int lvl, int component) : if lvl = 0 give the back of mCompressed,
@@ -165,8 +165,6 @@ component
     9) getSign(int component, int lvl) : get the last sign in component at lvl.
 If lvl = 0, look in the fully compressed part
 ==============================================================================*/
-// TODO: Move new internals once finished
-
 template <class T, class D>
 bool CompressedStack<T, D>::empty(int lvl, int component) {
   bool b = true;
@@ -450,8 +448,6 @@ template <class T, class D> std::string CompressedStack<T, D>::toString() {
     3) pushCompressed
     4) resetBlock
 ==============================================================================*/
-// TODO: reorganize the push functions
-
 // Function push that push the data in explicit and index in partial/compressed
 template <class T, class D>
 void CompressedStack<T, D>::push(const Data<T, D> &elt) {
