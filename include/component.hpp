@@ -38,9 +38,6 @@ private:
   std::string toString();
 
   // State
-  bool isempty();
-  bool isempty(int lvl);
-  bool isExplicitEmpty();
   bool single(int lvl);
 
   Levels<T, D> mPartial;
@@ -93,57 +90,35 @@ template <class T, class D> std::string Component<T, D>::toString() {
 /*==============================================================================
   Stack Functions: push, pop, top, topIndex, isempty, isExplicitEmpty
 ==============================================================================*/
-template <class T, class D> bool Component<T, D>::isempty() {
-  bool b = true;
-  for (int lvl = 0; lvl <= int(mPartial.size()); lvl++) {
-    b = b && isempty(lvl);
-  }
-  return b;
-}
-
-template <class T, class D> bool Component<T, D>::isempty(int lvl) {
-  bool b;
-  if (lvl >= int(mPartial.size())) {
-    b = isExplicitEmpty();
-  } else {
-    b = (mPartial[lvl]).empty();
-  }
-  return b;
-}
-
-template <class T, class D> bool Component<T, D>::isExplicitEmpty() {
-  return (mExplicit.empty());
-}
-
 template <class T, class D>
 void Component<T, D>::pushExplicit(SPData<T, D> elt) {
   mExplicit.push_back(elt);
 }
 template <class T, class D>
 void Component<T, D>::push(Signature<T, D> sign, int lvl) {
-  mPartial[lvl].push_back(sign);
+  mPartial[lvl - 1].push_back(sign);
 }
 
 template <class T, class D> Data<T, D> Component<T, D>::top() {
   return *(mExplicit.back());
 }
 template <class T, class D> Signature<T, D> Component<T, D>::top(int lvl) {
-  return mPartial[lvl].back();
+  return mPartial[lvl - 1].back();
 }
 
 template <class T, class D> int Component<T, D>::topIndex(int lvl) {
-  if (lvl == 0) {
-    return top().mIndex;
-  } else {
+  if (lvl > 0 && lvl <= (int)mPartial.size()) {
     return top(lvl).mLast;
+  } else {
+    return top().mIndex;
   }
 }
 
 template <class T, class D> bool Component<T, D>::single(int lvl) {
-  if (mPartial[lvl].empty()) {
+  if (mPartial[lvl - 1].empty()) {
     return false;
   }
-  return (mPartial[lvl].back().single());
+  return (mPartial[lvl - 1].back().single());
 }
 
 /*==============================================================================
