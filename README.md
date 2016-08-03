@@ -6,7 +6,7 @@ The CompressedStacks.cpp module/library implements a time-space trade-off struct
 
 ## Category of algorithms
 <p>
-This compressed stack structure works correctly as a normal stack for any problems that read input from a file. However, the running time is optimal when the input would be read sequentially with a classical stack structure. For his reason, the only function implemented in the Problem template to solve it (to do a run) is the one presented below in a simplified version.
+This compressed stack structure works correctly as a normal stack for any problems that read input from a file. However, the running time is optimal when the input would be read sequentially with a classical stack structure. For this reason, the only function implemented in the Problem template to solve it (to do a run) is the one presented below in a simplified version.
 </p>
 
 ```cpp
@@ -29,7 +29,7 @@ template <class T, class D> void Problem<T, D>::run() {
 ## Characterization of a problem
 <p>In the followwing examples, implementations of the Problem interface are given.</p>
 
-### General example : Instance<T,D>
+### General example : ```Instance<T,D>```
 
 ```cpp
 #include <string>
@@ -68,7 +68,7 @@ private:
 };
 ```
 
-### Example with T = int and D = int : Instance<int,int>
+### Example with ```T = int``` and ```D = int``` : ```Instance<int,int>```
 The context is initialized at 0. The data (in cvs format) is read as a pair of string such that the first string is the data  and the second is used to update the context. While the context is more than 0, the stack is poped and the context decreased by 1. If the data is more than 0 then it is pushed.
 ```cpp
 class Instance : public Problem<int, int> {
