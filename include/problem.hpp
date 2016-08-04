@@ -39,6 +39,7 @@ public:
   // Running the stack
   void run();
   void run(int limit);
+  void readPush(int iter = 1);
   void push(Data<T, D> elt);
   Data<T, D> pop();
   Data<T, D> top(int k);
@@ -202,7 +203,7 @@ std::vector<std::string> Problem<T, D>::readHeader() {
 }
 
 /*==============================================================================
-  Stack Functions: run, push, pop, top
+  Stack Functions: run, push, pop, top, readPush
 ==============================================================================*/
 template <class T, class D> void Problem<T, D>::run() {
   initStackIntern();
@@ -247,6 +248,19 @@ template <class T, class D> void Problem<T, D>::run(int limit) {
       push(elt);
     }
   }
+}
+
+template <class T, class D> void Problem<T, D>::readPush(int iter) {
+  for (int i = 0; i < iter; i++) {
+    std::streampos position = mInput.tellg();
+    (*mStack).setPosition(position);
+    std::vector<std::string> line = readLine();
+    D data = readInput(line);
+    mIndex++;
+    Data<T, D> elt(mIndex, data);
+    pushAction(elt);
+    push(elt);
+  }  
 }
 
 template <class T, class D> void Problem<T, D>::push(Data<T, D> elt) {
