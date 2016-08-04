@@ -11,7 +11,7 @@ This compressed stack structure works correctly as a normal stack for any proble
 
 ```cpp
 template <class T, class D> void Problem<T, D>::run() {
-  initStackIntern();
+  initStack();
   while (notEndOfFile()) {
     D data = readInput(line);
     while (notEmptystack() && popCondition(data)) {
