@@ -18,7 +18,7 @@ class createTestInput {
 public:
   createTestInput() {}
 
-  void createTestInputFiles(int code, std::string fileName, int n, int p,
+  void createTestInputFiles(int code, int stacktype, std::string fileName, int n, int p,
                             int min = 0, int max = 100, double prob = 0);
 };
 

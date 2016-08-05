@@ -5,6 +5,7 @@
 ==============================================================================*/
 #include "../include/compare.hpp"
 #include "../include/createTestInput.hpp"
+#include "../include/convexHull.hpp"
 #include "../include/problem.hpp"
 #include <memory>
 #include <string>
@@ -22,6 +23,9 @@ private:
   int readInput(std::vector<std::string> line) {
     int value = std::stoi(line[0]);
     setContext(std::stoi(line[1]));
+
+   // std::cout << "reading " << value << std::endl;
+
     return value;
   }
   std::shared_ptr<int> initStack() {
@@ -35,7 +39,7 @@ private:
     return false;
   }
   void popAction(Data<int, int> elt) {
-    std::cout << elt.toString() << " <<<< Pop!" << std::endl;
+   // std::cout << elt.toString() << " <<<< Pop!" << std::endl;
     setContext(getContext() - 1);
   }
   bool pushCondition(int data) {
@@ -45,7 +49,7 @@ private:
     return false;
   }
   void pushAction(Data<int, int> elt) {
-    std::cout << "Push >>>> " << elt.toString() << std::endl;
+   // std::cout << "Push >>>> " << elt.toString() << std::endl;
   }
 };
 
@@ -75,7 +79,7 @@ private:
     return false;
   }
   void popAction(Data<int, int> elt) {
-    std::cout << elt.toString() << " <<<< Pop!" << std::endl;
+  //  std::cout << elt.toString() << " <<<< Pop!" << std::endl;
     setContext(getContext() - 1);
   }
   bool pushCondition(int data) {
@@ -85,30 +89,45 @@ private:
     return false;
   }
   void pushAction(Data<int, int> elt) {
-    std::cout << "Push >>>> " << elt.toString() << std::endl;
+   // std::cout << "Push >>>> " << elt.toString() << std::endl;
   }
 };
 
 /*==============================================================================
   Test functions
 ==============================================================================*/
-void testProblem(std::string filePath) {
-  // Test on normal stack
-  //  Instance testNS(filePath);
-  //  testNS.run();
-  //  testNS.println();
+void testProblem(std::string filePath,int code2)
+{
 
-  // Test on CompressedStack
-  Instance testCS(filePath);
-  testCS.run();
-  testCS.println();
+  switch(code2) {
+    case 0: {
+      //std::cout << "I AM THERE " << code2 << std::endl;
+      Instance testNS(filePath);
+      // Test on normal stack
+      testNS.run();
+      //testNS.println();
+      break;
+    }
+    case 1: {
+      //std::cout << "I AM HERE " << code2 << std::endl;
+      convexHull ch(filePath);
+      ch.run();
+      ch.println();
+      break;
+    }
+    default:{
+      std::cout << "WRONG PROGRAM CODE";
+          exit(-1);
+          break;
+    }
+  }
 }
 
 void testCompare(std::string filePath) {
 
   Comparison comp(filePath);
   comp.runCompare();
-  comp.println();
+  //comp.println();
 }
 /*==============================================================================
   Main function
@@ -121,23 +140,25 @@ int main(int argc, char *argv[]) {
   createTestInput ct = createTestInput();
   std::string filename = argv[1];
 
+//  std::cout<<argv[1]<<" "<<argv[2]<<" "<<argv[3]<<std::endl;
+
   switch (atoi(argv[2])) {
   case 0:
-    // testProblem(filename);
-    testCompare(filename);
+     testProblem(filename,atoi(argv[3]));  // in this case the second code holds the type of problem veing run 0 pushonly/CT 1 CH
+    //testCompare(filename);
     break;
   case 1:
-    ct.createTestInputFiles(0, filename, atoi(argv[3]), atoi(argv[4]),
-                            atoi(argv[5]), atoi(argv[6]), atof(argv[7]));
+    ct.createTestInputFiles(0, atoi(argv[3]), filename, atoi(argv[4]), atoi(argv[5]),
+                            atoi(argv[6]), atoi(argv[7]), atof(argv[8]));
 
     break;
   case 2:
-    ct.createTestInputFiles(1, filename, atoi(argv[3]), atoi(argv[4]));
+    ct.createTestInputFiles(1,atoi(argv[3]), filename, atoi(argv[4]), atoi(argv[5]));
 
     break;
   case 3:
-    ct.createTestInputFiles(2, filename, atoi(argv[3]), atoi(argv[4]),
-                            atoi(argv[5]), atoi(argv[6]));
+    ct.createTestInputFiles(2, atoi(argv[3]),filename, atoi(argv[4]), atoi(argv[5]),
+                            atoi(argv[6]), atoi(argv[7]));
 
     break;
   default:

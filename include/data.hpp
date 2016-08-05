@@ -32,6 +32,8 @@ template <class T, class D> class Data {
 public:
   // IO
   std::string toString();
+  D getData();
+
 
 private:
   // Constructor
@@ -72,7 +74,7 @@ template <class T, class D> ExplicitPointer<T, D> initExplicitPointer() {
 ==============================================================================*/
 template <class T, class D> std::string Data<T, D>::toString() {
   std::string str;
-  str = std::to_string(mIndex) + "<-" + std::to_string(mData);
+  str = std::to_string(mIndex) + "<-" /*+ std::to_string(mData)*/;
   return str;
 }
 
@@ -102,5 +104,10 @@ std::string explicitPointerToString(ExplicitPointer<T, D> xpointer) {
   }
   return str;
 }
+
+template <class T, class D> D Data<T, D>::getData() {
+  return mData;
+}
+
 
 #endif /* DATA */

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void createTestInput::createTestInputFiles(int code, string fileName, int n,
+void createTestInput::createTestInputFiles(int code, int stacktype, string fileName, int n,
                                            int p, int min, int max,
                                            double prob) // code: 0 pushOnly
                                                         // test, 1: CT test ,
@@ -21,7 +21,11 @@ void createTestInput::createTestInputFiles(int code, string fileName, int n,
   // First write the problem parameters
   outfile << "HEADER " << endl;
   outfile << "n " << n << endl;
-  outfile << "p " << p << endl;
+  if(stacktype==1)//compressed stack
+  {
+    outfile << "p " << p << endl;
+    if(code==2)   outfile << "b " << "2" << endl; // buffer for the CH problem
+  }
   outfile << "/HEADER " << endl;
 
   switch (code) {
@@ -88,9 +92,6 @@ void createTestInput::createTestInputFiles(int code, string fileName, int n,
     break;
   }
   case 2: {
-    // now create the actual file
-    // pairs of elements (x,0 means push ) (0,1) means pop one (-1,-1) means pop
-    // the rest of the stack
 
     std::vector<Point2D> pointsToSort = vector<Point2D>();
 

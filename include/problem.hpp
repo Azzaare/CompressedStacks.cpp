@@ -50,12 +50,14 @@ public:
 
   // Getters
   T getContext();
+
   int getIndex();
 
   // IO
   std::string toString();
   void print();
   void println();
+  void readPush(int iter = 1);
 
 protected:
   void initStackIntern();
@@ -106,6 +108,7 @@ Problem<T, D>::Problem(std::string fileName) : mIndex(0), mContext(nullptr) {
     if (parameters[i].compare("b") == 0) {
       foundBuffer = true;
       b = stoi(parameters[i + 1]);
+      //std::cout<<"found buffer "<<b<<std::endl;
     }
   }
 
@@ -201,6 +204,28 @@ std::vector<std::string> Problem<T, D>::readHeader() {
   return line;
 }
 
+template <class T, class D> void Problem<T, D>::readPush(int iter) {
+  std::cout << " read push start " << std::endl;
+
+  for (int i = 0; i < iter; i++) {
+    std::streampos position = mInput.tellg();
+    (*mStack).setPosition(position);
+    std::vector<std::string> line = readLine();
+    D data = readInput(line);
+    mIndex++;
+    std::cout << " read push read "<<data << std::endl;
+
+    Data<T, D> elt(mIndex, data);
+    pushAction(elt);
+    push(elt);
+    std::cout << " pushed read "<<data << std::endl;
+
+  }
+  std::cout << " read push end " << std::endl;
+
+}
+
+
 /*==============================================================================
   Stack Functions: run, push, pop, top
 ==============================================================================*/
@@ -215,6 +240,7 @@ template <class T, class D> void Problem<T, D>::run() {
     }
     D data = readInput(line);
     mIndex++; // Might have to move
+    std::cout << " Starting loop for "<<data << std::endl;
     while ((!emptystack()) && (popCondition(data))) {
       Data<T, D> elt = pop();
       popAction(elt);
@@ -250,7 +276,11 @@ template <class T, class D> void Problem<T, D>::run(int limit) {
 }
 
 template <class T, class D> void Problem<T, D>::push(Data<T, D> elt) {
+  std::cout << " goinbg to push "<<elt.getData() << std::endl;
+
   mStack->push(elt);
+  std::cout << " pushed "<<elt.getData() << std::endl;
+
 }
 template <class T, class D> Data<T, D> Problem<T, D>::pop() {
   return mStack->pop(*this);

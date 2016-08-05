@@ -53,7 +53,7 @@ get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message("inc_dirs = ${inc_dirs}")
 
 # Executable
-add_executable(smartstack ${SOURCES})
+add_executable(smartstack ${SOURCES} src/convexHull.cpp)
 
 
 # Description of the different builds
