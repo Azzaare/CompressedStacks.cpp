@@ -33,6 +33,9 @@ public:
   // IO
   std::string toString();
 
+  // Getters
+  D getData();
+
 private:
   // Constructor
   Data<T, D>(int index, D data);
@@ -102,5 +105,13 @@ std::string explicitPointerToString(ExplicitPointer<T, D> xpointer) {
   }
   return str;
 }
+
+/*==============================================================================
+  Getters : getData
+==============================================================================*/
+template <class T, class D> D Data<T, D>::getData() {
+  return mData;
+}
+
 
 #endif /* DATA */
