@@ -23,9 +23,6 @@ private:
   int readInput(std::vector<std::string> line) {
     int value = std::stoi(line[0]);
     setContext(std::stoi(line[1]));
-
-   // std::cout << "reading " << value << std::endl;
-
     return value;
   }
   std::shared_ptr<int> initStack() {
@@ -96,12 +93,11 @@ private:
 /*==============================================================================
   Test functions
 ==============================================================================*/
-void testProblem(std::string filePath,int code2)
+void test(std::string filePath,int code2)
 {
 
   switch(code2) {
     case 0: {
-      //std::cout << "I AM THERE " << code2 << std::endl;
       Instance testNS(filePath);
       // Test on normal stack
       testNS.run();
@@ -109,10 +105,15 @@ void testProblem(std::string filePath,int code2)
       break;
     }
     case 1: {
-      //std::cout << "I AM HERE " << code2 << std::endl;
       convexHull ch(filePath);
       ch.run();
       ch.println();
+      break;
+    }
+    case 2: {
+      comparisonConvexHull chComp(filePath);
+      chComp.run();
+      chComp.println();
       break;
     }
     default:{
@@ -123,12 +124,6 @@ void testProblem(std::string filePath,int code2)
   }
 }
 
-void testCompare(std::string filePath) {
-
-  Comparison comp(filePath);
-  comp.runCompare();
-  //comp.println();
-}
 /*==============================================================================
   Main function
 ==============================================================================*/
@@ -144,8 +139,7 @@ int main(int argc, char *argv[]) {
 
   switch (atoi(argv[2])) {
   case 0:
-     testProblem(filename,atoi(argv[3]));  // in this case the second code holds the type of problem veing run 0 pushonly/CT 1 CH
-    //testCompare(filename);
+     test(filename,atoi(argv[3]));  // in this case the second code holds the type of problem being run 0 pushonly/CT 1 CH 2 CH(comp)
     break;
   case 1:
     ct.createTestInputFiles(0, atoi(argv[3]), filename, atoi(argv[4]), atoi(argv[5]),

@@ -39,7 +39,6 @@ public:
   // Running the stack
   void run();
   void run(int limit);
-  void readPush(int iter = 1);
   void push(Data<T, D> elt);
   Data<T, D> pop();
   Data<T, D> top(int k);
@@ -109,12 +108,8 @@ Problem<T, D>::Problem(std::string fileName) : mIndex(0), mContext(nullptr) {
     if (parameters[i].compare("b") == 0) {
       foundBuffer = true;
       b = stoi(parameters[i + 1]);
-      //std::cout<<"found buffer "<<b<<std::endl;
     }
   }
-
-  //  std::cout << "reading all shit n,p,b,foundP,foundBuffer "<<n<<" "<<p<<"
-  //  "<<b<<" "<<foundP<<" "<<foundBuffer<<std::endl;
 
   if (foundBuffer && !foundP)
     throw("Problem<T,D>::Problem(std::string fileName), wrong header format ");
@@ -130,31 +125,12 @@ Problem<T, D>::Problem(std::string fileName) : mIndex(0), mContext(nullptr) {
   }
 }
 
-/*template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size)
-: mIndex(0)
-, mContext(nullptr)
-, mStack(new NormalStack<T,D> (size)){
-  mInput.open(fileName, std::ifstream::in);
-}
-
-template <class T, class D>
-Problem<T,D>::Problem(std::string fileName, int size, int space, int buffer)
-: mIndex(0)
-, mContext(nullptr){
-  mInput.open(fileName, std::ifstream::in);
-  std::streampos position = mInput.tellg();
-  mStack = std::shared_ptr<Stack<T,D>> (new CompressedStack<T,D> (size, space,
-buffer, mContext));
-
-}*/
-
 /*==============================================================================
   IO : toString, print, println
 ==============================================================================*/
 template <class T, class D> std::string Problem<T, D>::toString() {
   std::string str;
-  str = "Problem with an actual index of " + std::to_string(mIndex);
+  str = "Instance with an actual index of " + std::to_string(mIndex);
   str += ", with a stack of type\n";
   str += mStack->toString();
   return str;
@@ -206,30 +182,23 @@ std::vector<std::string> Problem<T, D>::readHeader() {
 }
 
 template <class T, class D> void Problem<T, D>::readPush(int iter) {
-  std::cout << " read push start " << std::endl;
-
   for (int i = 0; i < iter; i++) {
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
     D data = readInput(line);
     mIndex++;
-    std::cout << " read push read "<<data << std::endl;
-
     Data<T, D> elt(mIndex, data);
     pushAction(elt);
     push(elt);
-    std::cout << " pushed read "<<data << std::endl;
-
   }
-  std::cout << " read push end " << std::endl;
-
 }
 
 
 /*==============================================================================
   Stack Functions: run, push, pop, top, readPush
 ==============================================================================*/
+// TODO: Make popLoop, pushStep and so on functions
 template <class T, class D> void Problem<T, D>::run() {
   initStackIntern();
   while (mInput.good()) {
@@ -240,8 +209,7 @@ template <class T, class D> void Problem<T, D>::run() {
       break;
     }
     D data = readInput(line);
-    mIndex++; // Might have to move
-    std::cout << " Starting loop for "<<data << std::endl;
+    mIndex++;
     while ((!emptystack()) && (popCondition(data))) {
       Data<T, D> elt = pop();
       popAction(elt);
@@ -262,7 +230,7 @@ template <class T, class D> void Problem<T, D>::run(int limit) {
     std::vector<std::string> line = readLine();
 
     D data = readInput(line);
-    mIndex++; // Might have to move
+    mIndex++;
 
     while ((!emptystack()) && (popCondition(data))) {
       Data<T, D> elt = pop();
@@ -276,25 +244,8 @@ template <class T, class D> void Problem<T, D>::run(int limit) {
   }
 }
 
-template <class T, class D> void Problem<T, D>::readPush(int iter) {
-  for (int i = 0; i < iter; i++) {
-    std::streampos position = mInput.tellg();
-    (*mStack).setPosition(position);
-    std::vector<std::string> line = readLine();
-    D data = readInput(line);
-    mIndex++;
-    Data<T, D> elt(mIndex, data);
-    pushAction(elt);
-    push(elt);
-  }  
-}
-
 template <class T, class D> void Problem<T, D>::push(Data<T, D> elt) {
-  std::cout << " goinbg to push "<<elt.getData() << std::endl;
-
   mStack->push(elt);
-  std::cout << " pushed "<<elt.getData() << std::endl;
-
 }
 template <class T, class D> Data<T, D> Problem<T, D>::pop() {
   return mStack->pop(*this);

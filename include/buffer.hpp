@@ -69,7 +69,7 @@ template <class T, class D> Buffer<T, D>::Buffer(int size) {
   Getters
 ==============================================================================*/
 template <class T, class D> Data<T, D> Buffer<T, D>::top(int k) {
-  if (k < mSize) {
+  if (k <= mSize) {
     int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
     return *(mExplicit[index]);
   }
@@ -77,7 +77,7 @@ template <class T, class D> Data<T, D> Buffer<T, D>::top(int k) {
 }
 
 template <class T, class D> SPData<T, D> Buffer<T, D>::topPointer(int k) {
-  if (k < mSize) {
+  if (k <= mSize) {
     int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
     return mExplicit[index];
   }
@@ -101,7 +101,11 @@ void Buffer<T, D>::setData(SPData<T, D> elt, int id) {
 ==============================================================================*/
 template <class T, class D> void Buffer<T, D>::push(SPData<T, D> elt) {
   if (mSize > 0) {
-    setData(elt, mStart + 1);
+    if ((int) mExplicit.size() < mSize) {
+      mExplicit.push_back(elt);
+    } else {
+      setData(elt, mStart + 1);
+    }
   }
 }
 

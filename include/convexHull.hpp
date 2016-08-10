@@ -4,47 +4,51 @@
 
 
 /*==============================================================================
+  Empty type for the context (empty for the Convex Hull problem)
+==============================================================================*/
+class emptyContext{};
+
+/*==============================================================================
   Instantiation of a problem
 ==============================================================================*/
-class convexHull : public Problem<std::nullptr_t, Point2D> {
+class convexHull : public Problem<emptyContext, Point2D> {
 public:
-    convexHull(std::string filePath) : Problem<std::nullptr_t, Point2D>(filePath) {}
+    convexHull(std::string filePath) : Problem<emptyContext, Point2D>(filePath) {}
 
 private:
     // Functions to run the stack
     Point2D readInput(std::vector<std::string> line);
 
-    std::shared_ptr<std::nullptr_t> initStack();
+    std::shared_ptr<emptyContext> initStack();
 
     bool popCondition(Point2D data);
 
-    void popAction(Data<std::nullptr_t, Point2D> elt);
+    void popAction(Data<emptyContext, Point2D> elt);
 
     bool pushCondition(Point2D data);
 
-    void pushAction(Data<std::nullptr_t, Point2D> elt);
+    void pushAction(Data<emptyContext, Point2D> elt);
 };
 
 /*==============================================================================
   Instantiation of a comparison
 ==============================================================================*/
 
-class comparisonConvexHull : public CompareStacks<int, int> {
+class comparisonConvexHull : public CompareStacks<emptyContext, Point2D> {
 public:
-    comparisonConvexHull(std::string filePath) : CompareStacks<int, int>(filePath) {}
+    comparisonConvexHull(std::string filePath) : CompareStacks<emptyContext, Point2D>(filePath) {}
 
 private:
     // Functions to run the stack
-    int readInput(std::vector<std::string> line);
+    Point2D readInput(std::vector<std::string> line);
 
-    std::shared_ptr<int> initStack();
+    std::shared_ptr<emptyContext> initStack();
 
-    bool popCondition(int data);
+    bool popCondition(Point2D data);
 
-    void popAction(Data<int, int> elt);
+    void popAction(Data<emptyContext, Point2D> elt);
 
-    bool pushCondition(int data);
+    bool pushCondition(Point2D data);
 
-    void pushAction(Data<int, int> elt);
-
+    void pushAction(Data<emptyContext, Point2D> elt);
 };

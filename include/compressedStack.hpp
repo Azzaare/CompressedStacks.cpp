@@ -405,7 +405,7 @@ SPData<T, D> CompressedStack<T, D>::getExplicitData(int k) {
   if (k <= (int)mFirst.mExplicit.size()) {
     return mFirst.mExplicit[k - 1];
   } else {
-    return mFirst.mSign.mBuffer.topPointer(k - 1 - mFirst.mExplicit.size());
+    return mFirst.mSign.mBuffer.topPointer(k - mFirst.mExplicit.size());
   }
 }
 
@@ -451,16 +451,12 @@ template <class T, class D> std::string CompressedStack<T, D>::toString() {
 // Function push that push the data in explicit and index in partial/compressed
 template <class T, class D>
 void CompressedStack<T, D>::push(const Data<T, D> &elt) {
-  std::cout << " inside comp stack goinbg to push "<< std::endl;
   // update the buffer (if buffer size is bigger than 0)
   SPData<T, D> ptr_elt = std::make_shared<Data<T, D>>(elt);
-  std::cout << " inside comp stack made buffer "<< std::endl;
   mBuffer.push(ptr_elt);
   // update the explicit Blocks, with possibly shifting first to second
-  std::cout << " inside comp stack going to push explicit "<< std::endl;
   pushExplicit(ptr_elt);
   // update the compressed Blocks at each levels (including fully compressed)
-  std::cout << " inside comp stack pushed explicit "<< std::endl;
   for (int lvl = mDepth - 1; lvl > 0; lvl--) {
     int headIndex = getLast(lvl);
     pushCompressed(ptr_elt, lvl, headIndex);
@@ -476,7 +472,10 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
   // If the explicit datas of component 1 are empty we push
   if (empty(mDepth, 1)) {
     mFirst.pushExplicit(eltPtr);
-    std::shared_ptr<T> context = std::make_shared<T>(*mContext);
+    std::shared_ptr<T> context;
+    if (mContext != nullptr) {
+      context = std::make_shared<T>(*mContext);
+    }
     Signature<T, D> sign(index, mPosition, context, mBuffer);
     mFirst.mSign = sign;
   }
