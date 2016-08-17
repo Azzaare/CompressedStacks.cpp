@@ -59,6 +59,7 @@ private:
   Block<T, D> getCompressed();
   ExplicitPointer<T, D> getFirstExplicit();
   Signature<T, D> getFirstSign();
+  int getBufferSize ();
 
   // IO
   std::string toString();
@@ -421,6 +422,11 @@ Signature<T, D> CompressedStack<T, D>::getBottomSign() {
   } else {
     return mSecond.mPartial[0].front();
   }
+}
+
+template <class T, class D>
+int CompressedStack<T, D>::getBufferSize() {
+  return mBuffer.mSize;
 }
 
 /*==============================================================================

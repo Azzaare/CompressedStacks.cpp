@@ -37,8 +37,8 @@ private:
   SPData<T, D> topPointer(int k);
 
   // Setters
-  void setStart();
-  void setData(SPData<T, D> elt, int index);
+  void setStart(int k = 1);
+  void setData(SPData<T, D> elt, int id = 1);
 
   // Push and Pop
   void push(SPData<T, D> elt);
@@ -87,8 +87,8 @@ template <class T, class D> SPData<T, D> Buffer<T, D>::topPointer(int k) {
 /*==============================================================================
   Setters
 ==============================================================================*/
-template <class T, class D> void Buffer<T, D>::setStart() {
-  mStart = (mStart + 1) % mSize;
+template <class T, class D> void Buffer<T, D>::setStart(int k) {
+  mStart = (mStart + k) % mSize;
 }
 template <class T, class D>
 void Buffer<T, D>::setData(SPData<T, D> elt, int id) {
@@ -104,14 +104,15 @@ template <class T, class D> void Buffer<T, D>::push(SPData<T, D> elt) {
     if ((int) mExplicit.size() < mSize) {
       mExplicit.push_back(elt);
     } else {
-      setData(elt, mStart + 1);
+      setData(elt);
+      setStart();
     }
   }
 }
 
 template <class T, class D> void Buffer<T, D>::pop(SPData<T, D> elt) {
-  setStart();
-  setData(elt, mSize);
+  setStart(mSize - 1);
+  setData(elt);
 }
 
 /*==============================================================================
@@ -120,9 +121,21 @@ template <class T, class D> void Buffer<T, D>::pop(SPData<T, D> elt) {
 template <class T, class D> std::string Buffer<T, D>::toString() {
   std::string str = "";
   if (mSize > 0) {
-    str = "\t\tBuffer size is " + std::to_string(mSize);
+    str = "\n\t\tBuffer size is " + std::to_string(mSize);
     str += " and start at index " + std::to_string(mStart) + "\n";
-    str += "\t\t\t" + explicitPointerToString(mExplicit);
+    str += "\t\t\t";
+    std::string aux = "";
+    for (int i = mStart; i < mSize; i++) {
+      if (aux == "") {
+        aux += "{" + mExplicit[i]->toString();
+      } else {
+      aux += "," + mExplicit[i]->toString();
+      }
+    }
+    for (int i = 0; i < mStart; i++) {
+      aux += "," + mExplicit[i]->toString();
+    }
+    str += aux + "}";
   }
   return str;
 }

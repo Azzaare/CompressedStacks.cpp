@@ -112,7 +112,7 @@ void test(std::string filePath,int code2)
     }
     case 2: {
       comparisonConvexHull chComp(filePath);
-      chComp.run();
+      chComp.runCompare();
       chComp.println();
       break;
     }

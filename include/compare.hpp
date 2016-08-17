@@ -29,6 +29,9 @@ public:
     std::cout << str << std::endl;
   }
 
+  // Redefinition
+  void readPush(int iter = 1);
+
 private:
   // Stack Functions: defined by user
   virtual D readInput(std::vector<std::string> line) = 0;
@@ -67,8 +70,7 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
       std::streampos position = Problem<T, D>::mInput.tellg();
       (*Problem<T, D>::mStack).setPosition(position);
       for (int i = 1; i <= buffer; i++) {
-        bool bIndex =
-            Problem<T, D>::top(i).mIndex == mNormalStack->top(i).mIndex;
+        bool bIndex = Problem<T, D>::top(i).mIndex == mNormalStack->top(i).mIndex;
         bool bData = Problem<T, D>::top(i).mData == mNormalStack->top(i).mData;
         if (!bIndex || !bData) {
           Problem<T, D>::println();
@@ -81,7 +83,7 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
         break;
       }
       D data = readInput(line);
-      Problem<T, D>::mIndex++; // Might have to move
+      Problem<T, D>::mIndex++;
       if ((*Problem<T, D>::mStack).empty() != mNormalStack->empty()) {
         (*Problem<T, D>::mStack).empty();
         Problem<T, D>::println();
@@ -97,8 +99,7 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
         bool bData = elt.mData == eltNormal.mData;
         if (!bIndex || !bData) {
           Problem<T, D>::println();
-          std::cout << *Problem<T, D>::mContext << std::endl;
-          ;
+          //std::cout << *Problem<T, D>::mContext << std::endl;
           std::cout << mNormalStack->toString() << std::endl;
           throw "The two elements popped are different";
         }
@@ -109,9 +110,34 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
         Problem<T, D>::push(elt);
         mNormalStack->push(elt);
       }
+      if (Problem<T, D>::mStack->getBufferSize() > 0) {
+        std::cout << "Is it working" << std::endl;
+        for (int k = 1; k <= Problem<T, D>::mStack->getBufferSize(); k++) {
+          if (Problem<T, D>::mStack->top(k).mIndex == mNormalStack->top(k).mIndex) {
+            Problem<T, D>::println();
+            //std::cout << *Problem<T, D>::mContext << std::endl;
+            std::cout << mNormalStack->toString() << std::endl;
+            throw "The two elements at the k = $(k) position are different";
+          }
+        }
+      }
     }
   } catch (char const *e) {
     std::cout << e << std::endl;
+  }
+}
+
+template <class T, class D> void CompareStacks<T, D>::readPush(int iter) {
+  for (int i = 0; i < iter; i++) {
+    std::streampos position = Problem<T, D>::mInput.tellg();
+    Problem<T, D>::mStack->setPosition(position);
+    std::vector<std::string> line = Problem<T, D>::readLine();
+    D data = readInput(line);
+    Problem<T, D>::mIndex++;
+    Data<T, D> elt(Problem<T, D>::mIndex, data);
+    pushAction(elt);
+    Problem<T, D>::push(elt);
+    mNormalStack->push(elt);
   }
 }
 

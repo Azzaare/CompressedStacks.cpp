@@ -52,6 +52,7 @@ private:
   Block<T, D> getCompressed();
   ExplicitPointer<T, D> getFirstExplicit();
   Signature<T, D> getFirstSign();
+  int getBufferSize ();
 };
 
 /*==============================================================================
@@ -110,6 +111,11 @@ template <class T, class D> Block<T, D> NormalStack<T, D>::getCompressed() {
 template <class T, class D>
 ExplicitPointer<T, D> NormalStack<T, D>::getFirstExplicit() {
   return initExplicitPointer<T, D>();
+}
+
+template <class T, class D>
+int NormalStack<T, D>::getBufferSize() {
+  return 0;
 }
 
 template <class T, class D> Signature<T, D> NormalStack<T, D>::getFirstSign() {

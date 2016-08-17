@@ -36,6 +36,7 @@ public:
   virtual Block<T, D> getCompressed() = 0;
   virtual ExplicitPointer<T, D> getFirstExplicit() = 0;
   virtual Signature<T, D> getFirstSign() = 0;
+  virtual int getBufferSize() = 0;
 
   // Setters
   virtual void setContext(std::shared_ptr<T> context) = 0;

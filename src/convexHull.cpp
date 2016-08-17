@@ -38,7 +38,7 @@ bool convexHull::popCondition(Point2D last) {
     minus1=top(1).getData();
     minus2=top(2).getData();
 
-    std::cout << last << " <<<< pop condition read two befoer "<<minus1<<minus2 << std::endl;
+    std::cout << last << " <<<< pop condition read two before "<<minus1<<minus2 << std::endl;
 
 
     if (Point2D::orientation(minus2,minus1,last)==2 ) {
@@ -83,6 +83,8 @@ std::shared_ptr<emptyContext> comparisonConvexHull::initStack() {
     //first, read and push two values
     readPush(2);
 
+    printCompare();
+
     std::cout<<"done reading two values "<<std::endl;
 
     // then initialize context (which in this case is NULL everything
@@ -99,7 +101,7 @@ bool comparisonConvexHull::popCondition(Point2D last) {
     minus1=top(1).getData();
     minus2=top(2).getData();
 
-    std::cout << last << " <<<< pop condition read two befoer "<<minus1<<minus2 << std::endl;
+    std::cout << last << " <<<< pop condition read two before "<<minus1<<minus2 << std::endl;
 
 
     if (Point2D::orientation(minus2,minus1,last)==2 ) {
