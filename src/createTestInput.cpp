@@ -75,13 +75,14 @@ void createTestInput::createTestInputFiles(int code, int stacktype, string fileN
 
       while (biggest > 50 && !biggerMultiple) {
         if (i % biggest == 0) {
-          numPops = biggest * 0.45;
+          numPops = biggest * 0.25;
           biggerMultiple = true;
           number = 0;
         } else {
           biggest = biggest / 10;
         }
       }
+
       if (i % 50 == 0 && !biggerMultiple) {
         number = 0;
         numPops = 25;
