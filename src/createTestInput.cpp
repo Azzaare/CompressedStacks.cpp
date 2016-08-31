@@ -68,18 +68,25 @@ void createTestInput::createTestInputFiles(int code, int stacktype, string fileN
       int number = i;
 
       int biggest = 50;
+      int power=1;
 
       while (biggest * 10 <= i) {
         biggest = biggest * 10;
+        power++;
       }
 
       while (biggest > 50 && !biggerMultiple) {
         if (i % biggest == 0) {
-          numPops = biggest * 0.25;
+          numPops = pow(5,power+1);
           biggerMultiple = true;
           number = 0;
+          //cerr<<"HEY!!!!!!!!!!!!!!!!!!! setting  "<<numPops<<" pops for i = "<<i<<" biggest is "<<biggest<<"and power is "<<power<<endl;
+
         } else {
+          //cerr<<"REDUCING POWER from  "<<power<<" for i = "<<i<<" biggest is "<<biggest<<endl;
+
           biggest = biggest / 10;
+          power--;
         }
       }
 
