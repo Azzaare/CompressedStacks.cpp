@@ -36,8 +36,8 @@ private:
     return false;
   }
   void popAction(Data<int, int> elt) {
-   // std::cout << elt.toString() << " <<<< Pop!" << std::endl;
     setContext(getContext() - 1);
+  //  if(getContext()==0) std::cerr << elt.toString() << " <<<< Pop!" << std::endl;
   }
   bool pushCondition(int data) {
     if (data > 0) {

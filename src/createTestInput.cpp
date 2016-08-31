@@ -75,24 +75,22 @@ void createTestInput::createTestInputFiles(int code, int stacktype, string fileN
         power++;
       }
 
-      while (biggest > 50 && !biggerMultiple) {
+      while (biggest > 50 ) {
         if (i % biggest == 0) {
-          numPops = pow(5,power+1);
+          numPops = numPops + pow(5,power+1);
           biggerMultiple = true;
           number = 0;
-          //cerr<<"HEY!!!!!!!!!!!!!!!!!!! setting  "<<numPops<<" pops for i = "<<i<<" biggest is "<<biggest<<"and power is "<<power<<endl;
+         // cerr<<"HEY!!!!!!!!!!!!!!!!!!! setting  "<<numPops<<" pops for i = "<<i<<" biggest is "<<biggest<<" and power is "<<power<<endl;
 
-        } else {
-          //cerr<<"REDUCING POWER from  "<<power<<" for i = "<<i<<" biggest is "<<biggest<<endl;
-
-          biggest = biggest / 10;
-          power--;
         }
+        biggest = biggest / 10;
+        power--;
+
       }
 
-      if (i % 50 == 0 && !biggerMultiple) {
+      if (i % 50 == 0 /*&& !biggerMultiple*/) {
         number = 0;
-        numPops = 25;
+        numPops = numPops + 25;
       }
       outfile << number << "," << numPops << endl;
       i++;
