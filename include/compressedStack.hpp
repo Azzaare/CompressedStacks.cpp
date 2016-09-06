@@ -74,7 +74,7 @@ private:
   void setSign(int component, Signature<T, D> sign = Signature<T, D>());
   void setLast(int component, int index, int lvl = -1);
   int getLast(int lvl, int component = 0);
-  Signature<T, D> *getSign(int component, int lvl = 0);
+  std::shared_ptr<Signature<T, D>> getSign(int component, int lvl = 0);
 
   /* Push related */
   void pushExplicit(SPData<T, D> elt);
@@ -324,16 +324,14 @@ int CompressedStack<T, D>::getLast(int lvl, int component) {
 }
 
 template <class T, class D>
-Signature<T, D> *CompressedStack<T, D>::getSign(int component, int lvl) {
-  Signature<T, D> *sign;
+std::shared_ptr<Signature<T, D>> CompressedStack<T, D>::getSign(int component, int lvl) {
   if (lvl == 0) {
-    sign = &mCompressed.back();
+    return std::make_shared<Signature<T, D>>(mCompressed.back());
   } else if (component == 1) {
-    sign = &mFirst.mPartial[lvl - 1].back();
+    return std::make_shared<Signature<T, D>>(mFirst.mPartial[lvl - 1].back());
   } else {
-    sign = &mSecond.mPartial[lvl - 1].back();
+    return std::make_shared<Signature<T, D>>(mSecond.mPartial[lvl - 1].back());
   }
-  return sign;
 }
 
 /*==============================================================================
@@ -616,7 +614,7 @@ void CompressedStack<T, D>::compress(Block<T, D> block) {
 ==============================================================================*/
 template <class T, class D>
 void CompressedStack<T, D>::reconstruct(Problem<T, D> &problem) {
-  Signature<T, D> *sign = new Signature<T,D>();
+  std::shared_ptr<Signature<T, D>> sign;
   int lvl;
   for (lvl = mDepth; lvl >= 0; lvl--) {
     if (lvl == 0) {

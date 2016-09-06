@@ -98,9 +98,9 @@ void test(std::string filePath,int code2)
 
   switch(code2) {
     case 0: {
-      Instance testNS(filePath);
+      Instance stack(filePath);
       // Test on normal stack
-      testNS.run();
+      stack.run();
       //testNS.println();
       break;
     }

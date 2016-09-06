@@ -223,7 +223,7 @@ template <class T, class D> void Problem<T, D>::run() {
 }
 
 template <class T, class D> void Problem<T, D>::run(int limit) {
-  int testIndex = mIndex;
+  // int testIndex = mIndex;
   while (mInput.good() && mIndex < limit) {
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
