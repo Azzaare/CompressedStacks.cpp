@@ -1,0 +1,26 @@
+var class_problem =
+[
+    [ "Problem", "class_problem.html#a12573e7fe2b81d50f5c1cdeef3c40aab", null ],
+    [ "~Problem", "class_problem.html#ae9dcafd6638273e32a12018894289838", null ],
+    [ "emptystack", "class_problem.html#a8393e40932145b955883cf422091d964", null ],
+    [ "getContext", "class_problem.html#ad863a03e7d0b6f1e1fa8fd1eef9d5b74", null ],
+    [ "getIndex", "class_problem.html#a09511acd5bec03c7a75bf58d19645a98", null ],
+    [ "initStackIntern", "class_problem.html#a784152fad7b879e224304e666194bc5f", null ],
+    [ "pop", "class_problem.html#acbf710851a036b2602d32190cdf2ba89", null ],
+    [ "print", "class_problem.html#a3bbf44cb316faa44afdc351ebdac6a4c", null ],
+    [ "println", "class_problem.html#acb9ad1df46781fd0ccfd7aae4c0cbbfa", null ],
+    [ "push", "class_problem.html#a0646d0ab10243ede1bfd8d20c87ebb21", null ],
+    [ "readHeader", "class_problem.html#ab8ccb9161ac36c786522b572a2d70e30", null ],
+    [ "readLine", "class_problem.html#a8b50749a706399126db45715cdfcd9d9", null ],
+    [ "readPush", "class_problem.html#a7fcfe23395fd9ff931f502a2d7fc7499", null ],
+    [ "run", "class_problem.html#a8ce5fef9d031d039f1108e2c8e37dc0c", null ],
+    [ "run", "class_problem.html#ac005fa3508b7919a0dfe8a27674e1e88", null ],
+    [ "setContext", "class_problem.html#ad9e49e1c165929877f159f51ce7bd040", null ],
+    [ "setIndex", "class_problem.html#a96a72225d5c9a7897551d08646b9c2ae", null ],
+    [ "top", "class_problem.html#aad2184ad1ce770cce1d9008435bb4055", null ],
+    [ "toString", "class_problem.html#a0557ccf99dec38574270a6385ece70d0", null ],
+    [ "CompareStacks< T, D >", "class_problem.html#aad0b6ceccdc6599793a7e2e5798b59ad", null ],
+    [ "Comparison", "class_problem.html#aef3aa9a02bb7e4bcae2ebd8975a9206d", null ],
+    [ "CompressedStack< T, D >", "class_problem.html#a0bc563c952d4b72ba232305ab7717bd9", null ],
+    [ "mIndex", "class_problem.html#a3a5c4dbc0ecdff910fe3faf8d78245c6", null ]
+];

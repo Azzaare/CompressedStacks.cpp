@@ -1,0 +1,106 @@
+\hypertarget{class_problem}{}\section{Problem$<$ T, D $>$ Class Template Reference}
+\label{class_problem}\index{Problem$<$ T, D $>$@{Problem$<$ T, D $>$}}
+
+
+Inheritance diagram for Problem$<$ T, D $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_problem__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Problem$<$ T, D $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=174pt]{class_problem__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Problem} (std\+::string file\+Name)\hypertarget{class_problem_a12573e7fe2b81d50f5c1cdeef3c40aab}{}\label{class_problem_a12573e7fe2b81d50f5c1cdeef3c40aab}
+
+\item 
+void {\bfseries run} ()\hypertarget{class_problem_a8ce5fef9d031d039f1108e2c8e37dc0c}{}\label{class_problem_a8ce5fef9d031d039f1108e2c8e37dc0c}
+
+\item 
+void {\bfseries run} (int limit)\hypertarget{class_problem_ac005fa3508b7919a0dfe8a27674e1e88}{}\label{class_problem_ac005fa3508b7919a0dfe8a27674e1e88}
+
+\item 
+void {\bfseries push} (\hyperlink{class_data}{Data}$<$ T, D $>$ elt)\hypertarget{class_problem_a0646d0ab10243ede1bfd8d20c87ebb21}{}\label{class_problem_a0646d0ab10243ede1bfd8d20c87ebb21}
+
+\item 
+\hyperlink{class_data}{Data}$<$ T, D $>$ {\bfseries pop} ()\hypertarget{class_problem_acbf710851a036b2602d32190cdf2ba89}{}\label{class_problem_acbf710851a036b2602d32190cdf2ba89}
+
+\item 
+\hyperlink{class_data}{Data}$<$ T, D $>$ {\bfseries top} (int k)\hypertarget{class_problem_aad2184ad1ce770cce1d9008435bb4055}{}\label{class_problem_aad2184ad1ce770cce1d9008435bb4055}
+
+\item 
+bool {\bfseries emptystack} ()\hypertarget{class_problem_a8393e40932145b955883cf422091d964}{}\label{class_problem_a8393e40932145b955883cf422091d964}
+
+\item 
+void {\bfseries set\+Context} (const T \&context)\hypertarget{class_problem_ad9e49e1c165929877f159f51ce7bd040}{}\label{class_problem_ad9e49e1c165929877f159f51ce7bd040}
+
+\item 
+void {\bfseries set\+Index} (int index)\hypertarget{class_problem_a96a72225d5c9a7897551d08646b9c2ae}{}\label{class_problem_a96a72225d5c9a7897551d08646b9c2ae}
+
+\item 
+T {\bfseries get\+Context} ()\hypertarget{class_problem_ad863a03e7d0b6f1e1fa8fd1eef9d5b74}{}\label{class_problem_ad863a03e7d0b6f1e1fa8fd1eef9d5b74}
+
+\item 
+int {\bfseries get\+Index} ()\hypertarget{class_problem_a09511acd5bec03c7a75bf58d19645a98}{}\label{class_problem_a09511acd5bec03c7a75bf58d19645a98}
+
+\item 
+std\+::string {\bfseries to\+String} ()\hypertarget{class_problem_a0557ccf99dec38574270a6385ece70d0}{}\label{class_problem_a0557ccf99dec38574270a6385ece70d0}
+
+\item 
+void {\bfseries print} ()\hypertarget{class_problem_a3bbf44cb316faa44afdc351ebdac6a4c}{}\label{class_problem_a3bbf44cb316faa44afdc351ebdac6a4c}
+
+\item 
+void {\bfseries println} ()\hypertarget{class_problem_acb9ad1df46781fd0ccfd7aae4c0cbbfa}{}\label{class_problem_acb9ad1df46781fd0ccfd7aae4c0cbbfa}
+
+\item 
+void {\bfseries read\+Push} (int iter=1)\hypertarget{class_problem_a7fcfe23395fd9ff931f502a2d7fc7499}{}\label{class_problem_a7fcfe23395fd9ff931f502a2d7fc7499}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries init\+Stack\+Intern} ()\hypertarget{class_problem_a784152fad7b879e224304e666194bc5f}{}\label{class_problem_a784152fad7b879e224304e666194bc5f}
+
+\item 
+std\+::vector$<$ std\+::string $>$ {\bfseries read\+Line} ()\hypertarget{class_problem_a8b50749a706399126db45715cdfcd9d9}{}\label{class_problem_a8b50749a706399126db45715cdfcd9d9}
+
+\item 
+std\+::vector$<$ std\+::string $>$ {\bfseries read\+Header} ()\hypertarget{class_problem_ab8ccb9161ac36c786522b572a2d70e30}{}\label{class_problem_ab8ccb9161ac36c786522b572a2d70e30}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int {\bfseries m\+Index}\hypertarget{class_problem_a3a5c4dbc0ecdff910fe3faf8d78245c6}{}\label{class_problem_a3a5c4dbc0ecdff910fe3faf8d78245c6}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries Compressed\+Stack$<$ T, D $>$}\hypertarget{class_problem_a0bc563c952d4b72ba232305ab7717bd9}{}\label{class_problem_a0bc563c952d4b72ba232305ab7717bd9}
+
+\item 
+class {\bfseries Compare\+Stacks$<$ T, D $>$}\hypertarget{class_problem_aad0b6ceccdc6599793a7e2e5798b59ad}{}\label{class_problem_aad0b6ceccdc6599793a7e2e5798b59ad}
+
+\item 
+class {\bfseries Comparison}\hypertarget{class_problem_aef3aa9a02bb7e4bcae2ebd8975a9206d}{}\label{class_problem_aef3aa9a02bb7e4bcae2ebd8975a9206d}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/compressed\+Stack.\+hpp\item 
+include/problem.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,11 @@
+<map id="Problem&lt; T, D &gt;" name="Problem&lt; T, D &gt;">
+<area shape="rect" id="node2" href="$class_compare_stacks.html" title="{CompareStacks\&lt; T, D \&gt;\n||+ CompareStacks()\l+ runCompare()\l+ printCompare()\l+ readPush()\l}" alt="" coords="251,527,417,648"/>
+<area shape="rect" id="node7" href="$class_problem.html" title="{Problem\&lt; int, int \&gt;\n|# mIndex\l|+ Problem()\l+ ~Problem()\l+ run()\l+ run()\l+ push()\l+ pop()\l+ top()\l+ emptystack()\l+ setContext()\l+ setIndex()\l+ getContext()\l+ getIndex()\l+ toString()\l+ print()\l+ println()\l+ readPush()\l# initStackIntern()\l# readLine()\l# readHeader()\l}" alt="" coords="95,417,226,758"/>
+<area shape="rect" id="node9" href="$class_problem.html" title="{Problem\&lt; emptyContext,\l Point2D \&gt;\n|# mIndex\l|+ Problem()\l+ ~Problem()\l+ run()\l+ run()\l+ push()\l+ pop()\l+ top()\l+ emptystack()\l+ setContext()\l+ setIndex()\l+ getContext()\l+ getIndex()\l+ toString()\l+ print()\l+ println()\l+ readPush()\l# initStackIntern()\l# readLine()\l# readHeader()\l}" alt="" coords="442,409,610,765"/>
+<area shape="rect" id="node3" href="$class_compare_stacks.html" title="{CompareStacks\&lt; int,\l int \&gt;\n||+ CompareStacks()\l+ runCompare()\l+ printCompare()\l+ readPush()\l}" alt="" coords="122,828,269,964"/>
+<area shape="rect" id="node5" href="$class_compare_stacks.html" title="{CompareStacks\&lt; emptyContext,\l Point2D \&gt;\n||+ CompareStacks()\l+ runCompare()\l+ printCompare()\l+ readPush()\l}" alt="" coords="293,828,508,964"/>
+<area shape="rect" id="node4" href="$class_comparison.html" title="{Comparison\n||+ Comparison()\l}" alt="" coords="139,1013,251,1091"/>
+<area shape="rect" id="node6" href="$classcomparison_convex_hull.html" title="{comparisonConvexHull\n||+ comparisonConvexHull()\l}" alt="" coords="312,1013,489,1091"/>
+<area shape="rect" id="node8" href="$class_instance.html" title="{Instance\n||+ Instance()\l}" alt="" coords="5,857,97,935"/>
+<area shape="rect" id="node10" href="$classconvex_hull.html" title="{convexHull\n||+ convexHull()\l}" alt="" coords="533,857,639,935"/>
+</map>
