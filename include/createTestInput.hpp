@@ -2,7 +2,7 @@
 // Created by yago on 16/06/29.
 //
 
-#include "Point2D.hpp"
+#include "point2D.hpp"
 #include <algorithm>
 #include <fstream>
 #include <iostream>

@@ -1,4 +1,0 @@
-<map id="Stack&lt; T, D &gt;" name="Stack&lt; T, D &gt;">
-<area shape="rect" id="node2" href="$class_compressed_stack.html" title="{CompressedStack\&lt; T, D \&gt;\n|# mFirst\l# mSecond\l# mCompressed\l# mBuffer\l|+ CompressedStack()\l+ CompressedStack()\l}" alt="" coords="5,351,185,487"/>
-<area shape="rect" id="node3" href="$class_normal_stack.html" title="{NormalStack\&lt; T, D \&gt;\n||+ NormalStack()\l+ toString()\l}" alt="" coords="209,373,357,465"/>
-</map>

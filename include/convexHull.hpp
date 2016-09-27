@@ -1,6 +1,6 @@
 #include "stackAlgo.hpp"
 #include "compare.hpp"
-#include "Point2D.hpp"
+#include "point2D.hpp"
 
 
 /*==============================================================================

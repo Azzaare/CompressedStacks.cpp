@@ -2,7 +2,7 @@
 // Created by yago on 16/07/05.
 //
 
-#include "../include/Point2D.hpp"
+#include "../include/point2D.hpp"
 
 Point2D::Point2D() {}
 

@@ -1,7 +1,0 @@
-<map id="CompareStacks&lt; T, D &gt;" name="CompareStacks&lt; T, D &gt;">
-<area shape="rect" id="node3" href="$class_compare_stacks.html" title="{CompareStacks\&lt; int,\l int \&gt;\n||+ CompareStacks()\l+ runCompare()\l+ printCompare()\l+ readPush()\l}" alt="" coords="5,580,152,716"/>
-<area shape="rect" id="node5" href="$class_compare_stacks.html" title="{CompareStacks\&lt; emptyContext,\l Point2D \&gt;\n||+ CompareStacks()\l+ runCompare()\l+ printCompare()\l+ readPush()\l}" alt="" coords="177,580,391,716"/>
-<area shape="rect" id="node2" href="$class_problem.html" title="{Problem\&lt; T, D \&gt;\n|# mIndex\l|+ Problem()\l+ ~Problem()\l+ run()\l+ run()\l+ push()\l+ pop()\l+ top()\l+ emptystack()\l+ setContext()\l+ setIndex()\l+ getContext()\l+ getIndex()\l+ toString()\l+ print()\l+ println()\l+ readPush()\l# initStackIntern()\l# readLine()\l# readHeader()\l}" alt="" coords="91,5,216,347"/>
-<area shape="rect" id="node4" href="$class_comparison.html" title="{Comparison\n||+ Comparison()\l}" alt="" coords="23,765,135,843"/>
-<area shape="rect" id="node6" href="$classcomparison_convex_hull.html" title="{comparisonConvexHull\n||+ comparisonConvexHull()\l}" alt="" coords="195,765,373,843"/>
-</map>
