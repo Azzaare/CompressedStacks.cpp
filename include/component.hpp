@@ -14,7 +14,7 @@
   Extensions :
   Aliases    :
   Friends   -> CompressedStack
-            <- Data, Signature
+            <- Data, Block
 ==============================================================================*/
 template <class T, class D>
 class CompressedStack; // Required for the friendship
@@ -29,9 +29,9 @@ private:
 
   // Push and pop
   void pushExplicit(SPData<T, D> elt);
-  void push(Signature<T, D> sign, int lvl);
+  void push(Block<T, D> block, int lvl);
   Data<T, D> top();
-  Signature<T, D> top(int lvl);
+  Block<T, D> top(int lvl);
   int topIndex(int lvl = 0);
 
   // IO
@@ -42,7 +42,7 @@ private:
 
   LevelVector<T, D> mPartial;
   ExplicitPointer<T, D> mExplicit;
-  Signature<T, D> mSign;
+  Block<T, D> mBlock;
 };
 
 /*==============================================================================
@@ -50,7 +50,7 @@ private:
 ==============================================================================*/
 template <class T, class D>
 Component<T, D>::Component(int space, int depth)
-    : mSign(0, std::streampos(0), std::shared_ptr<T>(nullptr),
+    : mBlock(0, std::streampos(0), std::shared_ptr<T>(nullptr),
             Buffer<T, D>(0)) {
 
   LevelVector<T, D> partial = initLevelVector<T, D>(space, depth);
@@ -82,8 +82,8 @@ template <class T, class D> std::string Component<T, D>::toString() {
   str = levelsToString(mPartial);
   str += "\t\t\tExplicit  -> ";
   str += explicitPointerToString(mExplicit);
-  str += "\n\t\t\tSignature -> ";
-  str += mSign.toString() + "\n";
+  str += "\n\t\t\tBlock -> ";
+  str += mBlock.toString() + "\n";
   return str;
 }
 
@@ -95,14 +95,14 @@ void Component<T, D>::pushExplicit(SPData<T, D> elt) {
   mExplicit.push_back(elt);
 }
 template <class T, class D>
-void Component<T, D>::push(Signature<T, D> sign, int lvl) {
-  mPartial[lvl - 1].push_back(sign);
+void Component<T, D>::push(Block<T, D> block, int lvl) {
+  mPartial[lvl - 1].push_back(block);
 }
 
 template <class T, class D> Data<T, D> Component<T, D>::top() {
   return *(mExplicit.back());
 }
-template <class T, class D> Signature<T, D> Component<T, D>::top(int lvl) {
+template <class T, class D> Block<T, D> Component<T, D>::top(int lvl) {
   return mPartial[lvl - 1].back();
 }
 

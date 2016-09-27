@@ -19,13 +19,13 @@
 ==============================================================================*/
 template <class T, class D>
 class CompressedStack;                         // Required for the friendship
-template <class T, class D> class Signature;   // Required for the friendship
+template <class T, class D> class Block;   // Required for the friendship
 template <class T, class D> class Component;   // Required for the friendship
 template <class T, class D> class ClassicStack; // Required for the friendship
 template <class T, class D> class Buffer {
   friend class CompressedStack<T, D>;
   friend class ClassicStack<T, D>;
-  friend class Signature<T, D>;
+  friend class Block<T, D>;
   friend class Component<T, D>;
 
 private:

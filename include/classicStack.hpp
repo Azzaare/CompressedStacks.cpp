@@ -51,7 +51,7 @@ private:
   Level<T, D> getFirstPartial(int lvl);
   Level<T, D> getCompressed();
   ExplicitPointer<T, D> getFirstExplicit();
-  Signature<T, D> getFirstSign();
+  Block<T, D> getFirstBlock();
   int getBufferSize ();
 };
 
@@ -118,10 +118,10 @@ int ClassicStack<T, D>::getBufferSize() {
   return 0;
 }
 
-template <class T, class D> Signature<T, D> ClassicStack<T, D>::getFirstSign() {
-  Signature<T, D> sign(0, std::streampos(0), std::shared_ptr<T>(nullptr),
+template <class T, class D> Block<T, D> ClassicStack<T, D>::getFirstBlock() {
+  Block<T, D> block(0, std::streampos(0), std::shared_ptr<T>(nullptr),
                        Buffer<T, D>(0));
-  return sign;
+  return block;
 }
 
 /*==============================================================================

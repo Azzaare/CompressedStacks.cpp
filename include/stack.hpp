@@ -35,7 +35,7 @@ public:
   virtual Level<T, D> getFirstPartial(int lvl) = 0;
   virtual Level<T, D> getCompressed() = 0;
   virtual ExplicitPointer<T, D> getFirstExplicit() = 0;
-  virtual Signature<T, D> getFirstSign() = 0;
+  virtual Block<T, D> getFirstBlock() = 0;
   virtual int getBufferSize() = 0;
 
   // Setters
