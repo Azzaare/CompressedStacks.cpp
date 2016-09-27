@@ -19,7 +19,7 @@
    Extensions :
    Aliases    :
    Friends   -> StackAlgo
-             <- Signature, Component, Buffer, Data
+             <- Block, Component, Buffer, Data
 ==============================================================================*/
 template <class T, class D> class StackAlgo; // Required for the friendship
 template <class T, class D> class CompressedStack : public Stack<T, D> {
@@ -30,7 +30,7 @@ public:
                         std::shared_ptr<T> context,
                         std::streampos position = std::streampos(0));
   CompressedStack<T, D>(int size, int space, int buffer,
-                        const Signature<T, D> &sign);
+                        const Block<T, D> &block);
 
 private:
   /* Required from virtual functions in Stack.hpp */
@@ -58,29 +58,29 @@ private:
   Level<T, D> getFirstPartial(int lvl);
   Level<T, D> getCompressed();
   ExplicitPointer<T, D> getFirstExplicit();
-  Signature<T, D> getFirstSign();
+  Block<T, D> getFirstBlock();
   int getBufferSize ();
 
   // IO
   std::string toString();
 
   /* Back function (give the back element of a vector)*/
-  Signature<T, D> back(int lvl = 0, int component = 0);
+  Block<T, D> back(int lvl = 0, int component = 0);
   SPData<T, D> topPointer(int k = 1);
   void pop_back(int lvl, int component);
 
   /* New Internals */
   bool single(int lvl, int component);
-  void setSign(int component, Signature<T, D> sign = Signature<T, D>());
+  void setBlock(int component, Block<T, D> block = Block<T, D>());
   void setLast(int component, int index, int lvl = -1);
   int getLast(int lvl, int component = 0);
-  std::shared_ptr<Signature<T, D>> getSign(int component, int lvl = 0);
+  std::shared_ptr<Block<T, D>> getBlock(int component, int lvl = 0);
 
   /* Push related */
   void pushExplicit(SPData<T, D> elt);
   void pushCompressed(SPData<T, D> elt, int lvl, int headIndex);
   void compress(Level<T, D> block);
-  void resetLevel(Signature<T, D> sign, int lvl);
+  void resetLevel(Block<T, D> block, int lvl);
 
   /* Pop related */
   void popBuffer();
@@ -93,7 +93,7 @@ private:
   // Other getters
   SPData<T, D> getExplicitData(int k);
   Level<T, D> getSmartCompress(int lvl);
-  Signature<T, D> getBottomSign();
+  Block<T, D> getBottomBlock();
 
   // Structure constraints
   int mSize;  // (Expected) size of the input in #elements
@@ -136,7 +136,7 @@ CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
 
 template <class T, class D>
 CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
-                                       const Signature<T, D> &sign)
+                                       const Block<T, D> &block)
     : mFirst(space, int(ceil(log(size) / log(space) - .001)) - 1),
       mSecond(space, int(ceil(log(size) / log(space) - .001)) - 1),
       mBuffer(buffer) {
@@ -145,8 +145,8 @@ CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
   mDepth = int(ceil(log(size) / log(space) - .001) - 1);
   mCompressed = initLevel<T, D>(mSpace);
 
-  mPosition = sign.mPosition;
-  mContext = sign.mContext;
+  mPosition = block.mPosition;
+  mContext = block.mContext;
 }
 
 /*==============================================================================
@@ -157,13 +157,13 @@ CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
    else give the back of mPartial[lvl - 1] of component
     3-4) top/topPointer(int k) : give the k-st (/pointer to) elt in the
 buffer/explicit. Index starts implicitly at 1 (for buffer index reasons)
-    5) single (int lvl, int component) : return true if the signature on
+    5) single (int lvl, int component) : return true if the block on
 lvl/component has the same first and last index
     6) pop_back(int lvl, int component) : pop_back on mPartial[lvl - 1] in
 component
-    7) setSign(int component, Signature<T,D> sign) : assign a sign to component
-    8) setLast(int component, int index) : set mSign.mLast to index in component
-    9) getSign(int component, int lvl) : get the last sign in component at lvl.
+    7) setBlock(int component, Block<T,D> block) : assign a block to component
+    8) setLast(int component, int index) : set mBlock.mLast to index in component
+    9) getBlock(int component, int lvl) : get the last block in component at lvl.
 If lvl = 0, look in the fully compressed part
 ==============================================================================*/
 template <class T, class D>
@@ -200,12 +200,12 @@ bool CompressedStack<T, D>::empty(int lvl, int component) {
 }
 
 template <class T, class D>
-Signature<T, D> CompressedStack<T, D>::back(int lvl, int component) {
+Block<T, D> CompressedStack<T, D>::back(int lvl, int component) {
   if (lvl == mDepth) {
     if (component == 1) {
-      return mFirst.mSign;
+      return mFirst.mBlock;
     } else {
-      return mSecond.mSign;
+      return mSecond.mBlock;
     }
   } else if (lvl > 0) {
     if (component == 1) {
@@ -245,7 +245,7 @@ bool CompressedStack<T, D>::single(int lvl, int component) {
     b = mFirst.single(lvl);
   } else if (component == 2) {
     b = mSecond.single(lvl);
-  } else { // Check if the first signature in the lvl is single
+  } else { // Check if the first block in the lvl is single
     if (empty(lvl, 1)) {
       b = single(lvl, 2);
     } else {
@@ -273,11 +273,11 @@ void CompressedStack<T, D>::pop_back(int lvl, int component) {
 }
 
 template <class T, class D>
-void CompressedStack<T, D>::setSign(int component, Signature<T, D> sign) {
+void CompressedStack<T, D>::setBlock(int component, Block<T, D> block) {
   if (component == 1) {
-    mFirst.mSign = sign;
+    mFirst.mBlock = block;
   } else {
-    mSecond.mSign = sign;
+    mSecond.mBlock = block;
   }
 }
 
@@ -287,9 +287,9 @@ void CompressedStack<T, D>::setLast(int component, int index, int lvl) {
     mCompressed.back().mLast = index;
   } else if (lvl == -1 || lvl == mDepth) {
     if (component == 1) {
-      mFirst.mSign.mLast = index;
+      mFirst.mBlock.mLast = index;
     } else {
-      mSecond.mSign.mLast = index;
+      mSecond.mBlock.mLast = index;
     }
   } else {
     if (component == 1) {
@@ -324,13 +324,13 @@ int CompressedStack<T, D>::getLast(int lvl, int component) {
 }
 
 template <class T, class D>
-std::shared_ptr<Signature<T, D>> CompressedStack<T, D>::getSign(int component, int lvl) {
+std::shared_ptr<Block<T, D>> CompressedStack<T, D>::getBlock(int component, int lvl) {
   if (lvl == 0) {
-    return std::make_shared<Signature<T, D>>(mCompressed.back());
+    return std::make_shared<Block<T, D>>(mCompressed.back());
   } else if (component == 1) {
-    return std::make_shared<Signature<T, D>>(mFirst.mPartial[lvl - 1].back());
+    return std::make_shared<Block<T, D>>(mFirst.mPartial[lvl - 1].back());
   } else {
-    return std::make_shared<Signature<T, D>>(mSecond.mPartial[lvl - 1].back());
+    return std::make_shared<Block<T, D>>(mSecond.mPartial[lvl - 1].back());
   }
 }
 
@@ -371,23 +371,23 @@ Level<T, D> CompressedStack<T, D>::getSmartCompress(int lvl) {
     if (empty(i + 1, 1)) {
       int s = mSecond.mPartial[i].size();
       if (s > 1) {
-        Signature<T, D> sign = getBottomSign();
-        sign.mLast = mSecond.mPartial[i][s - 2].mLast;
-        compressed.push_back(sign);
+        Block<T, D> block = getBottomBlock();
+        block.mLast = mSecond.mPartial[i][s - 2].mLast;
+        compressed.push_back(block);
         break;
       }
     } else if (mFirst.mPartial[i].size() == 1) {
       if (!empty(i + 1, 2)) {
-        Signature<T, D> sign = getBottomSign();
-        sign.mLast = mSecond.mPartial[i].back().mLast;
-        compressed.push_back(sign);
+        Block<T, D> block = getBottomBlock();
+        block.mLast = mSecond.mPartial[i].back().mLast;
+        compressed.push_back(block);
         break;
       }
     } else {
       int s = mFirst.mPartial[i].size();
-      Signature<T, D> sign = getBottomSign();
-      sign.mLast = mFirst.mPartial[i][s - 2].mLast;
-      compressed.push_back(sign);
+      Block<T, D> block = getBottomBlock();
+      block.mLast = mFirst.mPartial[i][s - 2].mLast;
+      compressed.push_back(block);
       break;
     }
   }
@@ -404,17 +404,17 @@ SPData<T, D> CompressedStack<T, D>::getExplicitData(int k) {
   if (k <= (int)mFirst.mExplicit.size()) {
     return mFirst.mExplicit[k - 1];
   } else {
-    return mFirst.mSign.mBuffer.topPointer(k - mFirst.mExplicit.size());
+    return mFirst.mBlock.mBuffer.topPointer(k - mFirst.mExplicit.size());
   }
 }
 
 template <class T, class D>
-Signature<T, D> CompressedStack<T, D>::getFirstSign() {
-  return mFirst.mSign;
+Block<T, D> CompressedStack<T, D>::getFirstBlock() {
+  return mFirst.mBlock;
 }
 
 template <class T, class D>
-Signature<T, D> CompressedStack<T, D>::getBottomSign() {
+Block<T, D> CompressedStack<T, D>::getBottomBlock() {
   if (empty(1, 2)) {
     return mFirst.mPartial[0].front();
   } else {
@@ -480,8 +480,8 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
     if (mContext != nullptr) {
       context = std::make_shared<T>(*mContext);
     }
-    Signature<T, D> sign(index, mPosition, context, mBuffer);
-    mFirst.mSign = sign;
+    Block<T, D> block(index, mPosition, context, mBuffer);
+    mFirst.mBlock = block;
   }
   // We check if thoses explicit datas are full
   else {
@@ -489,7 +489,7 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
     int startLevel = headIndex - (headIndex - 1) % mSpace;
     if (index - startLevel < mSpace) {
       mFirst.pushExplicit(eltPtr);
-      mFirst.mSign.mLast = index;
+      mFirst.mBlock.mLast = index;
     } else {
       if ((mDepth == 1) && !empty(mDepth, 2)) {
         int distCompressed = mSpace;
@@ -497,13 +497,13 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
         if (index - startCompressed < distCompressed) {
           mCompressed.back().mLast = headIndex;
         } else {
-          mCompressed.push_back(mSecond.mSign);
+          mCompressed.push_back(mSecond.mBlock);
         }
       }
-      mSecond.mSign = mFirst.mSign;
+      mSecond.mBlock = mFirst.mBlock;
       std::shared_ptr<T> context = std::make_shared<T>(*mContext);
-      Signature<T, D> sign(index, mPosition, context, mBuffer);
-      mFirst.mSign = sign;
+      Block<T, D> block(index, mPosition, context, mBuffer);
+      mFirst.mBlock = block;
       mSecond.mExplicit = mFirst.mExplicit;
       mFirst.clearExplicit(mSpace);
       mFirst.pushExplicit(eltPtr);
@@ -518,10 +518,10 @@ void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
   int distBlock = std::pow(mSpace, (mDepth - lvl));
   int distLevel = distBlock * mSpace;
   int index = elt->mIndex;
-  Signature<T, D> sign(index, mPosition, mFirst.mSign.mContext, mBuffer);
+  Block<T, D> block(index, mPosition, mFirst.mBlock.mContext, mBuffer);
 
   if (empty(lvl, 1)) {
-    mFirst.push(sign, lvl);
+    mFirst.push(block, lvl);
   } else {
     int startLevel = headIndex - (headIndex - 1) % distLevel;
     // distance of the new index and current block
@@ -534,7 +534,7 @@ void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
       if (eta < distBlock) {
         setLast(1, index, lvl);
       } else {
-        mFirst.push(sign, lvl);
+        mFirst.push(block, lvl);
       }
     } else {
       if (lvl == 1 && (!empty(1, 2))) {
@@ -544,32 +544,32 @@ void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
         if (gamma < distCompressed && !empty(0)) {
           setLast(0, getLast(lvl, 2));
         } else {
-          mCompressed.push_back(Signature<T, D>(mSecond.mPartial[0]));
+          mCompressed.push_back(Block<T, D>(mSecond.mPartial[0]));
         }
       }
       mSecond.mPartial[lvl - 1] = mFirst.mPartial[lvl - 1];
-      resetLevel(sign, lvl);
+      resetLevel(block, lvl);
     }
   }
 }
 
 template <class T, class D>
-void CompressedStack<T, D>::resetLevel(Signature<T, D> sign, int lvl) {
+void CompressedStack<T, D>::resetLevel(Block<T, D> block, int lvl) {
   mFirst.mPartial[lvl - 1].clear();
   mFirst.mPartial[lvl - 1].reserve(mSpace);
-  mFirst.mPartial[lvl - 1].push_back(sign);
+  mFirst.mPartial[lvl - 1].push_back(block);
 }
 
-// Function that compress the top block of mSecond to a sign in mCompressed
+// Function that compress the top block of mSecond to a block in mCompressed
 template <class T, class D> void CompressedStack<T, D>::compress() {
   if (empty(0)) {
-    Signature<T, D> sign(mSecond.mPartial[0]);
-    mCompressed.push_back(sign);
+    Block<T, D> block(mSecond.mPartial[0]);
+    mCompressed.push_back(block);
   } else {
     int topSecond;
     if (mDepth > 1) {
       topSecond = mSecond.mPartial[0].back().mLast;
-      mSecond.mSign = Signature<T, D>(mSecond.mPartial[0]);
+      mSecond.mBlock = Block<T, D>(mSecond.mPartial[0]);
     } else {
       topSecond = mSecond.mExplicit.back()->mIndex;
     }
@@ -578,14 +578,14 @@ template <class T, class D> void CompressedStack<T, D>::compress() {
     int startSecond = topSecond + 1 - (topSecond % sizeLevel);
     int startCompressed = topCompressed + 1 - (topCompressed % sizeLevel);
     if (startSecond > startCompressed) {
-      mCompressed.push_back(mSecond.mSign);
+      mCompressed.push_back(mSecond.mBlock);
     } else {
       mCompressed.back().mLast = topSecond;
     }
   }
 }
 
-// Function that compress the top block of mSecond to a sign in mCompressed
+// Function that compress the top block of mSecond to a block in mCompressed
 template <class T, class D>
 void CompressedStack<T, D>::compress(Level<T, D> block) {
   if (empty(0)) {
@@ -593,15 +593,15 @@ void CompressedStack<T, D>::compress(Level<T, D> block) {
   } else {
     for (typename Level<T, D>::iterator it = block.begin(); it != block.end();
          ++it) {
-      int topSign = (*it).mLast;
+      int topBlock = (*it).mLast;
       int topCompressed = mCompressed.back().mLast;
       int sizeLevel = std::pow(mSpace, mDepth);
-      int startSign = topSign + 1 - (topSign % sizeLevel);
+      int startBlock = topBlock + 1 - (topBlock % sizeLevel);
       int startCompressed = topCompressed + 1 - (topCompressed % sizeLevel);
-      if (startSign > startCompressed) {
+      if (startBlock > startCompressed) {
         mCompressed.push_back((*it));
       } else {
-        mCompressed.back().mLast = topSign;
+        mCompressed.back().mLast = topBlock;
       }
     }
   }
@@ -614,18 +614,18 @@ void CompressedStack<T, D>::compress(Level<T, D> block) {
 ==============================================================================*/
 template <class T, class D>
 void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
-  std::shared_ptr<Signature<T, D>> sign;
+  std::shared_ptr<Block<T, D>> block;
   int lvl;
   for (lvl = mDepth; lvl >= 0; lvl--) {
     if (lvl == 0) {
-      sign = getSign(0);
+      block = getBlock(0);
       break;
     } else {
       if (!empty(lvl, 1)) {
-        sign = getSign(1, lvl);
+        block = getBlock(1, lvl);
         break;
       } else if (!empty(lvl, 2)) {
-        sign = getSign(2, lvl);
+        block = getBlock(2, lvl);
         break;
       }
     }
@@ -635,10 +635,10 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
   int indexReminder = problem.mIndex;
   std::ios_base::iostate eofbitReminder = problem.mInput.rdstate();
 
-  problem.mContext = std::make_shared<T>(*sign->mContext);
-  problem.mIndex = sign->mFirst - 1;
+  problem.mContext = std::make_shared<T>(*block->mContext);
+  problem.mIndex = block->mFirst - 1;
   problem.mInput.clear();
-  problem.mInput.seekg(sign->mPosition);
+  problem.mInput.seekg(block->mPosition);
 
   int auxSize = mSize;
   if (lvl > 0) {
@@ -646,11 +646,11 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
   }
   std::shared_ptr<Stack<T, D>> auxStack =
       std::make_shared<CompressedStack<T, D>>(
-          auxSize, mSpace, mBuffer.mSize, problem.mContext, sign->mPosition);
+          auxSize, mSpace, mBuffer.mSize, problem.mContext, block->mPosition);
 
   // Swap stack pointers + run  + swap back
   swap(problem.mStack, auxStack);
-  problem.run(sign->mLast);
+  problem.run(block->mLast);
   swap(problem.mStack, auxStack);
 
   if (lvl == 0) {
@@ -663,7 +663,7 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
       mSecond.mPartial[delta + i - 1] = auxStack->getFirstPartial(i);
     }
     mSecond.mExplicit = auxStack->getFirstExplicit();
-    mSecond.mSign = auxStack->getFirstSign();
+    mSecond.mBlock = auxStack->getFirstBlock();
   }
 
   problem.mIndex = indexReminder;
@@ -722,7 +722,7 @@ SPData<T, D> CompressedStack<T, D>::popExplicit(StackAlgo<T, D> &problem,
 template <class T, class D>
 void CompressedStack<T, D>::popComponent(int index, int component) {
   if (empty(mDepth, component)) {
-    setSign(component);
+    setBlock(component);
   } else {
     int newLast = getLast(mDepth);
     setLast(component, newLast);
@@ -742,7 +742,7 @@ void CompressedStack<T, D>::clear(int index, int lvl, int component) {
       if (lvl > 1) {
         clear(index, lvl - 1, component);
       } else if (empty(1, component)) {
-        setSign(component);
+        setBlock(component);
       }
     } else {
       int newLast = getLast(lvl + 1);
