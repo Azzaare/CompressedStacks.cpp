@@ -5,7 +5,7 @@
   Includes
 ==============================================================================*/
 #include "compressedStack.hpp"
-#include "normalStack.hpp"
+#include "classicStack.hpp"
 #include "stack.hpp"
 #include <exception>
 #include <fstream>
@@ -18,7 +18,7 @@
   Extensions : Instance
   Aliases    :
   Friends   -> CompressedStack
-            <- NormalStack, CompressedStack, Data
+            <- ClassicStack, CompressedStack, Data
 ==============================================================================*/
 template <class T, class D>
 class CompressedStack;                           // Required for the friendship
@@ -79,12 +79,12 @@ private:
   // StackAlgo internal during run
   std::shared_ptr<T> mContext;
 
-  // Stack: Normal or Compressed
+  // Stack: Classic or Compressed
   std::shared_ptr<Stack<T, D>> mStack;
 };
 
 /*==============================================================================
-  Constructors : with NormalStack or CompressedStack
+  Constructors : with ClassicStack or CompressedStack
 ==============================================================================*/
 template <class T, class D>
 StackAlgo<T, D>::StackAlgo(std::string fileName) : mIndex(0), mContext(nullptr) {
@@ -113,7 +113,7 @@ StackAlgo<T, D>::StackAlgo(std::string fileName) : mIndex(0), mContext(nullptr) 
     throw("StackAlgo<T,D>::StackAlgo(std::string fileName), wrong header format ");
   if (!foundP)
     mStack = std::shared_ptr<Stack<T, D>>(
-        new NormalStack<T, D>()); // space not provided, normal stack
+        new ClassicStack<T, D>()); // space not provided, classic stack
   else                            // space was provided, compressed stack
   {
     if (!foundBuffer)

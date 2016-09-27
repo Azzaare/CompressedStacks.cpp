@@ -20,11 +20,11 @@
 template <class T, class D> class Component; // Required for the friendship
 template <class T, class D>
 class CompressedStack;                         // Required for the friendship
-template <class T, class D> class NormalStack; // Required for the friendship
+template <class T, class D> class ClassicStack; // Required for the friendship
 template <class T, class D> class Signature {
   friend class Component<T, D>;
   friend class CompressedStack<T, D>;
-  friend class NormalStack<T, D>;
+  friend class ClassicStack<T, D>;
 
 public:
   // IO
