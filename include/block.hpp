@@ -13,7 +13,7 @@
 /*==============================================================================
   Class      : template (T context, D datas)
   Extensions :
-  Aliases    : Block, LevelVector
+  Aliases    : Level, LevelVector
   Friends   -> Component, CompressedStack
             <-
 ==============================================================================*/
@@ -34,7 +34,7 @@ private:
   // Constructors
   Signature<T, D>(int index, std::streampos position,
                   std::shared_ptr<T> context, Buffer<T, D> buffer);
-  Signature<T, D>(std::vector<Signature<T, D>> block);
+  Signature<T, D>(std::vector<Signature<T, D>> level);
   Signature<T, D>();
 
   // Getters
@@ -47,17 +47,17 @@ private:
   Buffer<T, D> mBuffer;
 };
 
-/* Derived types: Block and LevelVector */
-// A Partially Compressed Block is composed of the signatures of its SubBlocks
-template <class T, class D> using Block = std::vector<Signature<T, D>>;
-template <class T, class D> Block<T, D> initBlock(int space);
+/* Derived types: Level and LevelVector */
+// A Partially Compressed Level is composed of its blocks
+template <class T, class D> using Level = std::vector<Signature<T, D>>;
+template <class T, class D> Level<T, D> initLevel(int space);
 
-// Each level of compressed Blocks (first and second) are stored in LevelVector
-template <class T, class D> using LevelVector = std::vector<Block<T, D>>;
+// Each level of compressed Levels (first and second) are stored in LevelVector
+template <class T, class D> using LevelVector = std::vector<Level<T, D>>;
 template <class T, class D> LevelVector<T, D> initLevelVector(int space, int depth);
 
 /*==============================================================================
-  Constructors : Signature, initBlock, initLevelVector
+  Constructors : Signature, initLevel, initLevelVector
 ==============================================================================*/
 template <class T, class D>
 Signature<T, D>::Signature(int index, std::streampos position,
@@ -69,9 +69,9 @@ Signature<T, D>::Signature(int index, std::streampos position,
   mBuffer = buffer;
 }
 
-template <class T, class D> Signature<T, D>::Signature(Block<T, D> block) {
-  Signature<T, D> frontSign = block.front();
-  Signature<T, D> backSign = block.back();
+template <class T, class D> Signature<T, D>::Signature(Level<T, D> level) {
+  Signature<T, D> frontSign = level.front();
+  Signature<T, D> backSign = level.back();
   mFirst = frontSign.mFirst;
   mLast = backSign.mLast;
   mPosition = frontSign.mPosition;
@@ -87,17 +87,17 @@ template <class T, class D> Signature<T, D>::Signature() {
   mBuffer = Buffer<T, D>(0);
 }
 
-template <class T, class D> Block<T, D> initBlock(int space) {
-  Block<T, D> block;
-  block.reserve(space);
-  return block;
+template <class T, class D> Level<T, D> initLevel(int space) {
+  Level<T, D> level;
+  level.reserve(space);
+  return level;
 }
 
 template <class T, class D> LevelVector<T, D> initLevelVector(int space, int depth) {
   LevelVector<T, D> levels;
   for (int lvl = 1; lvl < depth; lvl++) {
-    Block<T, D> block = initBlock<T, D>(space);
-    levels.push_back(block);
+    Level<T, D> level = initLevel<T, D>(space);
+    levels.push_back(level);
   }
   levels.reserve(depth - 1);
 
@@ -112,7 +112,7 @@ template <class T, class D> bool Signature<T, D>::single() {
 }
 
 /*==============================================================================
-  IO : toString, blockToString
+  IO : toString, levelToString
 ==============================================================================*/
 template <class T, class D> std::string Signature<T, D>::toString() {
   std::string str;
@@ -121,9 +121,9 @@ template <class T, class D> std::string Signature<T, D>::toString() {
   return str;
 }
 
-template <class T, class D> std::string blockToString(Block<T, D> block) {
+template <class T, class D> std::string levelToString(Level<T, D> level) {
   std::string str = "";
-  for (typename Block<T, D>::iterator it = block.begin(); it != block.end();
+  for (typename Level<T, D>::iterator it = level.begin(); it != level.end();
        ++it) {
     if (str == "") {
       str += "[" + (*it).toString();

@@ -45,11 +45,11 @@ private:
   // Setters
   void setContext(std::shared_ptr<T> context) {}
   void setPosition(std::streampos position) {}
-  void setCompressed(Block<T, D> block) {}
+  void setCompressed(Level<T, D> level) {}
 
   // Getters
-  Block<T, D> getFirstPartial(int lvl);
-  Block<T, D> getCompressed();
+  Level<T, D> getFirstPartial(int lvl);
+  Level<T, D> getCompressed();
   ExplicitPointer<T, D> getFirstExplicit();
   Signature<T, D> getFirstSign();
   int getBufferSize ();
@@ -100,12 +100,12 @@ template <class T, class D> void ClassicStack<T, D>::compress() {}
   Getters
 ==============================================================================*/
 template <class T, class D>
-Block<T, D> ClassicStack<T, D>::getFirstPartial(int lvl) {
-  return initBlock<T, D>(0);
+Level<T, D> ClassicStack<T, D>::getFirstPartial(int lvl) {
+  return initLevel<T, D>(0);
 }
 
-template <class T, class D> Block<T, D> ClassicStack<T, D>::getCompressed() {
-  return initBlock<T, D>(0);
+template <class T, class D> Level<T, D> ClassicStack<T, D>::getCompressed() {
+  return initLevel<T, D>(0);
 }
 
 template <class T, class D>

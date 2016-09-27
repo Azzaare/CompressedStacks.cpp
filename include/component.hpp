@@ -72,7 +72,7 @@ template <class T, class D> std::string levelsToString(LevelVector<T, D> levels)
        ++it) {
     index++;
     str += "\t\t\tLevel " + std::to_string(index) + "   ->";
-    str += " " + blockToString(*it) + "\n";
+    str += " " + levelToString(*it) + "\n";
   }
   return str;
 }

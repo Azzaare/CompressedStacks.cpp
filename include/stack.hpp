@@ -32,8 +32,8 @@ public:
   virtual void copyContent(CompressedStack<T, D> &stack) = 0;
 
   // Getters
-  virtual Block<T, D> getFirstPartial(int lvl) = 0;
-  virtual Block<T, D> getCompressed() = 0;
+  virtual Level<T, D> getFirstPartial(int lvl) = 0;
+  virtual Level<T, D> getCompressed() = 0;
   virtual ExplicitPointer<T, D> getFirstExplicit() = 0;
   virtual Signature<T, D> getFirstSign() = 0;
   virtual int getBufferSize() = 0;
@@ -41,7 +41,7 @@ public:
   // Setters
   virtual void setContext(std::shared_ptr<T> context) = 0;
   virtual void setPosition(std::streampos position) = 0;
-  virtual void setCompressed(Block<T, D> block) = 0;
+  virtual void setCompressed(Level<T, D> level) = 0;
 
   // IO
   virtual std::string toString() = 0;
