@@ -1,5 +1,5 @@
-#ifndef SIGN
-#define SIGN
+#ifndef BLOCK
+#define BLOCK
 
 /*==============================================================================
   Includes
@@ -137,4 +137,4 @@ template <class T, class D> std::string blockToString(Block<T, D> block) {
   return str;
 }
 
-#endif /* SIGN */
+#endif /* BLOCK */
