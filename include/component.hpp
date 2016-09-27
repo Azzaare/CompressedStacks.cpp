@@ -40,7 +40,7 @@ private:
   // State
   bool single(int lvl);
 
-  Levels<T, D> mPartial;
+  LevelVector<T, D> mPartial;
   ExplicitPointer<T, D> mExplicit;
   Signature<T, D> mSign;
 };
@@ -53,7 +53,7 @@ Component<T, D>::Component(int space, int depth)
     : mSign(0, std::streampos(0), std::shared_ptr<T>(nullptr),
             Buffer<T, D>(0)) {
 
-  Levels<T, D> partial = initLevels<T, D>(space, depth);
+  LevelVector<T, D> partial = initLevelVector<T, D>(space, depth);
   mPartial = partial;
 
   ExplicitPointer<T, D> xplicit = initExplicitPointer<T, D>();
@@ -64,11 +64,11 @@ Component<T, D>::Component(int space, int depth)
 /*==============================================================================
   IO : levelsToStringInComponent, toString
 ==============================================================================*/
-template <class T, class D> std::string levelsToString(Levels<T, D> levels) {
+template <class T, class D> std::string levelsToString(LevelVector<T, D> levels) {
   std::string str;
   str = "";
   int index = 0;
-  for (typename Levels<T, D>::iterator it = levels.begin(); it != levels.end();
+  for (typename LevelVector<T, D>::iterator it = levels.begin(); it != levels.end();
        ++it) {
     index++;
     str += "\t\t\tLevel " + std::to_string(index) + "   ->";

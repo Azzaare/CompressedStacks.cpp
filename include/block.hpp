@@ -13,7 +13,7 @@
 /*==============================================================================
   Class      : template (T context, D datas)
   Extensions :
-  Aliases    : Block, Levels
+  Aliases    : Block, LevelVector
   Friends   -> Component, CompressedStack
             <-
 ==============================================================================*/
@@ -47,17 +47,17 @@ private:
   Buffer<T, D> mBuffer;
 };
 
-/* Derived types: Block and Levels */
+/* Derived types: Block and LevelVector */
 // A Partially Compressed Block is composed of the signatures of its SubBlocks
 template <class T, class D> using Block = std::vector<Signature<T, D>>;
 template <class T, class D> Block<T, D> initBlock(int space);
 
-// Each level of compressed Blocks (first and second) are stored in Levels
-template <class T, class D> using Levels = std::vector<Block<T, D>>;
-template <class T, class D> Levels<T, D> initLevels(int space, int depth);
+// Each level of compressed Blocks (first and second) are stored in LevelVector
+template <class T, class D> using LevelVector = std::vector<Block<T, D>>;
+template <class T, class D> LevelVector<T, D> initLevelVector(int space, int depth);
 
 /*==============================================================================
-  Constructors : Signature, initBlock, initLevels
+  Constructors : Signature, initBlock, initLevelVector
 ==============================================================================*/
 template <class T, class D>
 Signature<T, D>::Signature(int index, std::streampos position,
@@ -93,8 +93,8 @@ template <class T, class D> Block<T, D> initBlock(int space) {
   return block;
 }
 
-template <class T, class D> Levels<T, D> initLevels(int space, int depth) {
-  Levels<T, D> levels;
+template <class T, class D> LevelVector<T, D> initLevelVector(int space, int depth) {
+  LevelVector<T, D> levels;
   for (int lvl = 1; lvl < depth; lvl++) {
     Block<T, D> block = initBlock<T, D>(space);
     levels.push_back(block);
