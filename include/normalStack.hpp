@@ -11,14 +11,14 @@
   Class      : template (D datas)
   Extensions :
   Aliases    :
-  Friends   -> Problem
+  Friends   -> StackAlgo
             <-
 ==============================================================================*/
-template <class T, class D> class Problem;       // Required for the friendship
+template <class T, class D> class StackAlgo;       // Required for the friendship
 template <class T, class D> class CompareStacks; // Required for the friendship
 class Comparison;                                // Required for the friendship
 template <class T, class D> class NormalStack : public Stack<T, D> {
-  friend class Problem<T, D>;
+  friend class StackAlgo<T, D>;
   friend class CompareStacks<T, D>;
   friend class Comparison;
 
@@ -33,7 +33,7 @@ private:
   Explicit<T, D> mDatas; // vector of Data
 
   // Stack common methods
-  Data<T, D> pop(Problem<T, D> &problem);
+  Data<T, D> pop(StackAlgo<T, D> &problem);
   Data<T, D> pop();
   void push(const Data<T, D> &data);
   Data<T, D> top(int k = 1);
@@ -73,7 +73,7 @@ bool NormalStack<T, D>::empty(int lvl, int component) {
 }
 
 template <class T, class D>
-Data<T, D> NormalStack<T, D>::pop(Problem<T, D> &problem) {
+Data<T, D> NormalStack<T, D>::pop(StackAlgo<T, D> &problem) {
   Data<T, D> data = mDatas.back();
   mDatas.pop_back();
   return data;

@@ -1,5 +1,5 @@
-#ifndef PROBLEM
-#define PROBLEM
+#ifndef STACKALGO
+#define STACKALGO
 
 /*==============================================================================
   Includes
@@ -24,17 +24,15 @@ template <class T, class D>
 class CompressedStack;                           // Required for the friendship
 template <class T, class D> class CompareStacks; // Required for the friendship
 class Comparison;                                // Required for the friendship
-template <class T, class D> class Problem {
+template <class T, class D> class StackAlgo {
   friend class CompressedStack<T, D>;
   friend class CompareStacks<T, D>;
   friend class Comparison;
 
 public:
   // Members functions
-  Problem<T, D>(std::string fileName);
-  // Problem<T,D>(std::string fileName, int size);
-  // Problem<T,D>(std::string fileName, int size, int space, int buffer);
-  virtual ~Problem<T, D>() {}
+  StackAlgo<T, D>(std::string fileName);
+  virtual ~StackAlgo<T, D>() {}
 
   // Running the stack
   void run();
@@ -78,7 +76,7 @@ private:
   virtual bool pushCondition(D data) = 0;
   virtual void pushAction(Data<T, D> elt){};
 
-  // Problem internal during run
+  // StackAlgo internal during run
   std::shared_ptr<T> mContext;
 
   // Stack: Normal or Compressed
@@ -89,7 +87,7 @@ private:
   Constructors : with NormalStack or CompressedStack
 ==============================================================================*/
 template <class T, class D>
-Problem<T, D>::Problem(std::string fileName) : mIndex(0), mContext(nullptr) {
+StackAlgo<T, D>::StackAlgo(std::string fileName) : mIndex(0), mContext(nullptr) {
   mInput.open(fileName, std::ifstream::in);
 
   std::vector<std::string> parameters = readHeader();
@@ -112,7 +110,7 @@ Problem<T, D>::Problem(std::string fileName) : mIndex(0), mContext(nullptr) {
   }
 
   if (foundBuffer && !foundP)
-    throw("Problem<T,D>::Problem(std::string fileName), wrong header format ");
+    throw("StackAlgo<T,D>::StackAlgo(std::string fileName), wrong header format ");
   if (!foundP)
     mStack = std::shared_ptr<Stack<T, D>>(
         new NormalStack<T, D>()); // space not provided, normal stack
@@ -128,7 +126,7 @@ Problem<T, D>::Problem(std::string fileName) : mIndex(0), mContext(nullptr) {
 /*==============================================================================
   IO : toString, print, println
 ==============================================================================*/
-template <class T, class D> std::string Problem<T, D>::toString() {
+template <class T, class D> std::string StackAlgo<T, D>::toString() {
   std::string str;
   str = "Instance with an actual index of " + std::to_string(mIndex);
   str += ", with a stack of type\n";
@@ -136,16 +134,16 @@ template <class T, class D> std::string Problem<T, D>::toString() {
   return str;
 }
 
-template <class T, class D> void Problem<T, D>::print() {
+template <class T, class D> void StackAlgo<T, D>::print() {
   std::cout << toString();
 }
 
-template <class T, class D> void Problem<T, D>::println() {
+template <class T, class D> void StackAlgo<T, D>::println() {
   print();
   std::cout << std::endl;
 }
 
-template <class T, class D> std::vector<std::string> Problem<T, D>::readLine() {
+template <class T, class D> std::vector<std::string> StackAlgo<T, D>::readLine() {
   std::string str;
   std::vector<std::string> line;
   size_t pos = std::string::npos;
@@ -164,7 +162,7 @@ template <class T, class D> std::vector<std::string> Problem<T, D>::readLine() {
 }
 
 template <class T, class D>
-std::vector<std::string> Problem<T, D>::readHeader() {
+std::vector<std::string> StackAlgo<T, D>::readHeader() {
   std::string str;
   std::vector<std::string> line;
   size_t pos = std::string::npos;
@@ -181,7 +179,7 @@ std::vector<std::string> Problem<T, D>::readHeader() {
   return line;
 }
 
-template <class T, class D> void Problem<T, D>::readPush(int iter) {
+template <class T, class D> void StackAlgo<T, D>::readPush(int iter) {
   for (int i = 0; i < iter; i++) {
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
@@ -199,7 +197,7 @@ template <class T, class D> void Problem<T, D>::readPush(int iter) {
   Stack Functions: run, push, pop, top, readPush
 ==============================================================================*/
 // TODO: Make popLoop, pushStep and so on functions
-template <class T, class D> void Problem<T, D>::run() {
+template <class T, class D> void StackAlgo<T, D>::run() {
   initStackIntern();
   while (mInput.good()) {
     std::streampos position = mInput.tellg();
@@ -222,7 +220,7 @@ template <class T, class D> void Problem<T, D>::run() {
   }
 }
 
-template <class T, class D> void Problem<T, D>::run(int limit) {
+template <class T, class D> void StackAlgo<T, D>::run(int limit) {
   // int testIndex = mIndex;
   while (mInput.good() && mIndex < limit) {
     std::streampos position = mInput.tellg();
@@ -244,40 +242,40 @@ template <class T, class D> void Problem<T, D>::run(int limit) {
   }
 }
 
-template <class T, class D> void Problem<T, D>::push(Data<T, D> elt) {
+template <class T, class D> void StackAlgo<T, D>::push(Data<T, D> elt) {
   mStack->push(elt);
 }
-template <class T, class D> Data<T, D> Problem<T, D>::pop() {
+template <class T, class D> Data<T, D> StackAlgo<T, D>::pop() {
   return mStack->pop(*this);
 }
-template <class T, class D> Data<T, D> Problem<T, D>::top(int k) {
+template <class T, class D> Data<T, D> StackAlgo<T, D>::top(int k) {
   return mStack->top(k);
 }
-template <class T, class D> bool Problem<T, D>::emptystack() {
+template <class T, class D> bool StackAlgo<T, D>::emptystack() {
   return mStack->empty();
 }
 
 /*==============================================================================
   Setters
 ==============================================================================*/
-template <class T, class D> void Problem<T, D>::setContext(const T &context) {
+template <class T, class D> void StackAlgo<T, D>::setContext(const T &context) {
   mContext = std::make_shared<T>(context);
   mStack->setContext(mContext);
 }
 
-template <class T, class D> void Problem<T, D>::setIndex(int index) {
+template <class T, class D> void StackAlgo<T, D>::setIndex(int index) {
   mIndex = index;
 }
 
-template <class T, class D> void Problem<T, D>::initStackIntern() {
+template <class T, class D> void StackAlgo<T, D>::initStackIntern() {
   mContext = initStack();
 }
 
 /*==============================================================================
   Getters
 ==============================================================================*/
-template <class T, class D> T Problem<T, D>::getContext() { return *mContext; }
+template <class T, class D> T StackAlgo<T, D>::getContext() { return *mContext; }
 
-template <class T, class D> int Problem<T, D>::getIndex() { return mIndex; }
+template <class T, class D> int StackAlgo<T, D>::getIndex() { return mIndex; }
 
-#endif /* PROBLEM */
+#endif /* STACKALGO */

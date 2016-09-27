@@ -18,12 +18,12 @@
    Class      : template (T context, D datas)
    Extensions :
    Aliases    :
-   Friends   -> Problem
+   Friends   -> StackAlgo
              <- Signature, Component, Buffer, Data
 ==============================================================================*/
-template <class T, class D> class Problem; // Required for the friendship
+template <class T, class D> class StackAlgo; // Required for the friendship
 template <class T, class D> class CompressedStack : public Stack<T, D> {
-  friend class Problem<T, D>;
+  friend class StackAlgo<T, D>;
 
 public:
   CompressedStack<T, D>(int size, int space, int buffer,
@@ -44,7 +44,7 @@ private:
   // component = i > 0 tests component i
 
   Data<T, D> top(int k = 1);
-  Data<T, D> pop(Problem<T, D> &Problem);
+  Data<T, D> pop(StackAlgo<T, D> &StackAlgo);
   void push(const Data<T, D> &data);
   void copyContent(CompressedStack<T, D> &stack);
   void compress();
@@ -84,11 +84,11 @@ private:
 
   /* Pop related */
   void popBuffer();
-  SPData<T, D> popExplicit(Problem<T, D> &Problem, int component);
+  SPData<T, D> popExplicit(StackAlgo<T, D> &StackAlgo, int component);
   void popComponent(int index, int component);
   void propagate(int index, int lvl, int component = 1);
   void clear(int index, int lvl, int component);
-  void reconstruct(Problem<T, D> &problem);
+  void reconstruct(StackAlgo<T, D> &problem);
 
   // Other getters
   SPData<T, D> getExplicitData(int k);
@@ -103,7 +103,7 @@ private:
   // Position of previous input (before reading)
   std::streampos mPosition;
 
-  // Pointer to the context in Problem
+  // Pointer to the context in StackAlgo
   std::shared_ptr<T> mContext;
 
 protected:
@@ -613,7 +613,7 @@ void CompressedStack<T, D>::compress(Block<T, D> block) {
     2) copyContent
 ==============================================================================*/
 template <class T, class D>
-void CompressedStack<T, D>::reconstruct(Problem<T, D> &problem) {
+void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
   std::shared_ptr<Signature<T, D>> sign;
   int lvl;
   for (lvl = mDepth; lvl >= 0; lvl--) {
@@ -690,7 +690,7 @@ void CompressedStack<T, D>::copyContent(CompressedStack<T, D> &stack) {
     6) propagate
 ==============================================================================*/
 template <class T, class D>
-Data<T, D> CompressedStack<T, D>::pop(Problem<T, D> &problem) {
+Data<T, D> CompressedStack<T, D>::pop(StackAlgo<T, D> &problem) {
   popBuffer();
   if (empty(mDepth)) {
     reconstruct(problem);
@@ -712,7 +712,7 @@ template <class T, class D> void CompressedStack<T, D>::popBuffer() {
 }
 
 template <class T, class D>
-SPData<T, D> CompressedStack<T, D>::popExplicit(Problem<T, D> &problem,
+SPData<T, D> CompressedStack<T, D>::popExplicit(StackAlgo<T, D> &problem,
                                                 int component) {
   SPData<T, D> elt = topPointer(1);
   pop_back(mDepth, component);

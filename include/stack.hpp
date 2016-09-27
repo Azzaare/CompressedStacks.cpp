@@ -22,7 +22,7 @@ public:
   virtual ~Stack<T, D>(){};
 
   // Common stack functions
-  virtual Data<T, D> pop(Problem<T, D> &problem) = 0;
+  virtual Data<T, D> pop(StackAlgo<T, D> &problem) = 0;
   virtual void push(const Data<T, D> &data) = 0;
   virtual Data<T, D> top(int k = 1) = 0;
 

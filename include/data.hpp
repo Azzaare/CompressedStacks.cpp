@@ -13,19 +13,19 @@
   Class      : template (D datas)
   Extensions :
   Aliases    : Explicit, ExplicitPointer
-  Friends   -> Component, CompressedStack, Problem
+  Friends   -> Component, CompressedStack, StackAlgo
             <-
 ==============================================================================*/
 template <class T, class D> class Component; // Required for the friendship
 template <class T, class D>
 class CompressedStack;                           // Required for the friendship
-template <class T, class D> class Problem;       // Required for the friendship
+template <class T, class D> class StackAlgo;       // Required for the friendship
 template <class T, class D> class CompareStacks; // Required for the friendship
 class Comparison;                                // Required for the friendship
 template <class T, class D> class Data {
   friend class Component<T, D>;
   friend class CompressedStack<T, D>;
-  friend class Problem<T, D>;
+  friend class StackAlgo<T, D>;
   friend class CompareStacks<T, D>;
   friend class Comparison;
 

@@ -59,7 +59,7 @@ bool convexHull::pushCondition(Point2D data) {
         return true;
 }
 void convexHull::pushAction(Data<emptyContext, Point2D> elt) {
-    std::cout << "convexHullProblem::pushAction Nothing to see here "<<elt.getData()<< std::endl;
+    std::cout << "convexHullStackAlgo::pushAction Nothing to see here "<<elt.getData()<< std::endl;
 }
 
 
@@ -123,5 +123,5 @@ bool comparisonConvexHull::pushCondition(Point2D data) {
         return true;
 }
 void comparisonConvexHull::pushAction(Data<emptyContext, Point2D> elt) {
-    std::cout << "convexHullProblem::pushAction Nothing to see here "<<elt.getData()<< std::endl;
+    std::cout << "convexHullStackAlgo::pushAction Nothing to see here "<<elt.getData()<< std::endl;
 }

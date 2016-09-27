@@ -5,16 +5,16 @@
   Includes
 ==============================================================================*/
 #include "data.hpp"
-#include "problem.hpp"
+#include "stackAlgo.hpp"
 
 /*==============================================================================
   Class      : abstract, template (T context, D datas)
   Extensions :
   Aliases    :
   Friends   ->
-            <- Problem
+            <- StackAlgo
 ==============================================================================*/
-template <class T, class D> class CompareStacks : public Problem<T, D> {
+template <class T, class D> class CompareStacks : public StackAlgo<T, D> {
 public:
   // Members functions
   CompareStacks<T, D>(std::string fileName);
@@ -24,7 +24,7 @@ public:
 
   // IO
   void printCompare() {
-    std::string str = Problem<T, D>::toString();
+    std::string str = StackAlgo<T, D>::toString();
     str += "\n" + (*mNormalStack).toString();
     std::cout << str << std::endl;
   }
@@ -54,68 +54,68 @@ private:
 
 template <class T, class D>
 CompareStacks<T, D>::CompareStacks(std::string fileName)
-    : Problem<T, D>(fileName), mNormalStack(new NormalStack<T, D>()) {}
+    : StackAlgo<T, D>(fileName), mNormalStack(new NormalStack<T, D>()) {}
 
 /*==============================================================================
   Stack Functions: run, push, pop, top
 ==============================================================================*/
 template <class T, class D> Data<T, D> CompareStacks<T, D>::popCompare() {
-  return Problem<T, D>::mStack->pop(*this);
+  return StackAlgo<T, D>::mStack->pop(*this);
 }
 
 template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
   try {
-    Problem<T, D>::initStackIntern();
-    while ((Problem<T, D>::mInput.good())) {
-      std::streampos position = Problem<T, D>::mInput.tellg();
-      (*Problem<T, D>::mStack).setPosition(position);
+    StackAlgo<T, D>::initStackIntern();
+    while ((StackAlgo<T, D>::mInput.good())) {
+      std::streampos position = StackAlgo<T, D>::mInput.tellg();
+      (*StackAlgo<T, D>::mStack).setPosition(position);
       for (int i = 1; i <= buffer; i++) {
-        bool bIndex = Problem<T, D>::top(i).mIndex == mNormalStack->top(i).mIndex;
-        bool bData = Problem<T, D>::top(i).mData == mNormalStack->top(i).mData;
+        bool bIndex = StackAlgo<T, D>::top(i).mIndex == mNormalStack->top(i).mIndex;
+        bool bData = StackAlgo<T, D>::top(i).mData == mNormalStack->top(i).mData;
         if (!bIndex || !bData) {
-          Problem<T, D>::println();
+          StackAlgo<T, D>::println();
           std::cout << mNormalStack->toString() << std::endl;
           throw "The top $(i)st elements are different";
         }
       }
-      std::vector<std::string> line = Problem<T, D>::readLine();
+      std::vector<std::string> line = StackAlgo<T, D>::readLine();
       if ((line.front() == "-1") || (line.front() == "")) {
         break;
       }
       D data = readInput(line);
-      Problem<T, D>::mIndex++;
-      if ((*Problem<T, D>::mStack).empty() != mNormalStack->empty()) {
-        (*Problem<T, D>::mStack).empty();
-        Problem<T, D>::println();
+      StackAlgo<T, D>::mIndex++;
+      if ((*StackAlgo<T, D>::mStack).empty() != mNormalStack->empty()) {
+        (*StackAlgo<T, D>::mStack).empty();
+        StackAlgo<T, D>::println();
         std::cout << mNormalStack->toString() << std::endl;
-        (*Problem<T, D>::mStack).empty();
+        (*StackAlgo<T, D>::mStack).empty();
         throw "One stack is empty and not the other";
       }
-      while ((!(Problem<T, D>::emptystack())) && (popCondition(data))) {
-        Data<T, D> elt = Problem<T, D>::pop();
+      while ((!(StackAlgo<T, D>::emptystack())) && (popCondition(data))) {
+        Data<T, D> elt = StackAlgo<T, D>::pop();
         Data<T, D> eltNormal = mNormalStack->pop();
         popAction(elt);
         bool bIndex = elt.mIndex == eltNormal.mIndex;
         bool bData = elt.mData == eltNormal.mData;
         if (!bIndex || !bData) {
-          Problem<T, D>::println();
-          //std::cout << *Problem<T, D>::mContext << std::endl;
+          StackAlgo<T, D>::println();
+          //std::cout << *StackAlgo<T, D>::mContext << std::endl;
           std::cout << mNormalStack->toString() << std::endl;
           throw "The two elements popped are different";
         }
       }
       if (pushCondition(data)) {
-        Data<T, D> elt(Problem<T, D>::mIndex, data);
+        Data<T, D> elt(StackAlgo<T, D>::mIndex, data);
         pushAction(elt);
-        Problem<T, D>::push(elt);
+        StackAlgo<T, D>::push(elt);
         mNormalStack->push(elt);
       }
-      if (Problem<T, D>::mStack->getBufferSize() > 0) {
+      if (StackAlgo<T, D>::mStack->getBufferSize() > 0) {
         std::cout << "Is it working" << std::endl;
-        for (int k = 1; k <= Problem<T, D>::mStack->getBufferSize(); k++) {
-          if (Problem<T, D>::mStack->top(k).mIndex == mNormalStack->top(k).mIndex) {
-            Problem<T, D>::println();
-            //std::cout << *Problem<T, D>::mContext << std::endl;
+        for (int k = 1; k <= StackAlgo<T, D>::mStack->getBufferSize(); k++) {
+          if (StackAlgo<T, D>::mStack->top(k).mIndex == mNormalStack->top(k).mIndex) {
+            StackAlgo<T, D>::println();
+            //std::cout << *StackAlgo<T, D>::mContext << std::endl;
             std::cout << mNormalStack->toString() << std::endl;
             throw "The two elements at the k = $(k) position are different";
           }
@@ -129,14 +129,14 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
 
 template <class T, class D> void CompareStacks<T, D>::readPush(int iter) {
   for (int i = 0; i < iter; i++) {
-    std::streampos position = Problem<T, D>::mInput.tellg();
-    Problem<T, D>::mStack->setPosition(position);
-    std::vector<std::string> line = Problem<T, D>::readLine();
+    std::streampos position = StackAlgo<T, D>::mInput.tellg();
+    StackAlgo<T, D>::mStack->setPosition(position);
+    std::vector<std::string> line = StackAlgo<T, D>::readLine();
     D data = readInput(line);
-    Problem<T, D>::mIndex++;
-    Data<T, D> elt(Problem<T, D>::mIndex, data);
+    StackAlgo<T, D>::mIndex++;
+    Data<T, D> elt(StackAlgo<T, D>::mIndex, data);
     pushAction(elt);
-    Problem<T, D>::push(elt);
+    StackAlgo<T, D>::push(elt);
     mNormalStack->push(elt);
   }
 }

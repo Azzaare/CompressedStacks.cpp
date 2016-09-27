@@ -1,4 +1,4 @@
-#include "problem.hpp"
+#include "stackAlgo.hpp"
 #include "compare.hpp"
 #include "Point2D.hpp"
 
@@ -11,9 +11,9 @@ class emptyContext{};
 /*==============================================================================
   Instantiation of a problem
 ==============================================================================*/
-class convexHull : public Problem<emptyContext, Point2D> {
+class convexHull : public StackAlgo<emptyContext, Point2D> {
 public:
-    convexHull(std::string filePath) : Problem<emptyContext, Point2D>(filePath) {}
+    convexHull(std::string filePath) : StackAlgo<emptyContext, Point2D>(filePath) {}
 
 private:
     // Functions to run the stack

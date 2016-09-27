@@ -36,10 +36,11 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 
-# Building directories + instances
+# Building directories + instances + results
 .gitignore
 .idea
 instances
+results
 debug/*
 minsizerel/*
 release/*

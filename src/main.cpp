@@ -6,7 +6,7 @@
 #include "../include/compare.hpp"
 #include "../include/createTestInput.hpp"
 #include "../include/convexHull.hpp"
-#include "../include/problem.hpp"
+#include "../include/stackAlgo.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -14,9 +14,9 @@
 /*==============================================================================
   Instantiation of a problem
 ==============================================================================*/
-class Instance : public Problem<int, int> {
+class Instance : public StackAlgo<int, int> {
 public:
-  Instance(std::string filePath) : Problem<int, int>(filePath) {}
+  Instance(std::string filePath) : StackAlgo<int, int>(filePath) {}
 
 private:
   // Functions to run the stack
