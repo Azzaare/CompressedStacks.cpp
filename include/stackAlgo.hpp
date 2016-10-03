@@ -31,7 +31,7 @@ template <class T, class D> class StackAlgo {
 
 public:
   // Members functions
-  StackAlgo<T, D>(std::string fileName);
+  StackAlgo<T, D>(std::string fileName, bool useclassic = false);
   virtual ~StackAlgo<T, D>() {}
 
   // Walking the stack
@@ -79,14 +79,14 @@ private:
   virtual D readInput(std::vector<std::string> line) = 0;
 
   virtual bool popCondition(D data) = 0;
-  virtual void prePop(D data){};
-  virtual void postPop(D data, Data<T, D> elt){};
-  virtual void noPop(D data){};
+  virtual void prePop(D data) = 0;
+  virtual void postPop(D data, Data<T, D> elt) = 0;
+  virtual void noPop(D data) = 0;
 
   virtual bool pushCondition(D data) = 0;
-  virtual void prePush(Data<T, D> elt){};
-  virtual void postPush(Data<T, D> elt){};
-  virtual void noPush(D data){};
+  virtual void prePush(Data<T, D> elt) = 0;
+  virtual void postPush(Data<T, D> elt) = 0;
+  virtual void noPush(D data) = 0;
 
   virtual void reportStack() = 0;
 
@@ -101,7 +101,7 @@ private:
   Constructors : with ClassicStack or CompressedStack
 ==============================================================================*/
 template <class T, class D>
-StackAlgo<T, D>::StackAlgo(std::string fileName)
+StackAlgo<T, D>::StackAlgo(std::string fileName, bool useclassic)
     : mIndex(0), mContext(nullptr) {
   mInput.open(fileName, std::ifstream::in);
 
@@ -127,7 +127,7 @@ StackAlgo<T, D>::StackAlgo(std::string fileName)
   if (foundBuffer && !foundP)
     throw("StackAlgo<T,D>::StackAlgo(std::string fileName), wrong header "
           "format ");
-  if (!foundP)
+  if (!foundP || useclassic)
     mStack = std::shared_ptr<Stack<T, D>>(
         new ClassicStack<T, D>()); // space not provided, classic stack
   else                             // space was provided, compressed stack

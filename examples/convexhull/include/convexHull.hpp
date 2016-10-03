@@ -1,6 +1,13 @@
-#include "compare.hpp"
+// ConvexHull : Definition
+#ifndef CONVEXHULL
+#define CONVEXHULL
+
+/*==============================================================================
+  Includes
+==============================================================================*/
+//#include "../../../include/stackAlgo.hpp" // Not necessary with compare.hpp
+#include "../../../include/compare.hpp"
 #include "point2D.hpp"
-#include "stackAlgo.hpp"
 
 /*==============================================================================
   Empty type for the context (empty for the Convex Hull problem)
@@ -10,10 +17,10 @@ class emptyContext {};
 /*==============================================================================
   Instantiation of a problem
 ==============================================================================*/
-class convexHull : public StackAlgo<emptyContext, Point2D> {
+class ConvexHull : public StackAlgo<emptyContext, Point2D> {
 public:
-  convexHull(std::string filePath)
-      : StackAlgo<emptyContext, Point2D>(filePath) {}
+  ConvexHull(std::string filePath, bool useclassic = false)
+      : StackAlgo<emptyContext, Point2D>(filePath, useclassic) {}
 
 private:
   // Functions to run the stack
@@ -37,9 +44,9 @@ private:
   Instantiation of a comparison
 ==============================================================================*/
 
-class comparisonConvexHull : public CompareStacks<emptyContext, Point2D> {
+class ComparisonConvexHull : public CompareStacks<emptyContext, Point2D> {
 public:
-  comparisonConvexHull(std::string filePath)
+  ComparisonConvexHull(std::string filePath)
       : CompareStacks<emptyContext, Point2D>(filePath) {}
 
 private:
@@ -59,3 +66,5 @@ private:
 
   void reportStack();
 };
+
+#endif // CONVEXHULL

@@ -70,8 +70,10 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
       std::streampos position = StackAlgo<T, D>::mInput.tellg();
       (*StackAlgo<T, D>::mStack).setPosition(position);
       for (int i = 1; i <= buffer; i++) {
-        bool bIndex = StackAlgo<T, D>::top(i).mIndex == mClassicStack->top(i).mIndex;
-        bool bData = StackAlgo<T, D>::top(i).mData == mClassicStack->top(i).mData;
+        bool bIndex =
+            StackAlgo<T, D>::top(i).mIndex == mClassicStack->top(i).mIndex;
+        bool bData =
+            StackAlgo<T, D>::top(i).mData == mClassicStack->top(i).mData;
         if (!bIndex || !bData) {
           StackAlgo<T, D>::println();
           std::cout << mClassicStack->toString() << std::endl;
@@ -99,7 +101,7 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
         bool bData = elt.mData == eltNormal.mData;
         if (!bIndex || !bData) {
           StackAlgo<T, D>::println();
-          //std::cout << *StackAlgo<T, D>::mContext << std::endl;
+          // std::cout << *StackAlgo<T, D>::mContext << std::endl;
           std::cout << mClassicStack->toString() << std::endl;
           throw "The two elements popped are different";
         }
@@ -113,9 +115,10 @@ template <class T, class D> void CompareStacks<T, D>::runCompare(int buffer) {
       if (StackAlgo<T, D>::mStack->getBufferSize() > 0) {
         std::cout << "Is it working" << std::endl;
         for (int k = 1; k <= StackAlgo<T, D>::mStack->getBufferSize(); k++) {
-          if (StackAlgo<T, D>::mStack->top(k).mIndex == mClassicStack->top(k).mIndex) {
+          if (StackAlgo<T, D>::mStack->top(k).mIndex ==
+              mClassicStack->top(k).mIndex) {
             StackAlgo<T, D>::println();
-            //std::cout << *StackAlgo<T, D>::mContext << std::endl;
+            // std::cout << *StackAlgo<T, D>::mContext << std::endl;
             std::cout << mClassicStack->toString() << std::endl;
             throw "The two elements at the k = $(k) position are different";
           }

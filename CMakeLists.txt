@@ -1,3 +1,6 @@
+## Please modify this file freely to adapt to the production of other
+## executables than convexhull and testrun
+
 # Recent version of CMake required
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
@@ -42,18 +45,23 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wshadow")
 # Might need to be fixed for retrocompatibility or temporary
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++0x-compat -Wno-unused")
 
-#Bring the headers into the project
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
-#Bring the sources
-file(GLOB SOURCES "src/*.cpp")
+#Bring the headers of the header-only CompressedStack library into the project
+include_directories(
+	${PROJECT_SOURCE_DIR}/include
+ 	${PROJECT_SOURCE_DIR}/examples/convexhull/include ${PROJECT_SOURCE_DIR}/examples/testrun/include
+)
 
 # Test directories
 get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message("inc_dirs = ${inc_dirs}")
 
-# Executable
-add_executable(smartstack ${SOURCES})
+# Convex Hull
+file(GLOB SOURCES "examples/convexhull/*.cpp")
+add_executable(convexhull ${SOURCES})
+
+# Test Run
+file(GLOB SOURCES "examples/testrun/*.cpp")
+add_executable(testrun ${SOURCES})
 
 
 # Description of the different builds
