@@ -107,7 +107,7 @@ StackAlgo<T, D>::StackAlgo(std::string fileName, bool useclassic)
 
   std::vector<std::string> parameters = readHeader();
 
-  int p, b, n = 0;
+  int p = 0, b = 0, n = 0;
   bool foundP = false;
   bool foundBuffer = false;
 
