@@ -56,3 +56,5 @@ script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER .. && make
+  - ./convexhull examples/convexhull/instances/size100space10.csv
+  - ./testrun examples/testrun/instances/size1000space10.csv
