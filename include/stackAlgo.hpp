@@ -4,9 +4,10 @@
 /*==============================================================================
   Includes
 ==============================================================================*/
-#include "classicStack.hpp"
+#include "../extras/classicStack.hpp"
 #include "compressedStack.hpp"
 #include "stack.hpp"
+#include <cstdint>
 #include <exception>
 #include <fstream>
 #include <memory>
@@ -20,56 +21,48 @@
   Friends   -> CompressedStack
             <- ClassicStack, CompressedStack, Data
 ==============================================================================*/
-template <class T, class D>
-class CompressedStack;                           // Required for the friendship
-template <class T, class D> class CompareStacks; // Required for the friendship
-class Comparison;                                // Required for the friendship
-template <class T, class D> class StackAlgo {
-  friend class CompressedStack<T, D>;
-  friend class CompareStacks<T, D>;
-  friend class Comparison;
+template <class T, class D, class I> class StackAlgo {
+  friend class CompressedStack<T, D, I>;
+  friend class StackAlgoExtras<T, D, I>;
 
 public:
   // Members functions
-  StackAlgo<T, D>(std::string fileName, bool useclassic = false);
-  virtual ~StackAlgo<T, D>() {}
-
-  // Walking the stack
-  void walk(int steps = 1);
-  int step();
-  void popLoop(D data);
-  void pushStep(D data);
+  StackAlgo<T, D, I>(std::string fileName, bool usecompressed = true);
+  virtual ~StackAlgo<T, D, I>() {}
 
   // Running the stack
   void run();
-  void run(int limit);
-  void push(Data<T, D> elt);
-  Data<T, D> pop();
-  Data<T, D> top(int k);
+  void run(I limit);
+  I step();
+  void popLoop(D data);
+  void pushStep(D data);
+  void push(Data<T, D, I> elt);
+  Data<T, D, I> pop();
+  Data<T, D, I> top(I k);
   bool emptystack();
 
   // Setters
   void setContext(const T &context);
-  void setIndex(int index);
+  void setIndex(I index);
 
   // Getters
   T getContext();
 
-  int getIndex();
+  I getIndex();
 
   // IO
   std::string toString();
   void print();
   void println();
-  void readPush(int iter = 1);
+  void readPush(I iter = 1);
 
-protected:
+  // protected:
   void initStackIntern();
   std::vector<std::string> readLine();
   std::vector<std::string> readHeader();
-  int mIndex;
+  I mIndex;
 
-private:
+  // private:
   // Input/Ouput
   std::ifstream mInput;
   std::ofstream mOutput; // output file is optional
@@ -80,12 +73,12 @@ private:
 
   virtual bool popCondition(D data) = 0;
   virtual void prePop(D data) = 0;
-  virtual void postPop(D data, Data<T, D> elt) = 0;
+  virtual void postPop(D data, Data<T, D, I> elt) = 0;
   virtual void noPop(D data) = 0;
 
   virtual bool pushCondition(D data) = 0;
-  virtual void prePush(Data<T, D> elt) = 0;
-  virtual void postPush(Data<T, D> elt) = 0;
+  virtual void prePush(Data<T, D, I> elt) = 0;
+  virtual void postPush(Data<T, D, I> elt) = 0;
   virtual void noPush(D data) = 0;
 
   virtual void reportStack() = 0;
@@ -94,55 +87,49 @@ private:
   std::shared_ptr<T> mContext;
 
   // Stack: Classic or Compressed
-  std::shared_ptr<Stack<T, D>> mStack;
+  std::shared_ptr<Stack<T, D, I>> mStack;
 };
 
 /*==============================================================================
   Constructors : with ClassicStack or CompressedStack
 ==============================================================================*/
-template <class T, class D>
-StackAlgo<T, D>::StackAlgo(std::string fileName, bool useclassic)
+template <class T, class D, class I>
+StackAlgo<T, D, I>::StackAlgo(std::string fileName, bool usecompressed)
     : mIndex(0), mContext(nullptr) {
   mInput.open(fileName, std::ifstream::in);
 
   std::vector<std::string> parameters = readHeader();
 
-  int p = 0, b = 0, n = 0;
-  bool foundP = false;
-  bool foundBuffer = false;
+  if (usecompressed) {
 
-  for (unsigned int i = 0; i < parameters.size(); i = i + 2) {
-    if (parameters[i].compare("n") == 0)
-      n = stoi(parameters[i + 1]);
-    if (parameters[i].compare("p") == 0) {
-      foundP = true;
-      p = stoi(parameters[i + 1]);
-    }
-    if (parameters[i].compare("b") == 0) {
-      foundBuffer = true;
-      b = stoi(parameters[i + 1]);
-    }
-  }
+    I p = 0, b = 0, n = 0;
 
-  if (foundBuffer && !foundP)
-    throw("StackAlgo<T,D>::StackAlgo(std::string fileName), wrong header "
-          "format ");
-  if (!foundP || useclassic)
-    mStack = std::shared_ptr<Stack<T, D>>(
-        new ClassicStack<T, D>()); // space not provided, classic stack
-  else                             // space was provided, compressed stack
-  {
-    if (!foundBuffer)
-      b = 0;
-    mStack = std::shared_ptr<Stack<T, D>>(
-        new CompressedStack<T, D>(n, p, b, mContext));
+    for (unsigned int i = 0; i < parameters.size(); i = i + 2) {
+      if (parameters[i].compare("n") == 0)
+        n = stoi(parameters[i + 1]);
+      if (parameters[i].compare("p") == 0) {
+        p = stoi(parameters[i + 1]);
+      }
+      if (parameters[i].compare("b") == 0) {
+        b = stoi(parameters[i + 1]);
+      }
+    }
+
+    if (p < 2)
+      throw("StackAlgo<T,D>::StackAlgo(std::string fileName), wrong header "
+            "format ");
+    mStack = std::shared_ptr<Stack<T, D, I>>(
+        new CompressedStack<T, D, I>(n, p, b, mContext));
+  } else {
+    mStack = std::shared_ptr<Stack<T, D, I>>(nullptr);
   }
 }
 
 /*==============================================================================
   IO : toString, print, println
 ==============================================================================*/
-template <class T, class D> std::string StackAlgo<T, D>::toString() {
+template <class T, class D, class I>
+std::string StackAlgo<T, D, I>::toString() {
   std::string str;
   str = "Instance with an actual index of " + std::to_string(mIndex);
   str += ", with a stack of type\n";
@@ -150,17 +137,17 @@ template <class T, class D> std::string StackAlgo<T, D>::toString() {
   return str;
 }
 
-template <class T, class D> void StackAlgo<T, D>::print() {
+template <class T, class D, class I> void StackAlgo<T, D, I>::print() {
   std::cout << toString();
 }
 
-template <class T, class D> void StackAlgo<T, D>::println() {
+template <class T, class D, class I> void StackAlgo<T, D, I>::println() {
   print();
   std::cout << std::endl;
 }
 
-template <class T, class D>
-std::vector<std::string> StackAlgo<T, D>::readLine() {
+template <class T, class D, class I>
+std::vector<std::string> StackAlgo<T, D, I>::readLine() {
   std::string str;
   std::vector<std::string> line;
   size_t pos = std::string::npos;
@@ -178,8 +165,8 @@ std::vector<std::string> StackAlgo<T, D>::readLine() {
   return line;
 }
 
-template <class T, class D>
-std::vector<std::string> StackAlgo<T, D>::readHeader() {
+template <class T, class D, class I>
+std::vector<std::string> StackAlgo<T, D, I>::readHeader() {
   std::string str;
   std::vector<std::string> line;
   size_t pos = std::string::npos;
@@ -196,35 +183,28 @@ std::vector<std::string> StackAlgo<T, D>::readHeader() {
   return line;
 }
 
-template <class T, class D> void StackAlgo<T, D>::readPush(int iter) {
-  for (int i = 0; i < iter; i++) {
+template <class T, class D, class I> void StackAlgo<T, D, I>::readPush(I iter) {
+  for (I i = 0; i < iter; i++) {
     std::streampos position = mInput.tellg();
     (*mStack).setPosition(position);
     std::vector<std::string> line = readLine();
     D data = readInput(line);
     mIndex++;
-    Data<T, D> elt(mIndex, data);
+    Data<T, D, I> elt(mIndex, data);
     prePush(elt);
     push(elt);
+    postPush(elt);
   }
 }
 
 /*==============================================================================
   Stack Functions: run, push, pop, top, readPush
 ==============================================================================*/
-template <class T, class D> void StackAlgo<T, D>::walk(int steps) {
-  for (int i = 0; i < steps; i++) {
-    if (step() == 0 || mInput.good()) {
-      break;
-    }
-  }
-}
-
-template <class T, class D> void StackAlgo<T, D>::popLoop(D data) {
+template <class T, class D, class I> void StackAlgo<T, D, I>::popLoop(D data) {
   while (!emptystack()) {
     if (popCondition(data)) {
       prePop(data);
-      Data<T, D> elt = pop();
+      Data<T, D, I> elt = pop();
       postPop(data, elt);
     } else {
       noPop(data);
@@ -233,9 +213,9 @@ template <class T, class D> void StackAlgo<T, D>::popLoop(D data) {
   }
 }
 
-template <class T, class D> void StackAlgo<T, D>::pushStep(D data) {
+template <class T, class D, class I> void StackAlgo<T, D, I>::pushStep(D data) {
   if (pushCondition(data)) {
-    Data<T, D> elt(mIndex, data);
+    Data<T, D, I> elt(mIndex, data);
     prePush(elt);
     push(elt);
     postPush(elt);
@@ -244,7 +224,7 @@ template <class T, class D> void StackAlgo<T, D>::pushStep(D data) {
   }
 }
 
-template <class T, class D> int StackAlgo<T, D>::step() {
+template <class T, class D, class I> I StackAlgo<T, D, I>::step() {
   // Storing the position in the input file
   std::streampos position = mInput.tellg();
   (*mStack).setPosition(position);
@@ -270,8 +250,9 @@ template <class T, class D> int StackAlgo<T, D>::step() {
   return 1;
 }
 
-template <class T, class D> void StackAlgo<T, D>::run() {
+template <class T, class D, class I> void StackAlgo<T, D, I>::run() {
   initStackIntern();
+
   while (mInput.good()) {
     if (step() == 0) {
       break;
@@ -281,8 +262,8 @@ template <class T, class D> void StackAlgo<T, D>::run() {
   reportStack();
 }
 
-template <class T, class D> void StackAlgo<T, D>::run(int limit) {
-  // int testIndex = mIndex;
+template <class T, class D, class I> void StackAlgo<T, D, I>::run(I limit) {
+  // I testIndex = mIndex;
   while (mInput.good() && mIndex < limit) {
     if (step() == 0) {
       break;
@@ -290,42 +271,49 @@ template <class T, class D> void StackAlgo<T, D>::run(int limit) {
   }
 }
 
-template <class T, class D> void StackAlgo<T, D>::push(Data<T, D> elt) {
+template <class T, class D, class I>
+void StackAlgo<T, D, I>::push(Data<T, D, I> elt) {
   mStack->push(elt);
 }
-template <class T, class D> Data<T, D> StackAlgo<T, D>::pop() {
+template <class T, class D, class I> Data<T, D, I> StackAlgo<T, D, I>::pop() {
   return mStack->pop(*this);
 }
-template <class T, class D> Data<T, D> StackAlgo<T, D>::top(int k) {
+template <class T, class D, class I>
+Data<T, D, I> StackAlgo<T, D, I>::top(I k) {
   return mStack->top(k);
 }
-template <class T, class D> bool StackAlgo<T, D>::emptystack() {
+template <class T, class D, class I> bool StackAlgo<T, D, I>::emptystack() {
   return mStack->empty();
 }
 
 /*==============================================================================
   Setters
 ==============================================================================*/
-template <class T, class D> void StackAlgo<T, D>::setContext(const T &context) {
+template <class T, class D, class I>
+void StackAlgo<T, D, I>::setContext(const T &context) {
   mContext = std::make_shared<T>(context);
   mStack->setContext(mContext);
 }
 
-template <class T, class D> void StackAlgo<T, D>::setIndex(int index) {
+template <class T, class D, class I>
+void StackAlgo<T, D, I>::setIndex(I index) {
   mIndex = index;
 }
 
-template <class T, class D> void StackAlgo<T, D>::initStackIntern() {
+template <class T, class D, class I>
+void StackAlgo<T, D, I>::initStackIntern() {
   mContext = initStack();
 }
 
 /*==============================================================================
   Getters
 ==============================================================================*/
-template <class T, class D> T StackAlgo<T, D>::getContext() {
+template <class T, class D, class I> T StackAlgo<T, D, I>::getContext() {
   return *mContext;
 }
 
-template <class T, class D> int StackAlgo<T, D>::getIndex() { return mIndex; }
+template <class T, class D, class I> I StackAlgo<T, D, I>::getIndex() {
+  return mIndex;
+}
 
 #endif /* STACKALGO */

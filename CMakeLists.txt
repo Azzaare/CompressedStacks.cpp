@@ -45,23 +45,34 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wshadow")
 # Might need to be fixed for retrocompatibility or temporary
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++0x-compat -Wno-unused")
 
-#Bring the headers of the header-only CompressedStack library into the project
-include_directories(
-	${PROJECT_SOURCE_DIR}/include
- 	${PROJECT_SOURCE_DIR}/examples/convexhull/include ${PROJECT_SOURCE_DIR}/examples/testrun/include
-)
 
 # Test directories
 get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message("inc_dirs = ${inc_dirs}")
 
-# Convex Hull
-file(GLOB SOURCES "examples/convexhull/*.cpp")
-add_executable(convexhull ${SOURCES})
+# Convex Hulls : 8, 16, 32 or 64 bits and the version with extras
+file(GLOB SOURCES "examples/convexhull/convexHull8.cpp")
+add_executable(convexhull8 ${SOURCES})
+file(GLOB SOURCES "examples/convexhull/convexHull16.cpp")
+add_executable(convexhull16 ${SOURCES})
+file(GLOB SOURCES "examples/convexhull/convexHull32.cpp")
+add_executable(convexhull32 ${SOURCES})
+file(GLOB SOURCES "examples/convexhull/convexHull64.cpp")
+add_executable(convexhull64 ${SOURCES})
+file(GLOB SOURCES "examples/convexhull/convexHullExtras.cpp")
+add_executable(convexhullextras ${SOURCES})
 
-# Test Run
-file(GLOB SOURCES "examples/testrun/*.cpp")
-add_executable(testrun ${SOURCES})
+# Test Run : 8, 16, 32 or 64 bits and the version with extras
+file(GLOB SOURCES "examples/testrun/testrun8.cpp")
+add_executable(testrun8 ${SOURCES})
+file(GLOB SOURCES "examples/testrun/testrun16.cpp")
+add_executable(testrun16 ${SOURCES})
+file(GLOB SOURCES "examples/testrun/testrun32.cpp")
+add_executable(testrun32 ${SOURCES})
+file(GLOB SOURCES "examples/testrun/testrun64.cpp")
+add_executable(testrun64 ${SOURCES})
+file(GLOB SOURCES "examples/testrun/testrunExtras.cpp")
+add_executable(testrunextras ${SOURCES})
 
 
 # Description of the different builds

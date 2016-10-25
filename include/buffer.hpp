@@ -17,50 +17,48 @@
   Friends   -> CompressedStack
             <-
 ==============================================================================*/
-template <class T, class D>
-class CompressedStack;                         // Required for the friendship
-template <class T, class D> class Block;   // Required for the friendship
-template <class T, class D> class Component;   // Required for the friendship
-template <class T, class D> class ClassicStack; // Required for the friendship
-template <class T, class D> class Buffer {
-  friend class CompressedStack<T, D>;
-  friend class ClassicStack<T, D>;
-  friend class Block<T, D>;
-  friend class Component<T, D>;
+template <class T, class D, class I> class Block; // Required for the friendship
+template <class T, class D, class I>
+class ClassicStack; // Required for the friendship
+template <class T, class D, class I> class Buffer {
+  friend class CompressedStack<T, D, I>;
+  friend class ClassicStack<T, D, I>;
+  friend class Block<T, D, I>;
+  friend class Component<T, D, I>;
 
 private:
   // Constructor
-  Buffer<T, D>(int size = 0);
+  Buffer<T, D, I>(I size = 0);
 
   // Getters
-  Data<T, D> top(int k);
-  SPData<T, D> topPointer(int k);
+  Data<T, D, I> top(I k);
+  SPData<T, D, I> topPointer(I k);
 
   // Setters
-  void setStart(int k = 1);
-  void setData(SPData<T, D> elt, int id = 1);
+  void setStart(I k = 1);
+  void setData(SPData<T, D, I> elt, I id = 1);
 
   // Push and Pop
-  void push(SPData<T, D> elt);
-  void pop(SPData<T, D> elt);
+  void push(SPData<T, D, I> elt);
+  void pop(SPData<T, D, I> elt);
 
   // IO
   std::string toString();
 
   // Members
-  int mSize;
-  int mStart;
-  ExplicitPointer<T, D> mExplicit;
+  I mSize;
+  I mStart;
+  ExplicitPointer<T, D, I> mExplicit;
 };
 
 /*==============================================================================
   Constructors
 ==============================================================================*/
-template <class T, class D> Buffer<T, D>::Buffer(int size) {
+template <class T, class D, class I> Buffer<T, D, I>::Buffer(I size) {
   mSize = size;
   mStart = 0;
 
-  ExplicitPointer<T, D> xplicit = initExplicitPointer<T, D>();
+  ExplicitPointer<T, D, I> xplicit = initExplicitPointer<T, D, I>();
   xplicit.reserve(size);
   mExplicit = xplicit;
 }
@@ -68,17 +66,18 @@ template <class T, class D> Buffer<T, D>::Buffer(int size) {
 /*==============================================================================
   Getters
 ==============================================================================*/
-template <class T, class D> Data<T, D> Buffer<T, D>::top(int k) {
+template <class T, class D, class I> Data<T, D, I> Buffer<T, D, I>::top(I k) {
   if (k <= mSize) {
-    int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
+    I index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
     return *(mExplicit[index]);
   }
   throw "Access to a top element bigger than the size of the buffer";
 }
 
-template <class T, class D> SPData<T, D> Buffer<T, D>::topPointer(int k) {
+template <class T, class D, class I>
+SPData<T, D, I> Buffer<T, D, I>::topPointer(I k) {
   if (k <= mSize) {
-    int index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
+    I index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
     return mExplicit[index];
   }
   throw "Access to a top element bigger than the size of the buffer";
@@ -87,21 +86,22 @@ template <class T, class D> SPData<T, D> Buffer<T, D>::topPointer(int k) {
 /*==============================================================================
   Setters
 ==============================================================================*/
-template <class T, class D> void Buffer<T, D>::setStart(int k) {
+template <class T, class D, class I> void Buffer<T, D, I>::setStart(I k) {
   mStart = (mStart + k) % mSize;
 }
-template <class T, class D>
-void Buffer<T, D>::setData(SPData<T, D> elt, int id) {
-  int index = (id + mStart - 1) % mSize; // -1 match the start of vectors at 0
+template <class T, class D, class I>
+void Buffer<T, D, I>::setData(SPData<T, D, I> elt, I id) {
+  I index = (id + mStart - 1) % mSize; // -1 match the start of vectors at 0
   mExplicit[index] = elt;
 }
 
 /*==============================================================================
   Stack Functions: push, pop
 ==============================================================================*/
-template <class T, class D> void Buffer<T, D>::push(SPData<T, D> elt) {
+template <class T, class D, class I>
+void Buffer<T, D, I>::push(SPData<T, D, I> elt) {
   if (mSize > 0) {
-    if ((int) mExplicit.size() < mSize) {
+    if (mExplicit.size() < mSize) {
       mExplicit.push_back(elt);
     } else {
       setData(elt);
@@ -110,7 +110,8 @@ template <class T, class D> void Buffer<T, D>::push(SPData<T, D> elt) {
   }
 }
 
-template <class T, class D> void Buffer<T, D>::pop(SPData<T, D> elt) {
+template <class T, class D, class I>
+void Buffer<T, D, I>::pop(SPData<T, D, I> elt) {
   setStart(mSize - 1);
   setData(elt);
 }
@@ -118,21 +119,21 @@ template <class T, class D> void Buffer<T, D>::pop(SPData<T, D> elt) {
 /*==============================================================================
   IO : toString
 ==============================================================================*/
-template <class T, class D> std::string Buffer<T, D>::toString() {
+template <class T, class D, class I> std::string Buffer<T, D, I>::toString() {
   std::string str = "";
   if (mSize > 0) {
     str = "\n\t\tBuffer size is " + std::to_string(mSize);
     str += " and start at index " + std::to_string(mStart) + "\n";
     str += "\t\t\t";
     std::string aux = "";
-    for (int i = mStart; i < mSize; i++) {
+    for (I i = mStart; i < mSize; i++) {
       if (aux == "") {
         aux += "{" + mExplicit[i]->toString();
       } else {
-      aux += "," + mExplicit[i]->toString();
+        aux += "," + mExplicit[i]->toString();
       }
     }
-    for (int i = 0; i < mStart; i++) {
+    for (I i = 0; i < mStart; i++) {
       aux += "," + mExplicit[i]->toString();
     }
     str += aux + "}";

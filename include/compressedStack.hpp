@@ -4,13 +4,14 @@
 /*==============================================================================
    Includes
 ==============================================================================*/
+#include "block.hpp"
 #include "buffer.hpp"
 #include "component.hpp"
 #include "data.hpp"
-#include "block.hpp"
 #include "stack.hpp"
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -21,21 +22,21 @@
    Friends   -> StackAlgo
              <- Block, Component, Buffer, Data
 ==============================================================================*/
-template <class T, class D> class StackAlgo; // Required for the friendship
-template <class T, class D> class CompressedStack : public Stack<T, D> {
-  friend class StackAlgo<T, D>;
+template <class T, class D, class I>
+class CompressedStack : public Stack<T, D, I> {
+  friend class StackAlgo<T, D, I>;
 
 public:
-  CompressedStack<T, D>(int size, int space, int buffer,
-                        std::shared_ptr<T> context,
-                        std::streampos position = std::streampos(0));
-  CompressedStack<T, D>(int size, int space, int buffer,
-                        const Block<T, D> &block);
+  CompressedStack<T, D, I>(I size, I space, I buffer,
+                           std::shared_ptr<T> context,
+                           std::streampos position = std::streampos(0));
+  CompressedStack<T, D, I>(I size, I space, I buffer,
+                           const Block<T, D, I> &block);
 
-private:
+  // private:
   /* Required from virtual functions in Stack.hpp */
   // Empty functions (test emptyness)
-  bool empty(int lvl = -1, int component = 0);
+  bool empty(std::intmax_t lvl = -1, I component = 0);
   // lvl = -1 test all levels
   // lvl = 0 test mCompressed
   // lvl = mDepth test mExplicit
@@ -43,62 +44,62 @@ private:
   // component = 0 tests both component
   // component = i > 0 tests component i
 
-  Data<T, D> top(int k = 1);
-  Data<T, D> pop(StackAlgo<T, D> &StackAlgo);
-  void push(const Data<T, D> &data);
-  void copyContent(CompressedStack<T, D> &stack);
+  Data<T, D, I> top(I k = 1);
+  Data<T, D, I> pop(StackAlgo<T, D, I> &StackAlgo);
+  void push(const Data<T, D, I> &data);
+  void copyContent(CompressedStack<T, D, I> &stack);
   void compress();
 
   // Setters required as from virtual functions in Stack.hpp
   void setContext(std::shared_ptr<T> context);
   void setPosition(std::streampos position);
-  void setCompressed(Level<T, D> block);
+  void setCompressed(Level<T, D, I> block);
 
   // Getters required as from virtual functions in Stack.hpp
-  Level<T, D> getFirstPartial(int lvl);
-  Level<T, D> getCompressed();
-  ExplicitPointer<T, D> getFirstExplicit();
-  Block<T, D> getFirstBlock();
-  int getBufferSize ();
+  Level<T, D, I> getFirstPartial(std::intmax_t lvl);
+  Level<T, D, I> getCompressed();
+  ExplicitPointer<T, D, I> getFirstExplicit();
+  Block<T, D, I> getFirstBlock();
+  I getBufferSize();
 
   // IO
   std::string toString();
 
   /* Back function (give the back element of a vector)*/
-  Block<T, D> back(int lvl = 0, int component = 0);
-  SPData<T, D> topPointer(int k = 1);
-  void pop_back(int lvl, int component);
+  Block<T, D, I> back(std::intmax_t lvl = 0, I component = 0);
+  SPData<T, D, I> topPointer(I k = 1);
+  void pop_back(std::intmax_t lvl, I component);
 
   /* New Internals */
-  bool single(int lvl, int component);
-  void setBlock(int component, Block<T, D> block = Block<T, D>());
-  void setLast(int component, int index, int lvl = -1);
-  int getLast(int lvl, int component = 0);
-  std::shared_ptr<Block<T, D>> getBlock(int component, int lvl = 0);
+  bool single(std::intmax_t lvl, I component);
+  void setBlock(I component, Block<T, D, I> block = Block<T, D, I>());
+  void setLast(I component, I index, std::intmax_t lvl = -1);
+  I getLast(std::intmax_t lvl, I component = 0);
+  std::shared_ptr<Block<T, D, I>> getBlock(I component, std::intmax_t lvl = 0);
 
   /* Push related */
-  void pushExplicit(SPData<T, D> elt);
-  void pushCompressed(SPData<T, D> elt, int lvl, int headIndex);
-  void compress(Level<T, D> block);
-  void resetLevel(Block<T, D> block, int lvl);
+  void pushExplicit(SPData<T, D, I> elt);
+  void pushCompressed(SPData<T, D, I> elt, std::intmax_t lvl, I headIndex);
+  void compress(Level<T, D, I> block);
+  void resetLevel(Block<T, D, I> block, std::intmax_t lvl);
 
   /* Pop related */
   void popBuffer();
-  SPData<T, D> popExplicit(StackAlgo<T, D> &StackAlgo, int component);
-  void popComponent(int index, int component);
-  void propagate(int index, int lvl, int component = 1);
-  void clear(int index, int lvl, int component);
-  void reconstruct(StackAlgo<T, D> &problem);
+  SPData<T, D, I> popExplicit(StackAlgo<T, D, I> &StackAlgo, I component);
+  void popComponent(I index, I component);
+  void propagate(I index, std::intmax_t lvl, I component = 1);
+  void clear(I index, std::intmax_t lvl, I component);
+  int reconstruct(StackAlgo<T, D, I> &problem);
 
   // Other getters
-  SPData<T, D> getExplicitData(int k);
-  Level<T, D> getSmartCompress(int lvl);
-  Block<T, D> getBottomBlock();
+  SPData<T, D, I> getExplicitData(I k);
+  Level<T, D, I> getSmartCompress(std::intmax_t lvl);
+  Block<T, D, I> getBottomBlock();
 
   // Structure constraints
-  int mSize;  // (Expected) size of the input in #elements
-  int mSpace; // Maximum space order of the compressed stack
-  int mDepth; // Depth (#levels of compression) based on size and space
+  I mSize;  // (Expected) size of the input in #elements
+  I mSpace; // Maximum space order of the compressed stack
+  I mDepth; // Depth (#levels of compression) based on size and space
 
   // Position of previous input (before reading)
   std::streampos mPosition;
@@ -108,21 +109,24 @@ private:
 
 protected:
   // First, Second, and Compressed components
-  Component<T, D> mFirst;
-  Component<T, D> mSecond;
-  Level<T, D> mCompressed;
+  Component<T, D, I> mFirst;
+  Component<T, D, I> mSecond;
+  Level<T, D, I> mCompressed;
 
   // Buffer to read the top k elements
-  Buffer<T, D> mBuffer;
+  Buffer<T, D, I> mBuffer;
+
+  // Vector to count the number of reconstructions at the top level
+  std::vector<int> mReconstructions;
 };
 
 /*==============================================================================
    Constructors
 ==============================================================================*/
-template <class T, class D>
-CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
-                                       std::shared_ptr<T> context,
-                                       std::streampos position)
+template <class T, class D, class I>
+CompressedStack<T, D, I>::CompressedStack(I size, I space, I buffer,
+                                          std::shared_ptr<T> context,
+                                          std::streampos position)
     : mFirst(space, int(ceil(log(size) / log(space) - .001)) - 1),
       mSecond(space, int(ceil(log(size) / log(space) - .001)) - 1),
       mBuffer(buffer) {
@@ -130,48 +134,56 @@ CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
   mSpace = space;
   mDepth = int(ceil(log(size) / log(space) - .001) - 1);
   mPosition = position;
-  mCompressed = initLevel<T, D>(mSpace);
+  mCompressed = initLevel<T, D, I>(mSpace);
   mContext = context;
+  mReconstructions = std::vector<int>(mDepth + 1, 0);
 }
 
-template <class T, class D>
-CompressedStack<T, D>::CompressedStack(int size, int space, int buffer,
-                                       const Block<T, D> &block)
+template <class T, class D, class I>
+CompressedStack<T, D, I>::CompressedStack(I size, I space, I buffer,
+                                          const Block<T, D, I> &block)
     : mFirst(space, int(ceil(log(size) / log(space) - .001)) - 1),
       mSecond(space, int(ceil(log(size) / log(space) - .001)) - 1),
       mBuffer(buffer) {
   mSize = size;
   mSpace = space;
   mDepth = int(ceil(log(size) / log(space) - .001) - 1);
-  mCompressed = initLevel<T, D>(mSpace);
+  mCompressed = initLevel<T, D, I>(mSpace);
 
   mPosition = block.mPosition;
   mContext = block.mContext;
+  mReconstructions = std::vector<int>(mDepth + 1, 0);
 }
 
 /*==============================================================================
    Internals
-    1) emptyExplicit (int lvl, int component) : test if the explicit part of
+    1) emptyExplicit (std::intmax_t lvl, I component) : test if the explicit
+part of
    component is empty. If component = 0, test on all component.
-    2) back(int lvl, int component) : if lvl = 0 give the back of mCompressed,
+    2) back(std::intmax_t lvl, I component) : if lvl = 0 give the back of
+mCompressed,
    else give the back of mPartial[lvl - 1] of component
-    3-4) top/topPointer(int k) : give the k-st (/pointer to) elt in the
+    3-4) top/topPointer(I k) : give the k-st (/pointer to) elt in the
 buffer/explicit. Index starts implicitly at 1 (for buffer index reasons)
-    5) single (int lvl, int component) : return true if the block on
+    5) single (std::intmax_t lvl, I component) : return true if the block on
 lvl/component has the same first and last index
-    6) pop_back(int lvl, int component) : pop_back on mPartial[lvl - 1] in
+    6) pop_back(std::intmax_t lvl, I component) : pop_back on mPartial[lvl - 1]
+in
 component
-    7) setBlock(int component, Block<T,D> block) : assign a block to component
-    8) setLast(int component, int index) : set mBlock.mLast to index in component
-    9) getBlock(int component, int lvl) : get the last block in component at lvl.
+    7) setBlock(I component, Block<T,D> block) : assign a block to component
+    8) setLast(I component, I index) : set mBlock.mLast to index in
+component
+    9) getBlock(I component, std::intmax_t lvl) : get the last block in
+component at
+lvl.
 If lvl = 0, look in the fully compressed part
 ==============================================================================*/
-template <class T, class D>
-bool CompressedStack<T, D>::empty(int lvl, int component) {
+template <class T, class D, class I>
+bool CompressedStack<T, D, I>::empty(std::intmax_t lvl, I component) {
   bool b = true;
 
   if (lvl == -1) {
-    while (lvl < mDepth && b) {
+    while (lvl < (int)mDepth && b) {
       lvl++;
       if (component == 0 && lvl == 0) {
         b &= empty(0);
@@ -179,7 +191,7 @@ bool CompressedStack<T, D>::empty(int lvl, int component) {
         b &= empty(lvl, component);
       }
     }
-  } else if (lvl == mDepth) {
+  } else if (lvl == (int)mDepth) {
     if (component == 0 || component == 1) {
       b &= mFirst.mExplicit.empty();
     }
@@ -199,8 +211,8 @@ bool CompressedStack<T, D>::empty(int lvl, int component) {
   return b;
 }
 
-template <class T, class D>
-Block<T, D> CompressedStack<T, D>::back(int lvl, int component) {
+template <class T, class D, class I>
+Block<T, D, I> CompressedStack<T, D, I>::back(std::intmax_t lvl, I component) {
   if (lvl == mDepth) {
     if (component == 1) {
       return mFirst.mBlock;
@@ -219,9 +231,9 @@ Block<T, D> CompressedStack<T, D>::back(int lvl, int component) {
   }
 }
 
-template <class T, class D>
-SPData<T, D> CompressedStack<T, D>::topPointer(int k) {
-  SPData<T, D> elt;
+template <class T, class D, class I>
+SPData<T, D, I> CompressedStack<T, D, I>::topPointer(I k) {
+  SPData<T, D, I> elt;
   if (mBuffer.mSize < k) {
     if (empty(mDepth, 1)) {
       elt = mSecond.mExplicit.back();
@@ -234,12 +246,13 @@ SPData<T, D> CompressedStack<T, D>::topPointer(int k) {
   return elt;
 }
 
-template <class T, class D> Data<T, D> CompressedStack<T, D>::top(int k) {
+template <class T, class D, class I>
+Data<T, D, I> CompressedStack<T, D, I>::top(I k) {
   return *topPointer(k);
 }
 
-template <class T, class D>
-bool CompressedStack<T, D>::single(int lvl, int component) {
+template <class T, class D, class I>
+bool CompressedStack<T, D, I>::single(std::intmax_t lvl, I component) {
   bool b;
   if (component == 1) {
     b = mFirst.single(lvl);
@@ -255,9 +268,9 @@ bool CompressedStack<T, D>::single(int lvl, int component) {
   return b;
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::pop_back(int lvl, int component) {
-  if (lvl == mDepth) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::pop_back(std::intmax_t lvl, I component) {
+  if (lvl == (int)mDepth) {
     if (component == 1) {
       mFirst.mExplicit.pop_back();
     } else {
@@ -272,8 +285,8 @@ void CompressedStack<T, D>::pop_back(int lvl, int component) {
   }
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::setBlock(int component, Block<T, D> block) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::setBlock(I component, Block<T, D, I> block) {
   if (component == 1) {
     mFirst.mBlock = block;
   } else {
@@ -281,11 +294,12 @@ void CompressedStack<T, D>::setBlock(int component, Block<T, D> block) {
   }
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::setLast(int component, int index, int lvl) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::setLast(I component, I index,
+                                       std::intmax_t lvl) {
   if (component == 0) {
     mCompressed.back().mLast = index;
-  } else if (lvl == -1 || lvl == mDepth) {
+  } else if (lvl == -1 || lvl == (int)mDepth) {
     if (component == 1) {
       mFirst.mBlock.mLast = index;
     } else {
@@ -300,9 +314,9 @@ void CompressedStack<T, D>::setLast(int component, int index, int lvl) {
   }
 }
 
-template <class T, class D>
-int CompressedStack<T, D>::getLast(int lvl, int component) {
-  if (lvl == mDepth) {
+template <class T, class D, class I>
+I CompressedStack<T, D, I>::getLast(std::intmax_t lvl, I component) {
+  if (lvl == (int)mDepth) {
     if (empty(mDepth)) {
       return 0;
     } else if (component == 2) {
@@ -323,69 +337,71 @@ int CompressedStack<T, D>::getLast(int lvl, int component) {
   }
 }
 
-template <class T, class D>
-std::shared_ptr<Block<T, D>> CompressedStack<T, D>::getBlock(int component, int lvl) {
+template <class T, class D, class I>
+std::shared_ptr<Block<T, D, I>>
+CompressedStack<T, D, I>::getBlock(I component, std::intmax_t lvl) {
   if (lvl == 0) {
-    return std::make_shared<Block<T, D>>(mCompressed.back());
+    return std::make_shared<Block<T, D, I>>(mCompressed.back());
   } else if (component == 1) {
-    return std::make_shared<Block<T, D>>(mFirst.mPartial[lvl - 1].back());
+    return std::make_shared<Block<T, D, I>>(mFirst.mPartial[lvl - 1].back());
   } else {
-    return std::make_shared<Block<T, D>>(mSecond.mPartial[lvl - 1].back());
+    return std::make_shared<Block<T, D, I>>(mSecond.mPartial[lvl - 1].back());
   }
 }
 
 /*==============================================================================
    Setters : setContext
 ==============================================================================*/
-template <class T, class D>
-void CompressedStack<T, D>::setContext(std::shared_ptr<T> context) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::setContext(std::shared_ptr<T> context) {
   mContext = context;
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::setPosition(std::streampos position) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::setPosition(std::streampos position) {
   mPosition = position;
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::setCompressed(Level<T, D> block) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::setCompressed(Level<T, D, I> block) {
   mCompressed = block;
 }
 
 /*==============================================================================
    Getters : getFirstPartial, getCompressed, getFirstExplicit, getExplicitData
 ==============================================================================*/
-template <class T, class D>
-Level<T, D> CompressedStack<T, D>::getFirstPartial(int lvl) {
+template <class T, class D, class I>
+Level<T, D, I> CompressedStack<T, D, I>::getFirstPartial(std::intmax_t lvl) {
   return mFirst.mPartial[lvl - 1];
 }
 
-template <class T, class D> Level<T, D> CompressedStack<T, D>::getCompressed() {
+template <class T, class D, class I>
+Level<T, D, I> CompressedStack<T, D, I>::getCompressed() {
   return mCompressed;
 }
 
-template <class T, class D>
-Level<T, D> CompressedStack<T, D>::getSmartCompress(int lvl) {
-  Level<T, D> compressed(mCompressed);
-  for (int i = lvl; i >= 0; i--) {
+template <class T, class D, class I>
+Level<T, D, I> CompressedStack<T, D, I>::getSmartCompress(std::intmax_t lvl) {
+  Level<T, D, I> compressed(mCompressed);
+  for (I i = lvl; i >= 0; i--) {
     if (empty(i + 1, 1)) {
-      int s = mSecond.mPartial[i].size();
+      I s = mSecond.mPartial[i].size();
       if (s > 1) {
-        Block<T, D> block = getBottomBlock();
+        Block<T, D, I> block = getBottomBlock();
         block.mLast = mSecond.mPartial[i][s - 2].mLast;
         compressed.push_back(block);
         break;
       }
     } else if (mFirst.mPartial[i].size() == 1) {
       if (!empty(i + 1, 2)) {
-        Block<T, D> block = getBottomBlock();
+        Block<T, D, I> block = getBottomBlock();
         block.mLast = mSecond.mPartial[i].back().mLast;
         compressed.push_back(block);
         break;
       }
     } else {
-      int s = mFirst.mPartial[i].size();
-      Block<T, D> block = getBottomBlock();
+      I s = mFirst.mPartial[i].size();
+      Block<T, D, I> block = getBottomBlock();
       block.mLast = mFirst.mPartial[i][s - 2].mLast;
       compressed.push_back(block);
       break;
@@ -394,27 +410,27 @@ Level<T, D> CompressedStack<T, D>::getSmartCompress(int lvl) {
   return compressed;
 }
 
-template <class T, class D>
-ExplicitPointer<T, D> CompressedStack<T, D>::getFirstExplicit() {
+template <class T, class D, class I>
+ExplicitPointer<T, D, I> CompressedStack<T, D, I>::getFirstExplicit() {
   return mFirst.mExplicit;
 }
 
-template <class T, class D>
-SPData<T, D> CompressedStack<T, D>::getExplicitData(int k) {
-  if (k <= (int)mFirst.mExplicit.size()) {
+template <class T, class D, class I>
+SPData<T, D, I> CompressedStack<T, D, I>::getExplicitData(I k) {
+  if (k <= mFirst.mExplicit.size()) {
     return mFirst.mExplicit[k - 1];
   } else {
     return mFirst.mBlock.mBuffer.topPointer(k - mFirst.mExplicit.size());
   }
 }
 
-template <class T, class D>
-Block<T, D> CompressedStack<T, D>::getFirstBlock() {
+template <class T, class D, class I>
+Block<T, D, I> CompressedStack<T, D, I>::getFirstBlock() {
   return mFirst.mBlock;
 }
 
-template <class T, class D>
-Block<T, D> CompressedStack<T, D>::getBottomBlock() {
+template <class T, class D, class I>
+Block<T, D, I> CompressedStack<T, D, I>::getBottomBlock() {
   if (empty(1, 2)) {
     return mFirst.mPartial[0].front();
   } else {
@@ -422,15 +438,16 @@ Block<T, D> CompressedStack<T, D>::getBottomBlock() {
   }
 }
 
-template <class T, class D>
-int CompressedStack<T, D>::getBufferSize() {
+template <class T, class D, class I>
+I CompressedStack<T, D, I>::getBufferSize() {
   return mBuffer.mSize;
 }
 
 /*==============================================================================
    IO : toString
 ==============================================================================*/
-template <class T, class D> std::string CompressedStack<T, D>::toString() {
+template <class T, class D, class I>
+std::string CompressedStack<T, D, I>::toString() {
   std::string str;
   str = "\tCompressed Stack with " + std::to_string(mSize) + " elements, ";
   str += std::to_string(mSpace) + " space order, ";
@@ -453,25 +470,25 @@ template <class T, class D> std::string CompressedStack<T, D>::toString() {
     4) resetLevel
 ==============================================================================*/
 // Function push that push the data in explicit and index in partial/compressed
-template <class T, class D>
-void CompressedStack<T, D>::push(const Data<T, D> &elt) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::push(const Data<T, D, I> &elt) {
   // update the buffer (if buffer size is bigger than 0)
-  SPData<T, D> ptr_elt = std::make_shared<Data<T, D>>(elt);
+  SPData<T, D, I> ptr_elt = std::make_shared<Data<T, D, I>>(elt);
   mBuffer.push(ptr_elt);
   // update the explicit Level, with possibly shifting first to second
   pushExplicit(ptr_elt);
   // update the compressed Levels at each level (including fully compressed)
-  for (int lvl = mDepth - 1; lvl > 0; lvl--) {
-    int headIndex = getLast(lvl);
+  for (std::intmax_t lvl = mDepth - 1; lvl > 0; lvl--) {
+    I headIndex = getLast(lvl);
     pushCompressed(ptr_elt, lvl, headIndex);
   }
 }
 
 // Function push for the Explicit members of the stack
-template <class T, class D>
-void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
-  int index = elt->mIndex;
-  SPData<T, D> eltPtr = elt;
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::pushExplicit(SPData<T, D, I> elt) {
+  I index = elt->mIndex;
+  SPData<T, D, I> eltPtr = elt;
 
   // If the explicit datas of component 1 are empty we push
   if (empty(mDepth, 1)) {
@@ -480,20 +497,20 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
     if (mContext != nullptr) {
       context = std::make_shared<T>(*mContext);
     }
-    Block<T, D> block(index, mPosition, context, mBuffer);
+    Block<T, D, I> block(index, mPosition, context, mBuffer);
     mFirst.mBlock = block;
   }
   // We check if thoses explicit datas are full
   else {
-    int headIndex = mFirst.topIndex();
-    int startLevel = headIndex - (headIndex - 1) % mSpace;
+    I headIndex = mFirst.topIndex();
+    I startLevel = headIndex - (headIndex - 1) % mSpace;
     if (index - startLevel < mSpace) {
       mFirst.pushExplicit(eltPtr);
       mFirst.mBlock.mLast = index;
     } else {
       if ((mDepth == 1) && !empty(mDepth, 2)) {
-        int distCompressed = mSpace;
-        int startCompressed = headIndex - (headIndex - 1) % distCompressed;
+        I distCompressed = mSpace;
+        I startCompressed = headIndex - (headIndex - 1) % distCompressed;
         if (index - startCompressed < distCompressed) {
           mCompressed.back().mLast = headIndex;
         } else {
@@ -502,7 +519,7 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
       }
       mSecond.mBlock = mFirst.mBlock;
       std::shared_ptr<T> context = std::make_shared<T>(*mContext);
-      Block<T, D> block(index, mPosition, context, mBuffer);
+      Block<T, D, I> block(index, mPosition, context, mBuffer);
       mFirst.mBlock = block;
       mSecond.mExplicit = mFirst.mExplicit;
       mFirst.clearExplicit(mSpace);
@@ -512,24 +529,24 @@ void CompressedStack<T, D>::pushExplicit(SPData<T, D> elt) {
 }
 
 // Function push for the partial and fully compressed members of the stack
-template <class T, class D>
-void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
-                                           int headIndex) {
-  int distBlock = std::pow(mSpace, (mDepth - lvl));
-  int distLevel = distBlock * mSpace;
-  int index = elt->mIndex;
-  Block<T, D> block(index, mPosition, mFirst.mBlock.mContext, mBuffer);
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::pushCompressed(SPData<T, D, I> elt,
+                                              std::intmax_t lvl, I headIndex) {
+  I distBlock = std::pow(mSpace, (mDepth - lvl));
+  I distLevel = distBlock * mSpace;
+  I index = elt->mIndex;
+  Block<T, D, I> block(index, mPosition, mFirst.mBlock.mContext, mBuffer);
 
   if (empty(lvl, 1)) {
     mFirst.push(block, lvl);
   } else {
-    int startLevel = headIndex - (headIndex - 1) % distLevel;
+    I startLevel = headIndex - (headIndex - 1) % distLevel;
     // distance of the new index and current block
-    int delta = index - startLevel;
+    I delta = index - startLevel;
     if (delta < distLevel) {
       // Distance with the current Block
-      int startBlock = headIndex - (headIndex - 1) % distBlock;
-      int eta = index - startBlock;
+      I startBlock = headIndex - (headIndex - 1) % distBlock;
+      I eta = index - startBlock;
       // compress new element in the top Block of the current Level
       if (eta < distBlock) {
         setLast(1, index, lvl);
@@ -538,13 +555,13 @@ void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
       }
     } else {
       if (lvl == 1 && (!empty(1, 2))) {
-        int distCompressed = std::pow(mSpace, mDepth);
-        int startCompressed = headIndex - (headIndex - 1) % distCompressed;
-        int gamma = index - startCompressed;
+        I distCompressed = std::pow(mSpace, mDepth);
+        I startCompressed = headIndex - (headIndex - 1) % distCompressed;
+        I gamma = index - startCompressed;
         if (gamma < distCompressed && !empty(0)) {
           setLast(0, getLast(lvl, 2));
         } else {
-          mCompressed.push_back(Block<T, D>(mSecond.mPartial[0]));
+          mCompressed.push_back(Block<T, D, I>(mSecond.mPartial[0]));
         }
       }
       mSecond.mPartial[lvl - 1] = mFirst.mPartial[lvl - 1];
@@ -553,30 +570,31 @@ void CompressedStack<T, D>::pushCompressed(SPData<T, D> elt, int lvl,
   }
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::resetLevel(Block<T, D> block, int lvl) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::resetLevel(Block<T, D, I> block,
+                                          std::intmax_t lvl) {
   mFirst.mPartial[lvl - 1].clear();
   mFirst.mPartial[lvl - 1].reserve(mSpace);
   mFirst.mPartial[lvl - 1].push_back(block);
 }
 
 // Function that compress the top block of mSecond to a block in mCompressed
-template <class T, class D> void CompressedStack<T, D>::compress() {
+template <class T, class D, class I> void CompressedStack<T, D, I>::compress() {
   if (empty(0)) {
-    Block<T, D> block(mSecond.mPartial[0]);
+    Block<T, D, I> block(mSecond.mPartial[0]);
     mCompressed.push_back(block);
   } else {
-    int topSecond;
+    I topSecond;
     if (mDepth > 1) {
       topSecond = mSecond.mPartial[0].back().mLast;
-      mSecond.mBlock = Block<T, D>(mSecond.mPartial[0]);
+      mSecond.mBlock = Block<T, D, I>(mSecond.mPartial[0]);
     } else {
       topSecond = mSecond.mExplicit.back()->mIndex;
     }
-    int topCompressed = mCompressed.back().mLast;
-    int sizeLevel = std::pow(mSpace, mDepth);
-    int startSecond = topSecond + 1 - (topSecond % sizeLevel);
-    int startCompressed = topCompressed + 1 - (topCompressed % sizeLevel);
+    I topCompressed = mCompressed.back().mLast;
+    I sizeLevel = std::pow(mSpace, mDepth);
+    I startSecond = topSecond + 1 - (topSecond % sizeLevel);
+    I startCompressed = topCompressed + 1 - (topCompressed % sizeLevel);
     if (startSecond > startCompressed) {
       mCompressed.push_back(mSecond.mBlock);
     } else {
@@ -586,18 +604,18 @@ template <class T, class D> void CompressedStack<T, D>::compress() {
 }
 
 // Function that compress the top block of mSecond to a block in mCompressed
-template <class T, class D>
-void CompressedStack<T, D>::compress(Level<T, D> block) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::compress(Level<T, D, I> block) {
   if (empty(0)) {
     mCompressed = block;
   } else {
-    for (typename Level<T, D>::iterator it = block.begin(); it != block.end();
-         ++it) {
-      int topBlock = (*it).mLast;
-      int topCompressed = mCompressed.back().mLast;
-      int sizeLevel = std::pow(mSpace, mDepth);
-      int startBlock = topBlock + 1 - (topBlock % sizeLevel);
-      int startCompressed = topCompressed + 1 - (topCompressed % sizeLevel);
+    for (typename Level<T, D, I>::iterator it = block.begin();
+         it != block.end(); ++it) {
+      I topBlock = (*it).mLast;
+      I topCompressed = mCompressed.back().mLast;
+      I sizeLevel = std::pow(mSpace, mDepth);
+      I startBlock = topBlock + 1 - (topBlock % sizeLevel);
+      I startCompressed = topCompressed + 1 - (topCompressed % sizeLevel);
       if (startBlock > startCompressed) {
         mCompressed.push_back((*it));
       } else {
@@ -612,10 +630,10 @@ void CompressedStack<T, D>::compress(Level<T, D> block) {
     1) reconstruct
     2) copyContent
 ==============================================================================*/
-template <class T, class D>
-void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
-  std::shared_ptr<Block<T, D>> block;
-  int lvl;
+template <class T, class D, class I>
+int CompressedStack<T, D, I>::reconstruct(StackAlgo<T, D, I> &problem) {
+  std::shared_ptr<Block<T, D, I>> block;
+  std::intmax_t lvl;
   for (lvl = mDepth; lvl >= 0; lvl--) {
     if (lvl == 0) {
       block = getBlock(0);
@@ -630,9 +648,11 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
       }
     }
   }
+  // Add the reconstruction for level lvl in mReconstructions
+  mReconstructions[lvl]++;
 
   std::streampos posReminder = problem.mInput.tellg();
-  int indexReminder = problem.mIndex;
+  I indexReminder = problem.mIndex;
   std::ios_base::iostate eofbitReminder = problem.mInput.rdstate();
 
   problem.mContext = std::make_shared<T>(*block->mContext);
@@ -640,12 +660,12 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
   problem.mInput.clear();
   problem.mInput.seekg(block->mPosition);
 
-  int auxSize = mSize;
+  I auxSize = mSize;
   if (lvl > 0) {
     auxSize = std::pow(mSpace, mDepth - lvl + 1);
   }
-  std::shared_ptr<Stack<T, D>> auxStack =
-      std::make_shared<CompressedStack<T, D>>(
+  std::shared_ptr<Stack<T, D, I>> auxStack =
+      std::make_shared<CompressedStack<T, D, I>>(
           auxSize, mSpace, mBuffer.mSize, problem.mContext, block->mPosition);
 
   // Swap stack pointers + run  + swap back
@@ -657,9 +677,9 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
     auxStack->copyContent(*this);
   } else {
     // Copy the First component of the reconstructed stack into the main stack
-    int auxDepth = int(ceil(log(auxSize) / log(mSpace) - .001) - 1);
-    int delta = mDepth - auxDepth;
-    for (int i = 1; i < auxDepth; i++) {
+    I auxDepth = int(ceil(log(auxSize) / log(mSpace) - .001) - 1);
+    I delta = mDepth - auxDepth;
+    for (I i = 1; i < auxDepth; i++) {
       mSecond.mPartial[delta + i - 1] = auxStack->getFirstPartial(i);
     }
     mSecond.mExplicit = auxStack->getFirstExplicit();
@@ -670,10 +690,12 @@ void CompressedStack<T, D>::reconstruct(StackAlgo<T, D> &problem) {
   problem.mInput.seekg(posReminder);
   problem.mContext = mContext;
   problem.mInput.setstate(eofbitReminder);
+
+  return lvl;
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::copyContent(CompressedStack<T, D> &stack) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::copyContent(CompressedStack<T, D, I> &stack) {
   stack.mFirst = mFirst;
   stack.mSecond = mSecond;
   stack.mCompressed.pop_back();
@@ -689,42 +711,44 @@ void CompressedStack<T, D>::copyContent(CompressedStack<T, D> &stack) {
     5) clear
     6) propagate
 ==============================================================================*/
-template <class T, class D>
-Data<T, D> CompressedStack<T, D>::pop(StackAlgo<T, D> &problem) {
+template <class T, class D, class I>
+Data<T, D, I> CompressedStack<T, D, I>::pop(StackAlgo<T, D, I> &problem) {
   popBuffer();
   if (empty(mDepth)) {
     reconstruct(problem);
   }
-  int component = 1;
+  I component = 1;
   if (empty(mDepth, 1)) {
     component = 2;
   }
-  Data<T, D> elt = *popExplicit(problem, component);
+  Data<T, D, I> elt = *popExplicit(problem, component);
   popComponent(elt.mIndex, component);
   return elt;
 }
 
-template <class T, class D> void CompressedStack<T, D>::popBuffer() {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::popBuffer() {
   if (mBuffer.mSize > 0) {
-    SPData<T, D> elt = getExplicitData(mBuffer.mSize);
+    SPData<T, D, I> elt = getExplicitData(mBuffer.mSize);
     mBuffer.pop(elt);
   }
 }
 
-template <class T, class D>
-SPData<T, D> CompressedStack<T, D>::popExplicit(StackAlgo<T, D> &problem,
-                                                int component) {
-  SPData<T, D> elt = topPointer(1);
+template <class T, class D, class I>
+SPData<T, D, I>
+CompressedStack<T, D, I>::popExplicit(StackAlgo<T, D, I> &problem,
+                                      I component) {
+  SPData<T, D, I> elt = topPointer(1);
   pop_back(mDepth, component);
   return elt;
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::popComponent(int index, int component) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::popComponent(I index, I component) {
   if (empty(mDepth, component)) {
     setBlock(component);
   } else {
-    int newLast = getLast(mDepth);
+    I newLast = getLast(mDepth);
     setLast(component, newLast);
   }
   if (mDepth > 1) {
@@ -732,8 +756,8 @@ void CompressedStack<T, D>::popComponent(int index, int component) {
   }
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::clear(int index, int lvl, int component) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::clear(I index, std::intmax_t lvl, I component) {
   if (component == 2 && !empty(lvl, 1)) {
     clear(index, lvl, 1);
   } else {
@@ -745,14 +769,15 @@ void CompressedStack<T, D>::clear(int index, int lvl, int component) {
         setBlock(component);
       }
     } else {
-      int newLast = getLast(lvl + 1);
+      I newLast = getLast(lvl + 1);
       propagate(newLast, lvl, component);
     }
   }
 }
 
-template <class T, class D>
-void CompressedStack<T, D>::propagate(int index, int lvl, int component) {
+template <class T, class D, class I>
+void CompressedStack<T, D, I>::propagate(I index, std::intmax_t lvl,
+                                         I component) {
   while (lvl > 0) {
     if (component > 1 && !empty(lvl, 1)) {
       component = 1;
