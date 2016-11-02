@@ -1,5 +1,7 @@
 # CompressedStacks.cpp
-[![Build Status](https://travis-ci.org/Azzaare/CompressedStacks.cpp.svg?branch=master)](https://travis-ci.org/Azzaare/CompressedStacks.cpp)
+<!-- 
+[![Build Status](https://travis-ci.org/Azzaare/CompressedStacks.cpp.svg?branch=master)](https://travis-ci.org/Azzaare/CompressedStacks.cpp) 
+-->
 
 The CompressedStacks.cpp module/library implements a time-space trade-off structure for stack's algorithms.
 
