@@ -75,7 +75,7 @@ std::shared_ptr<emptyContext> ConvexHullExtras<I>::initStack() {
   // first, read and push two values
   StackAlgoExtras<emptyContext, Point2D, I>::readPush(2);
 
-  StackAlgoExtras<emptyContext, Point2D, I>::printCompare();
+  // StackAlgoExtras<emptyContext, Point2D, I>::printCompare();
 
   std::cout << "done reading two values " << std::endl;
   // then initialize context (which in this case is NULL everything
