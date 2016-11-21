@@ -33,7 +33,8 @@ int main(int argc, char *argv[]) {
   // Getting the path of the instance to test
   std::string filepath = argv[1];
 
-  bool usecompressed = false, useclassic = false;
+  bool usecompressed = false;
+  bool useclassic = false;
 
   switch (atoi(argv[2])) {
   case 0: {

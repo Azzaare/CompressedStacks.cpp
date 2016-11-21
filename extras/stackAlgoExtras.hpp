@@ -61,6 +61,9 @@ StackAlgoExtras<T, D, I>::StackAlgoExtras(std::string fileName,
                                           bool usecompressed, bool useclassic)
     : StackAlgo<T, D, I>(fileName, usecompressed) {
 
+  std::cout << "Debug compress = " << usecompressed
+            << ", classic = " << useclassic << std::endl;
+
   if (usecompressed) {
     if (useclassic) {
       mClassicStack =

@@ -115,9 +115,9 @@ StackAlgo<T, D, I>::StackAlgo(std::string fileName, bool usecompressed)
       }
     }
 
-    if (p < 2)
-      throw("StackAlgo<T,D>::StackAlgo(std::string fileName), wrong header "
-            "format ");
+    if (p < 2) {
+      throw("Wrong header format");
+    }
     mStack = std::shared_ptr<Stack<T, D, I>>(
         new CompressedStack<T, D, I>(n, p, b, mContext));
   } else {

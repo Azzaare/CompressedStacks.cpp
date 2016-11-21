@@ -21,7 +21,8 @@ template <class I>
 class ConvexHullExtras : public StackAlgoExtras<emptyContext, Point2D, I> {
 public:
   ConvexHullExtras(std::string filePath, bool usecompressed, bool useclassic)
-      : StackAlgoExtras<emptyContext, Point2D, I>(filePath) {}
+      : StackAlgoExtras<emptyContext, Point2D, I>(filePath, usecompressed,
+                                                  useclassic) {}
 
 private:
   // Functions to run the stack
