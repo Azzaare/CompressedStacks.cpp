@@ -1,13 +1,13 @@
 # CompressedStacks.cpp
-[![Build Status](https://travis-ci.org/Azzaare/CompressedStacks.cpp.svg?branch=master)](https://travis-ci.org/Azzaare/CompressedStacks.cpp)
 
-The CompressedStacks.cpp module/library implements a time-space trade-off structure for stack's algorithms.
+The CompressedStacks.cpp module/library implements the compressed stack structure. This data structure behaves like a usual stack with the usual push and pop operations, but has the additional advantage that it uses less memory. Intuitively, when large blocks of information are pushed into the stack it *compresses* the bottom part (only stores partial information). This information is recomputed whenever it is needed afterwards. See the paper of [Barba *et al.*](https://arxiv.org/abs/1208.3663) for more details on this structure.
+
 
 <!-- TODO: Write down a better description -->
 
 ## Category of algorithms
 <p>
-This compressed stack structure works correctly as a normal stack for any problems that read input from a file. However, the running time is optimal when the input would be read sequentially with a classical stack structure. For this reason, the only function implemented in the Problem template to solve it (to do a run) is the one presented below in a simplified version.
+This compressed stack structure works correctly as a normal stack for any problems that read input from a file (**Is this true?**)). However, the running time is optimal when the input would be read sequentially with a classical stack structure. For this reason, the only function implemented in the Problem template to solve it (to do a run) is the one presented below in a simplified version.
 </p>
 
 ```cpp
@@ -28,7 +28,7 @@ template <class T, class D> void Problem<T, D>::run() {
 ```
 
 ## Characterization of a problem
-<p>In the followwing examples, implementations of the Problem interface are given.</p>
+<p>In the following examples, implementations of the Problem interface are given.</p>
 
 ### General example : ```Instance<T,D>```
 
