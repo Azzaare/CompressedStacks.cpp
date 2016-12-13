@@ -63,21 +63,21 @@ Point2D ConvexHullExtras<I>::readInput(std::vector<std::string> line) {
 
   Point2D p(x, y);
 
-  std::cout << "I JUST READ " << p << std::endl;
+  //std::cout << "I JUST READ " << p << std::endl;
 
   return p;
 }
 
 template <class I>
 std::shared_ptr<emptyContext> ConvexHullExtras<I>::initStack() {
-  std::cout << "going to read two values " << std::endl;
+ // std::cout << "going to read two values " << std::endl;
 
   // first, read and push two values
   StackAlgoExtras<emptyContext, Point2D, I>::readPush(2);
 
   // StackAlgoExtras<emptyContext, Point2D, I>::printCompare();
 
-  std::cout << "done reading two values " << std::endl;
+  //std::cout << "done reading two values " << std::endl;
   // then initialize context (which in this case is NULL everything
   std::shared_ptr<emptyContext> context;
   return context;
@@ -86,21 +86,20 @@ std::shared_ptr<emptyContext> ConvexHullExtras<I>::initStack() {
 template <class I> bool ConvexHullExtras<I>::popCondition(Point2D last) {
   Point2D minus1, minus2;
 
-  std::cout << last << " <<<< pop condition enter " << std::endl;
+ // std::cout << last << " <<<< pop condition enter " << std::endl;
 
   // read the two previous elements
   minus1 = StackAlgoExtras<emptyContext, Point2D, I>::top(1).getData();
   minus2 = StackAlgoExtras<emptyContext, Point2D, I>::top(2).getData();
 
-  std::cout << last << " <<<< pop condition read two before " << minus1
-            << minus2 << std::endl;
+ // std::cout << last << " <<<< pop condition read two before " << minus1<< minus2 << std::endl;
 
   if (Point2D::orientation(minus2, minus1, last) == 2) {
-    std::cout << last << " <<<< pop condition returning true " << std::endl;
+   // std::cout << last << " <<<< pop condition returning true " << std::endl;
 
     return true;
   }
-  std::cout << last << " <<<< pop condition returning false " << std::endl;
+ // std::cout << last << " <<<< pop condition returning false " << std::endl;
 
   return false;
 }
@@ -108,20 +107,19 @@ template <class I> void ConvexHullExtras<I>::prePop(Point2D data) {}
 template <class I>
 void ConvexHullExtras<I>::postPop(Point2D data,
                                   Data<emptyContext, Point2D, I> elt) {
-  std::cout << elt.getData() << " <<<< Pop!" << std::endl;
+ // std::cout << elt.getData() << " <<<< Pop!" << std::endl;
 }
 template <class I> void ConvexHullExtras<I>::noPop(Point2D data) {}
 
 template <class I> bool ConvexHullExtras<I>::pushCondition(Point2D data) {
-  std::cout << data << " <<<< push condition returning true " << std::endl;
+ // std::cout << data << " <<<< push condition returning true " << std::endl;
   return true;
 }
 template <class I>
 void ConvexHullExtras<I>::prePush(Data<emptyContext, Point2D, I> elt) {}
 template <class I>
 void ConvexHullExtras<I>::postPush(Data<emptyContext, Point2D, I> elt) {
-  std::cout << "ConvexHullStackAlgo::pushAction Nothing to see here "
-            << elt.getData() << std::endl;
+  //std::cout << "ConvexHullStackAlgo::pushAction Nothing to see here " << elt.getData() << std::endl;
 }
 template <class I> void ConvexHullExtras<I>::noPush(Point2D data) {}
 

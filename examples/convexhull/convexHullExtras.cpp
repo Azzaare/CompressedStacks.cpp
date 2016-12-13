@@ -48,6 +48,7 @@ int main(int argc, char *argv[]) {
   case 2: {
     usecompressed = true;
     useclassic = true;
+    break;
   }
   default:
     throw "At least one type of stack needs to be selected!!!";
@@ -61,7 +62,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+      //stack.println();
     }
     break;
   }
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+      //stack.println();
     }
     break;
   }
@@ -83,7 +84,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+      //stack.println();
     }
     break;
   }
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+      //stack.println();
     }
   }
 

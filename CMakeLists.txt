@@ -61,6 +61,9 @@ file(GLOB SOURCES "examples/convexhull/convexHull64.cpp")
 add_executable(convexhull64 ${SOURCES})
 file(GLOB SOURCES "examples/convexhull/convexHullExtras.cpp")
 add_executable(convexhullextras ${SOURCES})
+file(GLOB SOURCES "examples/convexhull/generateInputConvexHull.cpp")
+add_executable(generateInputConvexHull ${SOURCES})
+
 
 # Test Run : 8, 16, 32 or 64 bits and the version with extras
 file(GLOB SOURCES "examples/testrun/testrun8.cpp")
@@ -73,6 +76,8 @@ file(GLOB SOURCES "examples/testrun/testrun64.cpp")
 add_executable(testrun64 ${SOURCES})
 file(GLOB SOURCES "examples/testrun/testrunExtras.cpp")
 add_executable(testrunextras ${SOURCES})
+file(GLOB SOURCES "examples/testrun/generateInputTestRun.cpp")
+add_executable(generateInputTestRun ${SOURCES})
 
 
 # Description of the different builds

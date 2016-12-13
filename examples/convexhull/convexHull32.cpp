@@ -23,9 +23,11 @@ int main(int argc, char *argv[]) {
   // Getting the path of the instance to test
   std::string filepath = argv[1];
 
+  std::cout<<" aaaa"<<std::endl;
+
   ConvexHull32 stack(filepath);
   stack.run();
-  stack.println();
+ // stack.println();
 
   return 0;
 }

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
   ConvexHull8 stack(filepath);
   stack.run();
-  stack.println();
+  //stack.println();
 
   return 0;
 }

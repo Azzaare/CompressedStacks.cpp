@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+      //stack.println();
     }
     break;
   }
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+     // stack.println();
     }
     break;
   }
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+      //stack.println();
     }
     break;
   }
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      stack.println();
+     // stack.println();
     }
   }
   return 0;
