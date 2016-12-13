@@ -2,125 +2,125 @@
 // Created by yago on 16/11/04.
 //
 
-#include<string>
-#include<iostream>
 #include <fstream>
+#include <iostream>
 #include <math.h>
+#include <string>
 
 using namespace std;
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 
-    string fileName=argv[1];
-    int code=atoi(argv[2]);
-    int stacktype=atoi(argv[3]);
-    std::uint_least64_t n=atoi(argv[4]);
-    int p=atoi(argv[5]);
-    int min=0;
-    if (argc>6) min=atoi(argv[6]);
-    int max=0;
-    if (argc>7) max=atoi(argv[7]);
-    double prob=0;
-    if (argc>8) prob=atof(argv[8]);
+  string fileName = argv[1];
+  int code = atoi(argv[2]);
+  int stacktype = atoi(argv[3]);
+  std::uint_least64_t n = atoi(argv[4]);
+  int p = atoi(argv[5]);
+  int min = 0;
+  if (argc > 6)
+    min = atoi(argv[6]);
+  int max = 0;
+  if (argc > 7)
+    max = atoi(argv[7]);
+  double prob = 0;
+  if (argc > 8)
+    prob = atof(argv[8]);
 
+  // test, 1: CT test ,
+  // prob is the
+  // probability to pop
 
+  // cout<<":::::::::::::::::::::::::::::::::::::::::::: Going to create file
+  // with size "<<n<<" the size of an int happens to be "<<sizeof(int)<<" and
+  // the maximum "<<INT64_MAX<<endl;
 
-// test, 1: CT test ,
-// prob is the
-// probability to pop
+  ofstream outfile(fileName.c_str());
+  srand(time(NULL));
 
-    //cout<<":::::::::::::::::::::::::::::::::::::::::::: Going to create file with size "<<n<<" the size of an int happens to be "<<sizeof(int)<<" and the maximum "<<INT64_MAX<<endl;
+  // First write the problem parameters
+  outfile << "HEADER " << endl;
+  outfile << "n " << n << endl;
+  if (stacktype == 1) // compressed stack
+  {
+    outfile << "p " << p << endl;
+  }
+  outfile << "/HEADER " << endl;
 
+  switch (code) {
+  case 0: // push only test
+  {
+    // now create the actual file
+    // pairs of elements (x,0 means push ) (0,1) means pop one (-1,-1) means pop
+    // the rest of the stack
 
-    ofstream outfile(fileName.c_str());
-    srand(time(NULL));
+    std::uint_least64_t i = 0;
+    while (i < n) {
+      int contents, action;
+      // generate random number
+      double randomDraw = (double)rand() / RAND_MAX;
 
-    // First write the problem parameters
-    outfile << "HEADER " << endl;
-    outfile << "n " << n << endl;
-    if(stacktype==1)//compressed stack
-    {
-        outfile << "p " << p << endl;
+      // cout<<"randomDraw was "<<randomDraw<<endl;
+      if (randomDraw > prob) // this element will be pushed
+      {
+        contents = min + ((randomDraw)) * (max - min);
+        action = 0;
+      } else {
+        contents = 0;
+        action = 1;
+      }
+      outfile << contents << "," << action << endl;
+      i++;
     }
-    outfile << "/HEADER " << endl;
+    outfile << -1 << "," << -1 << endl;
+    break;
+  }
+  case 1: {
+    // now create the actual file
+    // pairs of elements (x,0 means push ) (0,y) means pop y times (-1,-1) means
+    // pop the rest of the stack
 
-    switch (code) {
-        case 0: // push only test
-        {
-// now create the actual file
-// pairs of elements (x,0 means push ) (0,1) means pop one (-1,-1) means pop
-// the rest of the stack
+    std::uint_least64_t i = 1;
+    while (i <= n) {
+      bool biggerMultiple = false;
+      int numPops = 0;
+      int number = i;
 
-            int i = 0;
-            while (i < n) {
-                int contents, action;
-// generate random number
-                double randomDraw = (double)rand() / RAND_MAX;
+      std::uint_least64_t biggest = 50;
+      int power = 1;
 
-// cout<<"randomDraw was "<<randomDraw<<endl;
-                if (randomDraw > prob) // this element will be pushed
-                {
-                    contents = min + ((randomDraw)) * (max - min);
-                    action = 0;
-                } else {
-                    contents = 0;
-                    action = 1;
-                }
-                outfile << contents << "," << action << endl;
-                i++;
-            }
-            outfile << -1 << "," << -1 << endl;
-            break;
+      while (biggest * 10 <= i) {
+        biggest = biggest * 10;
+        power++;
+      }
+
+      while (biggest > 50) {
+        if (i % biggest == 0) {
+          numPops = numPops + pow(5, power + 1);
+          biggerMultiple = true;
+          number = 0;
+          // cerr<<"HEY!!!!!!!!!!!!!!!!!!! setting  "<<numPops<<" pops for i =
+          // "<<i<<" biggest is "<<biggest<<" and power is "<<power<<endl;
         }
-        case 1: {
-// now create the actual file
-// pairs of elements (x,0 means push ) (0,y) means pop y times (-1,-1) means
-// pop the rest of the stack
+        biggest = biggest / 10;
+        power--;
+      }
 
-            int i = 1;
-            while (i <= n) {
-                bool biggerMultiple = false;
-                int numPops = 0;
-                int number = i;
-
-                int biggest = 50;
-                int power=1;
-
-                while (biggest * 10 <= i) {
-                    biggest = biggest * 10;
-                    power++;
-                }
-
-                while (biggest > 50 ) {
-                    if (i % biggest == 0) {
-                        numPops = numPops + pow(5,power+1);
-                        biggerMultiple = true;
-                        number = 0;
-// cerr<<"HEY!!!!!!!!!!!!!!!!!!! setting  "<<numPops<<" pops for i = "<<i<<" biggest is "<<biggest<<" and power is "<<power<<endl;
-
-                    }
-                    biggest = biggest / 10;
-                    power--;
-
-                }
-
-                if (i % 50 == 0 /*&& !biggerMultiple*/) {
-                    number = 0;
-                    numPops = numPops + 25;
-                }
-                outfile << number << "," << numPops << endl;
-                i++;
-            }
-            break;
-        }
-        default: // Optional
-        {
-            throw(" createTestInput::createTestInputFiles WRONG CODE ");
-        }
+      if (i % 50 == 0 /*&& !biggerMultiple*/) {
+        number = 0;
+        numPops = numPops + 25;
+      }
+      outfile << number << "," << numPops << endl;
+      i++;
     }
+    break;
+  }
+  default: // Optional
+  {
+    throw(" createTestInput::createTestInputFiles WRONG CODE ");
+  }
+  }
 
-    outfile.close();
+  outfile.close();
 
-    return 0;
+  return 0;
 }
