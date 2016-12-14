@@ -180,7 +180,7 @@ void StackAlgoExtras<T, D, I>::readPushCompare(I iter) {
     std::streampos position = StackAlgo<T, D, I>::mInput.tellg();
     StackAlgo<T, D, I>::mStack->setPosition(position);
     std::vector<std::string> line = StackAlgo<T, D, I>::readLine();
-    D data = StackAlgo<T, D, I>::readInput(line);
+    D data = readInput(line);
     StackAlgo<T, D, I>::mIndex++;
     Data<T, D, I> elt(StackAlgo<T, D, I>::mIndex, data);
     pushAction(elt);
