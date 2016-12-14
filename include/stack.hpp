@@ -37,6 +37,7 @@ public:
   virtual ExplicitPointer<T, D, I> getFirstExplicit() = 0;
   virtual Block<T, D, I> getFirstBlock() = 0;
   virtual I getBufferSize() = 0;
+  virtual I getBufferLength() = 0;
 
   // Setters
   virtual void setContext(std::shared_ptr<T> context) = 0;
