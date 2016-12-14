@@ -8,9 +8,8 @@
 #include "../../../include/stackAlgo.hpp"
 #include "point2D.hpp"
 
-
-double pops=0;
-double total=0;
+double pops = 0;
+double total = 0;
 
 /*==============================================================================
   Empty type for the context (empty for the Convex Hull problem)
@@ -65,7 +64,7 @@ Point2D ConvexHull<I>::readInput(std::vector<std::string> line) {
 
   Point2D p(x, y);
 
-  //std::cout << "I JUST READ " << p << std::endl;
+  // std::cout << "I JUST READ " << p << std::endl;
   return p;
 }
 
@@ -74,8 +73,7 @@ template <class I> std::shared_ptr<emptyContext> ConvexHull<I>::initStack() {
   std::cout << "going to read two values " << std::endl;
 
   // first, read and push two values
-  StackAlgo<emptyContext, Point2D, I>::readPush(1);
-  StackAlgo<emptyContext, Point2D, I>::readPush(1);
+  StackAlgo<emptyContext, Point2D, I>::readPush(2);
 
   std::cout << "done reading two values " << std::endl;
 
@@ -86,31 +84,40 @@ template <class I> std::shared_ptr<emptyContext> ConvexHull<I>::initStack() {
 
 template <class I> bool ConvexHull<I>::popCondition(Point2D last) {
   Point2D minus1, minus2;
-total++;
-  std::cout << last << " <<<< pop condition enter " << std::endl;
+  total++;
+  std::cout << std::endl << last << " <<<< pop condition enter " << std::endl;
   StackAlgo<emptyContext, Point2D, I>::println();
 
   // read the two previous elements
   minus1 = StackAlgo<emptyContext, Point2D, I>::top(1).getData();
+  if (StackAlgo<emptyContext, Point2D, I>::mStack->getBufferLength() < 2) {
+    return true;
+  }
+
   minus2 = StackAlgo<emptyContext, Point2D, I>::top(2).getData();
 
-  std::cout << last << " <<<< pop condition read two before " << minus2<< minus1 << std::endl;
+  std::cout << last << " <<<< pop condition read two before " << minus2
+            << minus1 << std::endl;
 
   if (Point2D::orientation(minus2, minus1, last) == 1) {
     pops++;
-    std::cout << last << " <<<<                                                                         pop condition returning true "<<pops/total<<" tot "<<total << std::endl;
+    std::cout << last
+              << " <<<<                                                        "
+                 "                 pop condition returning true "
+              << pops / total << " tot " << total << std::endl;
 
     return true;
   }
-  std::cout << last << "                                                                         <<<< pop condition returning false "<<pops/total<<" tot "<<total << std::endl;
-
+  std::cout << last << "                                                       "
+                       "                  <<<< pop condition returning false "
+            << pops / total << " tot " << total << std::endl;
 
   return false;
 }
 template <class I> void ConvexHull<I>::prePop(Point2D data) {}
 template <class I>
 void ConvexHull<I>::postPop(Point2D data, Data<emptyContext, Point2D, I> elt) {
-  std::cout << elt.getData() << " <<<< Pop!" << std::endl;
+  std::cout << elt.getData() << " <<<< (post-)Pop!" << std::endl;
 }
 template <class I> void ConvexHull<I>::noPop(Point2D data) {}
 
@@ -122,7 +129,8 @@ template <class I>
 void ConvexHull<I>::prePush(Data<emptyContext, Point2D, I> elt) {}
 template <class I>
 void ConvexHull<I>::postPush(Data<emptyContext, Point2D, I> elt) {
-  std::cout << "ConvexHullStackAlgo::pushAction Nothing to see here "  << elt.getData() << std::endl;
+  std::cout << "ConvexHullStackAlgo::pushAction Nothing to see here "
+            << elt.getData() << std::endl;
 }
 template <class I> void ConvexHull<I>::noPush(Point2D data) {}
 

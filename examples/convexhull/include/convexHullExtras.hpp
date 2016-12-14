@@ -75,6 +75,7 @@ std::shared_ptr<emptyContext> ConvexHullExtras<I>::initStack() {
   // first, read and push two values
   StackAlgoExtras<emptyContext, Point2D, I>::readPushCompare();
   StackAlgoExtras<emptyContext, Point2D, I>::readPushCompare();
+  StackAlgoExtras<emptyContext, Point2D, I>::readPushCompare();
 
   // StackAlgoExtras<emptyContext, Point2D, I>::printCompare();
 
@@ -86,22 +87,19 @@ std::shared_ptr<emptyContext> ConvexHullExtras<I>::initStack() {
 
 template <class I> bool ConvexHullExtras<I>::popCondition(Point2D last) {
   Point2D minus1, minus2;
-
-  // std::cout << last << " <<<< pop condition enter " << std::endl;
+  std::cout << std::endl << last << " <<<< pop condition enter " << std::endl;
+  StackAlgo<emptyContext, Point2D, I>::println();
 
   // read the two previous elements
-  minus1 = StackAlgoExtras<emptyContext, Point2D, I>::top(1).getData();
-  minus2 = StackAlgoExtras<emptyContext, Point2D, I>::top(2).getData();
-
-  // std::cout << last << " <<<< pop condition read two before " << minus1<<
-  // minus2 << std::endl;
-
-  if (Point2D::orientation(minus2, minus1, last) == 2) {
-    // std::cout << last << " <<<< pop condition returning true " << std::endl;
-
+  minus1 = StackAlgo<emptyContext, Point2D, I>::top(1).getData();
+  if (StackAlgo<emptyContext, Point2D, I>::mStack->getBufferLength() < 2) {
     return true;
   }
-  // std::cout << last << " <<<< pop condition returning false " << std::endl;
+
+  minus2 = StackAlgo<emptyContext, Point2D, I>::top(2).getData();
+  if (Point2D::orientation(minus2, minus1, last) == 1) {
+    return true;
+  }
 
   return false;
 }

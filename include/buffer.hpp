@@ -41,6 +41,7 @@ private:
   // Push and Pop
   void push(SPData<T, D, I> elt);
   void pop(SPData<T, D, I> elt);
+  void pop();
 
   // IO
   std::string toString();
@@ -67,8 +68,9 @@ template <class T, class D, class I> Buffer<T, D, I>::Buffer(I size) {
   Getters
 ==============================================================================*/
 template <class T, class D, class I> Data<T, D, I> Buffer<T, D, I>::top(I k) {
-  if (k <= mSize) {
-    I index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
+  if (k <= mExplicit.size()) {
+    I index =
+        (mStart - k + mSize) % mSize; // -1 match the start of vectors at 0
     return *(mExplicit[index]);
   }
   throw "Access to a top element bigger than the size of the buffer";
@@ -76,11 +78,12 @@ template <class T, class D, class I> Data<T, D, I> Buffer<T, D, I>::top(I k) {
 
 template <class T, class D, class I>
 SPData<T, D, I> Buffer<T, D, I>::topPointer(I k) {
-  if (k <= mSize) {
-    I index = (k + mStart - 1) % mSize; // -1 match the start of vectors at 0
+  if (k <= mExplicit.size()) {
+    I index =
+        (mStart - k + mSize) % mSize; // -1 match the start of vectors at 0
     return mExplicit[index];
   }
-  throw "Access to a top element bigger than the size of the buffer";
+  throw "Access to a top (pointer) element bigger than the size of the buffer";
 }
 
 /*==============================================================================
@@ -116,6 +119,21 @@ void Buffer<T, D, I>::pop(SPData<T, D, I> elt) {
   setData(elt);
 }
 
+template <class T, class D, class I> void Buffer<T, D, I>::pop() {
+  ExplicitPointer<T, D, I> newExplicit = initExplicitPointer<T, D, I>();
+  newExplicit.reserve(mSize);
+
+  for (I i = mStart; i < mExplicit.size(); i++) {
+    newExplicit.push_back(mExplicit[i]);
+  }
+  for (I i = 0; i < mStart; i++) {
+    newExplicit.push_back(mExplicit[i]);
+  }
+  newExplicit.pop_back();
+  mExplicit = newExplicit;
+  mStart = 0;
+}
+
 /*==============================================================================
   IO : toString
 ==============================================================================*/
@@ -126,7 +144,7 @@ template <class T, class D, class I> std::string Buffer<T, D, I>::toString() {
     str += " and start at index " + std::to_string(mStart) + "\n";
     str += "\t\t\t";
     std::string aux = "";
-    for (I i = mStart; i < mSize; i++) {
+    for (I i = mStart; i < mExplicit.size(); i++) {
       if (aux == "") {
         aux += "{" + mExplicit[i]->toString();
       } else {

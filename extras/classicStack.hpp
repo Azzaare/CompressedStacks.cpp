@@ -50,6 +50,7 @@ private:
   ExplicitPointer<T, D, I> getFirstExplicit();
   Block<T, D, I> getFirstBlock();
   I getBufferSize();
+  I getBufferLength();
 };
 
 /*==============================================================================
@@ -115,6 +116,10 @@ ExplicitPointer<T, D, I> ClassicStack<T, D, I>::getFirstExplicit() {
 
 template <class T, class D, class I> I ClassicStack<T, D, I>::getBufferSize() {
   return 0;
+}
+template <class T, class D, class I>
+I ClassicStack<T, D, I>::getBufferLength() {
+  return getBufferSize();
 }
 
 template <class T, class D, class I>

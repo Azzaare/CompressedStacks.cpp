@@ -61,6 +61,7 @@ public:
   ExplicitPointer<T, D, I> getFirstExplicit();
   Block<T, D, I> getFirstBlock();
   I getBufferSize();
+  I getBufferLength();
 
   // IO
   std::string toString();
@@ -68,6 +69,7 @@ public:
   /* Back function (give the back element of a vector)*/
   Block<T, D, I> back(std::intmax_t lvl = 0, I component = 0);
   SPData<T, D, I> topPointer(I k = 1);
+  SPData<T, D, I> topExplicitPointer(I k = 1);
   void pop_back(std::intmax_t lvl, I component);
 
   /* New Internals */
@@ -229,6 +231,17 @@ Block<T, D, I> CompressedStack<T, D, I>::back(std::intmax_t lvl, I component) {
   } else if (lvl == 0) {
     return mCompressed.back();
   }
+}
+
+template <class T, class D, class I>
+SPData<T, D, I> CompressedStack<T, D, I>::topExplicitPointer(I k) {
+  SPData<T, D, I> elt;
+  if (empty(mDepth, 1)) {
+    elt = mSecond.mExplicit.back();
+  } else {
+    elt = mFirst.mExplicit.back();
+  }
+  return elt;
 }
 
 template <class T, class D, class I>
@@ -417,10 +430,18 @@ ExplicitPointer<T, D, I> CompressedStack<T, D, I>::getFirstExplicit() {
 
 template <class T, class D, class I>
 SPData<T, D, I> CompressedStack<T, D, I>::getExplicitData(I k) {
-  if (k <= mFirst.mExplicit.size()) {
-    return mFirst.mExplicit[k - 1];
+  if (mFirst.mExplicit.size() > 0) {
+    if (k <= mFirst.mExplicit.size()) {
+      return mFirst.mExplicit[k - 1];
+    } else {
+      return mFirst.mBlock.mBuffer.topPointer(k - mFirst.mExplicit.size());
+    }
   } else {
-    return mFirst.mBlock.mBuffer.topPointer(k - mFirst.mExplicit.size());
+    if (k <= mSecond.mExplicit.size()) {
+      return mSecond.mExplicit[k - 1];
+    } else {
+      return mSecond.mBlock.mBuffer.topPointer(k - mSecond.mExplicit.size());
+    }
   }
 }
 
@@ -441,6 +462,11 @@ Block<T, D, I> CompressedStack<T, D, I>::getBottomBlock() {
 template <class T, class D, class I>
 I CompressedStack<T, D, I>::getBufferSize() {
   return mBuffer.mSize;
+}
+
+template <class T, class D, class I>
+I CompressedStack<T, D, I>::getBufferLength() {
+  return mBuffer.mExplicit.size();
 }
 
 /*==============================================================================
@@ -713,7 +739,6 @@ void CompressedStack<T, D, I>::copyContent(CompressedStack<T, D, I> &stack) {
 ==============================================================================*/
 template <class T, class D, class I>
 Data<T, D, I> CompressedStack<T, D, I>::pop(StackAlgo<T, D, I> &problem) {
-  popBuffer();
   if (empty(mDepth)) {
     reconstruct(problem);
   }
@@ -721,6 +746,7 @@ Data<T, D, I> CompressedStack<T, D, I>::pop(StackAlgo<T, D, I> &problem) {
   if (empty(mDepth, 1)) {
     component = 2;
   }
+  popBuffer();
   Data<T, D, I> elt = *popExplicit(problem, component);
   popComponent(elt.mIndex, component);
   return elt;
@@ -729,8 +755,13 @@ Data<T, D, I> CompressedStack<T, D, I>::pop(StackAlgo<T, D, I> &problem) {
 template <class T, class D, class I>
 void CompressedStack<T, D, I>::popBuffer() {
   if (mBuffer.mSize > 0) {
-    SPData<T, D, I> elt = getExplicitData(mBuffer.mSize);
-    mBuffer.pop(elt);
+    try {
+      SPData<T, D, I> elt = getExplicitData(mBuffer.mSize);
+      mBuffer.pop(elt);
+    } catch (char const *e) {
+      // std::cout << e << std::endl;
+      mBuffer.pop();
+    }
   }
 }
 
@@ -738,7 +769,8 @@ template <class T, class D, class I>
 SPData<T, D, I>
 CompressedStack<T, D, I>::popExplicit(StackAlgo<T, D, I> &problem,
                                       I component) {
-  SPData<T, D, I> elt = topPointer(1);
+
+  SPData<T, D, I> elt = topExplicitPointer();
   pop_back(mDepth, component);
   return elt;
 }
