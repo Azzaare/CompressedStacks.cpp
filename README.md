@@ -35,10 +35,10 @@ template <class T, class D> void StackAlgo<T, D>::run() {
 }
 ```
 ## Use case
-<p>Concrete examples such as a basic test run and the convex hull problem can be found in the [wiki](https://github.com/Azzaare/CompressedStacks.cpp.wiki.git).</p>
+Concrete examples such as a basic test run and the convex hull problem can be found in the [wiki](https://github.com/Azzaare/CompressedStacks.cpp.wiki.git).
 
 ### Abstract example : ```Instance<T,D,I>```
-<p>An instance of a Stack Algorithm is described by a set of templates parameters T, D, and I and a set of methods used in the run function above. Some of those methods might be left empty.</p>
+<p>An instance of a Stack Algorithm is described by a set of templates parameters T, D, and I and a set of methods used in the run function above.</p>
 
 ```cpp
 // T is the type of the context, D is the type of the input data and I is the type of your integer indexes.
@@ -47,7 +47,8 @@ class Instance: public StackAlgo<T,D,I>{
 public:
   Instance(std::string filePath) : StackAlgo<T, D, I>(filePath) {}
 private:
-  // Functions to implement according to the problem and input structure
+  // Methods to implement according to the problem and input structure
+  // Some of those methods might be left empty
   D readInput(std::vector<std::string> line);
   std::shared_ptr<T> initStack();
 
@@ -64,11 +65,7 @@ private:
   void reportStack();
 };
 ```
-
-
-
-
-## How to run your problem
+### How to run your problem
 Suppose the class Instance implements the interface ```StackAlgo<T, D, I>```. You can run an instance of your problem described in the input located at <i>filepath</i>. The last command just print an output in the console of your compressed stack after the run.
 
 ```cpp
@@ -76,3 +73,18 @@ Instance stack(filePath);
 stack.run();
 stack.println();
 ```
+
+## Contributing
+This project is far from being complete and would benefit greatly from future contributions. Commented code, following the existing file structure is strongly preferred. Please contact one of the author (or create an issue) in case of need. Here is a short sample of possible contributions :
+* Use CI (continuous integration). Definitively the most wanted feature
+* Extends the compressed stack structure to a dequeue structure (push and pop from top and bottom)
+* Add other problems to the examples folder (following, if possible a similar structure)
+* Extends the compressed stack structure to a compressed tree search structure
+* Dynamic size compressed stack.
+
+
+## Credits
+Although this project is a joint work, based on the theoretical work in [Barba *et al.*](https://arxiv.org/abs/1208.3663), credits belong to specific authors for part of the implementation. The work covering the implementation of the Stack Algorithm framework, the Comrpessed Stack structure and extras functionalities (```include``` and ```extras``` repositories) has been done by [Jean-Francois Baffier](https://github.com/Azzaarehttps://github.com/Azzaare). All the examples and their generating algorithms, along with all the test have been implemented by [Yago Diez](https://github.com/nicill).
+
+## License
+This project is an open source software under the MIT license. Please check the ```LICENSE``` file for further information.

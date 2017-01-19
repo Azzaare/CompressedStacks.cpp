@@ -1,10 +1,31 @@
 ## Please modify this file freely to adapt to the production of other
 ## executables than convexhull and testrun
 
+# Description of the different builds
+# +---------------+--------------+--------------+----------|
+# |               | optimization | assert works | stripped |
+# +---------------+--------------+--------------+----------|
+# |     Debug     |     no       |     yes      |    no    |
+# |    Release    |    full      |      no      |   yes    |
+# | RelWithDebInfo|    good      |      no      |    no    |
+# |   MinSizeRel  |    size      |      no      |   yes    |
+# +---------------+--------------+--------------+----------|
+
+# Alias for cmake commands
+# alias cmakedebug='cmake $1 -DCMAKE_BUILD_TYPE=DEBUG'
+# alias cmakerelease='cmake $1 -DCMAKE_BUILD_TYPE=RELEASE'
+# alias cmakerelwithdebinfo='cmake $1 -DCMAKE_BUILD_TYPE=RELWITHDEBINFO'
+# alias cmakeminsizerel='cmake $1 -DCMAKE_BUILD_TYPE=MINSIZEREL'
+
+# Example for release (first line only if the directory doesn't exist)
+# mkdir build_directory
+# cd build_directory
+# cmakerelease ..
+
 # Recent version of CMake required
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
-# Project Name
+# Project Name (change it freely)
 project(smartstack)
 
 STRING(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
@@ -40,13 +61,12 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
 
 # Basic options for all builds
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Weffc++ -Wshadow -ansi")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wshadow")
 # Might need to be fixed for retrocompatibility or temporary
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++0x-compat -Wno-unused")
 
 
-# Test directories
+# Include directories
 get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message("inc_dirs = ${inc_dirs}")
 
@@ -78,25 +98,3 @@ file(GLOB SOURCES "examples/testrun/testrunExtras.cpp")
 add_executable(testrunextras ${SOURCES})
 file(GLOB SOURCES "examples/testrun/generateInputTestRun.cpp")
 add_executable(generateInputTestRun ${SOURCES})
-
-
-# Description of the different builds
-# +---------------+--------------+--------------+----------|
-# |               | optimization | assert works | stripped |
-# +---------------+--------------+--------------+----------|
-# |     Debug     |     no       |     yes      |    no    |
-# |    Release    |    full      |      no      |   yes    |
-# | RelWithDebInfo|    good      |      no      |    no    |
-# |   MinSizeRel  |    size      |      no      |   yes    |
-# +---------------+--------------+--------------+----------|
-
-# Alias for cmake commands
-# alias cmakedebug='cmake $1 -DCMAKE_BUILD_TYPE=DEBUG'
-# alias cmakerelease='cmake $1 -DCMAKE_BUILD_TYPE=RELEASE'
-# alias cmakerelwithdebinfo='cmake $1 -DCMAKE_BUILD_TYPE=RELWITHDEBINFO'
-# alias cmakeminsizerel='cmake $1 -DCMAKE_BUILD_TYPE=MINSIZEREL'
-
-# Example for debug (first line only if the directory doesn't exist)
-# mkdir build_directory
-# cd build_directory
-# cmakedebug ..
