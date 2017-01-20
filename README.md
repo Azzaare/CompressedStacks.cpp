@@ -2,7 +2,7 @@
 
 The CompressedStacks.cpp module/library implements the compressed stack structure. This data structure behaves like a usual stack with the usual push and pop operations, but has the additional advantage that it uses less memory. Intuitively, when large blocks of information are pushed into the stack it *compresses* the bottom part (only stores partial information). This information is recomputed whenever it is needed afterwards. See the paper of [Barba *et al.*](https://arxiv.org/abs/1208.3663) for more details on this structure.
 
-Please consult the [wiki](https://github.com/Azzaare/CompressedStacks.cpp.wiki.git) of this project for further details such as : speed and memory consumption tests, more details about installation, examples, and more.
+Please consult the [wiki](https://github.com/Azzaare/CompressedStacks.cpp.wiki) of this project for further details such as : speed and memory consumption tests, more details about installation, examples, and more.
 
 ## Description of Stack Algorithms
 <p>
@@ -35,7 +35,7 @@ template <class T, class D> void StackAlgo<T, D>::run() {
 }
 ```
 ## Use case
-Concrete examples such as a basic test run and the convex hull problem can be found in the [wiki](https://github.com/Azzaare/CompressedStacks.cpp.wiki.git).
+Concrete examples such as a basic test run and the convex hull problem can be found in the [wiki](https://github.com/Azzaare/CompressedStacks.cpp.wiki).
 
 ### Abstract example : ```Instance<T,D,I>```
 <p>An instance of a Stack Algorithm is described by a set of templates parameters T, D, and I and a set of methods used in the run function above.</p>
