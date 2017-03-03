@@ -22,6 +22,16 @@
 # cd build_directory
 # cmakerelease ..
 
+# To build with Visual Studio (use cmake or cmake.exe or path/cmake.exe depending of your configuration)
+# mkdir build_directory
+# cd build_directory
+# cmake .. -G "Visual Studio 10 Win64"
+# cmake.exe .. -G "Visual Studio 11 2012"
+# cmake.exe .. -G "Visual Studio 12 2013"
+# cmake.exe .. -G "Visual Studio 13 2014"
+# cmake.exe .. -G "Visual Studio 14 2015"
+
+
 # Recent version of CMake required
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
@@ -60,10 +70,15 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 # MinSizeRel
 set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL}")
 
-# Basic options for all builds
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wshadow")
-# Might need to be fixed for retrocompatibility or temporary
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++0x-compat -Wno-unused")
+# Set default compile flags for GCC
+if(CMAKE_COMPILER_IS_GNUCXX)
+    message(STATUS "GCC detected, adding compile flags")
+    # Basic options for all builds
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wshadow")
+	# Might need to be fixed for retrocompatibility or temporary
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++0x-compat -Wno-unused")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 
 
 # Include directories
