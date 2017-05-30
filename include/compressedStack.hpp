@@ -97,6 +97,7 @@ public:
   SPData<T, D, I> getExplicitData(I k);
   Level<T, D, I> getSmartCompress(std::intmax_t lvl);
   Block<T, D, I> getBottomBlock();
+  std::vector<int> getReconstructions();
 
   // Structure constraints
   I mSize;  // (Expected) size of the input in #elements
@@ -467,6 +468,11 @@ I CompressedStack<T, D, I>::getBufferSize() {
 template <class T, class D, class I>
 I CompressedStack<T, D, I>::getBufferLength() {
   return mBuffer.mExplicit.size();
+}
+
+template <class T, class D, class I>
+std::vector<int> CompressedStack<T, D, I>::getReconstructions() {
+  return mReconstructions;
 }
 
 /*==============================================================================

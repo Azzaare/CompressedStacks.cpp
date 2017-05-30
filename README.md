@@ -84,7 +84,7 @@ This project is far from being complete and would benefit greatly from future co
 
 
 ## Credits
-Although this project is a joint work, based on the theoretical work in [Barba *et al.*](https://arxiv.org/abs/1208.3663), credits belong to specific authors for part of the implementation. The work covering the implementation of the Stack Algorithm framework, the Comrpessed Stack structure and extras functionalities (```include``` and ```extras``` repositories) has been done by [Jean-Francois Baffier](https://github.com/Azzaarehttps://github.com/Azzaare). All the examples and their generating algorithms, along with all the test have been implemented by [Yago Diez](https://github.com/nicill).
+Although this project is a joint work, based on the theoretical work in [Barba *et al.*](https://arxiv.org/abs/1208.3663), credits belong to specific authors for part of the implementation. The work covering the implementation of the Stack Algorithm framework, the Compressed Stack structure and extras functionalities (```include``` and ```extras``` repositories) has been done by [Jean-Francois Baffier](https://github.com/Azzaarehttps://github.com/Azzaare). All the examples and their generating algorithms, along with all the test have been implemented by [Yago Diez](https://github.com/nicill).
 
 ## License
 This project is an open source software under the MIT license. Please check the ```LICENSE``` file for further information.
