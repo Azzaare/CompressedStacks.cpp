@@ -19,9 +19,9 @@ using TestExtras64 = TestExtras<std::uint_least64_t>;
   How to use
     * argv[1] is the file name
     * argv[2] is the code of what is to be done
-      * 0 is a convex hull problem with a compressed stack (with extras)
-      * 1 is a convex hull problem with a classical stack
-      * 2 is a convex hull problem with both stacks comparison (check
+      * 0 is a testrun problem with a compressed stack (with extras)
+      * 1 is a testrun problem with a classical stack
+      * 2 is a testrun problem with both stacks comparison (check
 errors)
     * argv[3] is the code for the integer size
       * 8 is for 8 bits integer (or smallest size handling 8 bits)
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      //stack.println();
+      // stack.println();
     }
     break;
   }
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-     // stack.println();
+      // stack.println();
     }
     break;
   }
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-      //stack.println();
+      // stack.println();
     }
     break;
   }
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
       stack.printCompare();
     } else {
       stack.run();
-     // stack.println();
+      // stack.println();
     }
   }
   return 0;

@@ -47,13 +47,17 @@ public:
 
   // Getters
   T getContext();
-
   I getIndex();
+  I getMaxItems();
+  I getPushes();
+  I getPops();
+  std::vector<int> getReconstructions();
 
   // IO
   std::string toString();
   void print();
   void println();
+  I countItems();
   void readPush(I iter = 1);
 
   // protected:
@@ -61,6 +65,9 @@ public:
   std::vector<std::string> readLine();
   std::vector<std::string> readHeader();
   I mIndex;
+  I mMaxItems;
+  I mCountPops;
+  I mCountPushes;
 
   // private:
   // Input/Ouput
@@ -95,7 +102,8 @@ public:
 ==============================================================================*/
 template <class T, class D, class I>
 StackAlgo<T, D, I>::StackAlgo(std::string fileName, bool usecompressed)
-    : mIndex(0), mContext(nullptr) {
+    : mIndex(0), mMaxItems(0), mCountPops(0), mCountPushes(0),
+      mContext(nullptr) {
   mInput.open(fileName, std::ifstream::in);
 
   std::vector<std::string> parameters = readHeader();
@@ -132,7 +140,10 @@ template <class T, class D, class I>
 std::string StackAlgo<T, D, I>::toString() {
   std::string str;
   str = "Instance with an actual index of " + std::to_string(mIndex);
-  str += ", with a stack of type\n";
+  str += ", with " + std::to_string(countItems()) + " elements (";
+  str += std::to_string(getPushes()) + " - " + std::to_string(getPops()) + ")";
+  str += ", a maximum size of " + std::to_string(getMaxItems()) + " elements";
+  str += ", and a stack of type\n";
   str += mStack->toString();
   return str;
 }
@@ -203,6 +214,7 @@ template <class T, class D, class I> void StackAlgo<T, D, I>::readPush(I iter) {
 template <class T, class D, class I> void StackAlgo<T, D, I>::popLoop(D data) {
   while (!emptystack()) {
     if (popCondition(data)) {
+      mCountPops++;
       prePop(data);
       Data<T, D, I> elt = pop();
       postPop(data, elt);
@@ -215,6 +227,8 @@ template <class T, class D, class I> void StackAlgo<T, D, I>::popLoop(D data) {
 
 template <class T, class D, class I> void StackAlgo<T, D, I>::pushStep(D data) {
   if (pushCondition(data)) {
+    mCountPushes++;
+    mMaxItems = std::max(mMaxItems, countItems());
     Data<T, D, I> elt(mIndex, data);
     prePush(elt);
     push(elt);
@@ -314,6 +328,27 @@ template <class T, class D, class I> T StackAlgo<T, D, I>::getContext() {
 
 template <class T, class D, class I> I StackAlgo<T, D, I>::getIndex() {
   return mIndex;
+}
+
+template <class T, class D, class I> I StackAlgo<T, D, I>::getPops() {
+  return mCountPops;
+}
+
+template <class T, class D, class I> I StackAlgo<T, D, I>::getPushes() {
+  return mCountPushes;
+}
+
+template <class T, class D, class I> I StackAlgo<T, D, I>::countItems() {
+  return mCountPushes - mCountPops;
+}
+
+template <class T, class D, class I> I StackAlgo<T, D, I>::getMaxItems() {
+  return mMaxItems;
+}
+
+template <class T, class D, class I>
+std::vector<int> StackAlgo<T, D, I>::getReconstructions() {
+  return mStack.getReconstructions();
 }
 
 #endif /* STACKALGO */

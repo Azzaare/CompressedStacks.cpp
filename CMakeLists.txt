@@ -30,6 +30,7 @@
 # cmake.exe .. -G "Visual Studio 12 2013"
 # cmake.exe .. -G "Visual Studio 13 2014"
 # cmake.exe .. -G "Visual Studio 14 2015"
+# cmake.exe .. -G "Visual Studio 15 2017"
 
 
 # Recent version of CMake required

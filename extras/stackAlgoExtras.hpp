@@ -118,6 +118,9 @@ void StackAlgoExtras<T, D, I>::readPushCompare(I iter) {
 template <class T, class D, class I>
 void StackAlgoExtras<T, D, I>::pushStepCompare(D data) {
   if (pushCondition(data)) {
+    StackAlgo<T, D, I>::mCountPushes++;
+    StackAlgo<T, D, I>::mMaxItems = std::max(StackAlgo<T, D, I>::mMaxItems,
+                                             StackAlgo<T, D, I>::countItems());
     Data<T, D, I> elt(StackAlgo<T, D, I>::mIndex, data);
     prePush(elt);
     StackAlgo<T, D, I>::push(elt);
@@ -141,6 +144,7 @@ template <class T, class D, class I>
 void StackAlgoExtras<T, D, I>::popLoopCompare(D data) {
   while (!StackAlgo<T, D, I>::emptystack()) {
     if (popCondition(data)) {
+      StackAlgo<T, D, I>::mCountPops++;
       prePop(data);
       Data<T, D, I> elt = StackAlgo<T, D, I>::pop();
       Data<T, D, I> eltNormal = mClassicStack->pop();

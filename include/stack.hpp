@@ -38,6 +38,7 @@ public:
   virtual Block<T, D, I> getFirstBlock() = 0;
   virtual I getBufferSize() = 0;
   virtual I getBufferLength() = 0;
+  virtual std::vector<int> getReconstructions() = 0;
 
   // Setters
   virtual void setContext(std::shared_ptr<T> context) = 0;

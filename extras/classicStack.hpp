@@ -51,6 +51,7 @@ private:
   Block<T, D, I> getFirstBlock();
   I getBufferSize();
   I getBufferLength();
+  std::vector<int> getReconstructions();
 };
 
 /*==============================================================================
@@ -127,6 +128,11 @@ Block<T, D, I> ClassicStack<T, D, I>::getFirstBlock() {
   Block<T, D, I> block(0, std::streampos(0), std::shared_ptr<T>(nullptr),
                        Buffer<T, D, I>(0));
   return block;
+}
+
+template <class T, class D, class I>
+std::vector<int> ClassicStack<T, D, I>::getReconstructions() {
+  return std::vector<int>(0);
 }
 
 /*==============================================================================
