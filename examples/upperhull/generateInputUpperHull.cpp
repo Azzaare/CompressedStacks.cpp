@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   std::uint_least64_t i = 0;
   while (i < n) {
 
-    // create output for the convex hull problem.
+    // create output for the upper hull problem.
     // in this case, max and min stand for the maximum and minimum values of x
     // and y
     // generate a random point in the (min,max)2 range

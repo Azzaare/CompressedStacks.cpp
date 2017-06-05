@@ -1,5 +1,5 @@
 ## Please modify this file freely to adapt to the production of other
-## executables than convexhull and testrun
+## executables than upperhull and testrun
 
 # Description of the different builds
 # +---------------+--------------+--------------+----------|
@@ -87,18 +87,18 @@ get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message("inc_dirs = ${inc_dirs}")
 
 # Convex Hulls : 8, 16, 32 or 64 bits and the version with extras
-file(GLOB SOURCES "examples/convexhull/convexHull8.cpp")
-add_executable(convexhull8 ${SOURCES})
-file(GLOB SOURCES "examples/convexhull/convexHull16.cpp")
-add_executable(convexhull16 ${SOURCES})
-file(GLOB SOURCES "examples/convexhull/convexHull32.cpp")
-add_executable(convexhull32 ${SOURCES})
-file(GLOB SOURCES "examples/convexhull/convexHull64.cpp")
-add_executable(convexhull64 ${SOURCES})
-file(GLOB SOURCES "examples/convexhull/convexHullExtras.cpp")
-add_executable(convexhullextras ${SOURCES})
-file(GLOB SOURCES "examples/convexhull/generateInputConvexHull.cpp")
-add_executable(generateInputConvexHull ${SOURCES})
+file(GLOB SOURCES "examples/upperhull/upperHull8.cpp")
+add_executable(upperhull8 ${SOURCES})
+file(GLOB SOURCES "examples/upperhull/upperHull16.cpp")
+add_executable(upperhull16 ${SOURCES})
+file(GLOB SOURCES "examples/upperhull/upperHull32.cpp")
+add_executable(upperhull32 ${SOURCES})
+file(GLOB SOURCES "examples/upperhull/upperHull64.cpp")
+add_executable(upperhull64 ${SOURCES})
+file(GLOB SOURCES "examples/upperhull/upperHullExtras.cpp")
+add_executable(upperhullextras ${SOURCES})
+file(GLOB SOURCES "examples/upperhull/generateInputUpperHull.cpp")
+add_executable(generateInputUpperHull ${SOURCES})
 
 
 # Test Run : 8, 16, 32 or 64 bits and the version with extras

@@ -1,19 +1,19 @@
-// ConvexHull : Implementation
+// UpperHull : Implementation
 
 /*==============================================================================
   Includes
 ==============================================================================*/
-#include "include/convexHullExtras.hpp"
+#include "include/upperHullExtras.hpp"
 #include <cstdint>
 
 /*==============================================================================
   Type alias for the different integer size (based on the size of the input)
 ==============================================================================*/
 
-using ConvexHullExtras8 = ConvexHullExtras<std::uint_least8_t>;
-using ConvexHullExtras16 = ConvexHullExtras<std::uint_least16_t>;
-using ConvexHullExtras32 = ConvexHullExtras<std::uint_least32_t>;
-using ConvexHullExtras64 = ConvexHullExtras<std::uint_least64_t>;
+using UpperHullExtras8 = UpperHullExtras<std::uint_least8_t>;
+using UpperHullExtras16 = UpperHullExtras<std::uint_least16_t>;
+using UpperHullExtras32 = UpperHullExtras<std::uint_least32_t>;
+using UpperHullExtras64 = UpperHullExtras<std::uint_least64_t>;
 
 /*==============================================================================
   How to use
@@ -56,46 +56,46 @@ int main(int argc, char *argv[]) {
 
   switch (atoi(argv[3])) {
   case 8: {
-    ConvexHullExtras8 stack(filepath, usecompressed, useclassic);
+    UpperHullExtras8 stack(filepath, usecompressed, useclassic);
     if (usecompressed && useclassic) {
       stack.runCompare();
       stack.printCompare();
     } else {
       stack.run();
-      //stack.println();
+      // stack.println();
     }
     break;
   }
   case 16: {
-    ConvexHullExtras16 stack(filepath, usecompressed, useclassic);
+    UpperHullExtras16 stack(filepath, usecompressed, useclassic);
     if (usecompressed && useclassic) {
       stack.runCompare();
       stack.printCompare();
     } else {
       stack.run();
-      //stack.println();
+      // stack.println();
     }
     break;
   }
   case 32: {
-    ConvexHullExtras32 stack(filepath, usecompressed, useclassic);
+    UpperHullExtras32 stack(filepath, usecompressed, useclassic);
     if (usecompressed && useclassic) {
       stack.runCompare();
       stack.printCompare();
     } else {
       stack.run();
-      //stack.println();
+      // stack.println();
     }
     break;
   }
   default:
-    ConvexHullExtras64 stack(filepath, usecompressed, useclassic);
+    UpperHullExtras64 stack(filepath, usecompressed, useclassic);
     if (usecompressed && useclassic) {
       stack.runCompare();
       stack.printCompare();
     } else {
       stack.run();
-      //stack.println();
+      // stack.println();
     }
   }
 

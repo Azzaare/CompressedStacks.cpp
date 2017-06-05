@@ -35,7 +35,7 @@ template <class T, class D> void StackAlgo<T, D>::run() {
 }
 ```
 ## Use case
-Concrete examples such as a basic test run and the convex hull problem can be found in the [wiki](https://github.com/Azzaare/CompressedStacks.cpp/wiki).
+Concrete examples such as a basic test run and the upper hull problems can be found in the [wiki](https://github.com/Azzaare/CompressedStacks.cpp/wiki).
 
 ### Abstract example : ```Instance<T,D,I>```
 <p>An instance of a Stack Algorithm is described by a set of templates parameters T, D, and I and a set of methods used in the run function above.</p>

@@ -82,6 +82,7 @@ public:
   /* Push related */
   void pushExplicit(SPData<T, D, I> elt);
   void pushCompressed(SPData<T, D, I> elt, std::intmax_t lvl, I headIndex);
+  // TODO: Check if compress is used
   void compress(Level<T, D, I> block);
   void resetLevel(Block<T, D, I> block, std::intmax_t lvl);
 
@@ -771,6 +772,7 @@ void CompressedStack<T, D, I>::popBuffer() {
   }
 }
 
+// TODO: erase problem from signature
 template <class T, class D, class I>
 SPData<T, D, I>
 CompressedStack<T, D, I>::popExplicit(StackAlgo<T, D, I> &problem,
