@@ -6,7 +6,7 @@ Please consult the [wiki](https://github.com/Azzaare/CompressedStacks.cpp/wiki) 
 
 ## Description of Stack Algorithms
 <p>
-This compressed stack structure works correctly as a normal stack for any algorithm that read input from a file in a deterministic way. However, the running time is optimal when the input would be read sequentially with a classical stack structure. For this reason, the only function implemented in the StackAlgo template to solve it (to do a run) is the one presented below in a simplified version.
+This structure works mostly as a normal stack (handling push and pop operations, as well as being able to access the top k elements of the stack, for some small k). Note that this structure can only be used with sequential deterministic algorithms. We model these algorithms with the template StackAlgo whose only implemented function implemented is the run operation in which we scan the whole input (see code below).
 </p>
 
 ```cpp
