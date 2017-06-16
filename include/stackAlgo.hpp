@@ -185,7 +185,8 @@ std::vector<std::string> StackAlgo<T, D, I>::readHeader() {
   getline(mInput, str); // to read the first HEADER LINE
 
   getline(mInput, str);
-  while (str.compare("/HEADER ") != 0) {
+  // FIXME: make it "/HEADER" only
+  while (str.compare("/HEADER ") != 0 && str.compare("/HEADER") != 0) {
     pos = str.find_first_of(" ");
     line.push_back(str.substr(0, pos));
     line.push_back(str.substr(pos + 1, str.size() - pos - 1));

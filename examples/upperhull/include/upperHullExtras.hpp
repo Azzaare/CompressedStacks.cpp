@@ -70,16 +70,16 @@ Point2D UpperHullExtras<I>::readInput(std::vector<std::string> line) {
 
 template <class I>
 std::shared_ptr<emptyContext> UpperHullExtras<I>::initStack() {
-  // std::cout << "going to read two values " << std::endl;
+  std::cout << "going to read two values " << std::endl;
 
   // first, read and push two values
   StackAlgoExtras<emptyContext, Point2D, I>::readPushCompare();
   StackAlgoExtras<emptyContext, Point2D, I>::readPushCompare();
   StackAlgoExtras<emptyContext, Point2D, I>::readPushCompare();
 
-  // StackAlgoExtras<emptyContext, Point2D, I>::printCompare();
+  StackAlgoExtras<emptyContext, Point2D, I>::printCompare();
 
-  // std::cout << "done reading two values " << std::endl;
+  std::cout << "done reading two values " << std::endl;
   // then initialize context (which in this case is NULL everything
   std::shared_ptr<emptyContext> context;
   return context;

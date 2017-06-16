@@ -90,28 +90,35 @@ StackAlgoExtras<T, D, I>::StackAlgoExtras(std::string fileName,
 
 /*==============================================================================
   Extras Functions: run, push, pop, top
+  TODO: make the compare function call the normal function if the classic stack pointer is empty
 ==============================================================================*/
 
 template <class T, class D, class I>
 void StackAlgoExtras<T, D, I>::printCompare() {
   std::string str = StackAlgo<T, D, I>::toString();
-  str += "\n" + (*mClassicStack).toString();
+  if (mClassicStack) {
+    str += "\n" + (*mClassicStack).toString();
+  }
   std::cout << str << std::endl;
 }
 
 template <class T, class D, class I>
 void StackAlgoExtras<T, D, I>::readPushCompare(I iter) {
-  for (I i = 0; i < iter; i++) {
-    std::streampos position = StackAlgo<T, D, I>::mInput.tellg();
-    StackAlgo<T, D, I>::mStack->setPosition(position);
-    std::vector<std::string> line = StackAlgo<T, D, I>::readLine();
-    D data = readInput(line);
-    StackAlgo<T, D, I>::mIndex++;
-    Data<T, D, I> elt(StackAlgo<T, D, I>::mIndex, data);
-    prePush(elt);
-    StackAlgo<T, D, I>::push(elt);
-    mClassicStack->push(elt);
-    postPush(elt);
+  if (mClassicStack) {
+    for (I i = 0; i < iter; i++) {
+      std::streampos position = StackAlgo<T, D, I>::mInput.tellg();
+      StackAlgo<T, D, I>::mStack->setPosition(position);
+      std::vector<std::string> line = StackAlgo<T, D, I>::readLine();
+      D data = readInput(line);
+      StackAlgo<T, D, I>::mIndex++;
+      Data<T, D, I> elt(StackAlgo<T, D, I>::mIndex, data);
+      prePush(elt);
+      StackAlgo<T, D, I>::push(elt);
+      mClassicStack->push(elt);
+      postPush(elt);
+    }
+  } else {
+    StackAlgo<T, D, I>::readPush(iter);
   }
 }
 
@@ -205,20 +212,24 @@ template <class T, class D, class I> I StackAlgoExtras<T, D, I>::stepCompare() {
 
 template <class T, class D, class I>
 void StackAlgoExtras<T, D, I>::runCompare() {
-  try {
-    StackAlgo<T, D, I>::initStackIntern();
+  if (mClassicStack) {
+    try {
+      StackAlgo<T, D, I>::initStackIntern();
 
-    while (StackAlgo<T, D, I>::mInput.good()) {
-      if (stepCompare() == 0) {
-        break;
+      while (StackAlgo<T, D, I>::mInput.good()) {
+        if (stepCompare() == 0) {
+          break;
+        }
       }
-    }
 
-    reportStack();
-  } catch (char const *e) {
-    std::cout << e << std::endl;
-    StackAlgo<T, D, I>::println();
-    std::cout << mClassicStack->toString() << std::endl;
+      reportStack();
+    } catch (char const *e) {
+      std::cout << e << std::endl;
+      StackAlgo<T, D, I>::println();
+      std::cout << mClassicStack->toString() << std::endl;
+    }
+  } else {
+    StackAlgo<T, D, I>::run();
   }
 }
 
