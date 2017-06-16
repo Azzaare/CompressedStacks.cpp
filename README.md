@@ -1,6 +1,6 @@
 # CompressedStacks.cpp
 
-The CompressedStacks.cpp module/library implements the compressed stack structure. This data structure behaves like a usual stack with the usual push and pop operations, but has the additional advantage that it uses less memory. Intuitively, when large blocks of information are pushed into the stack it *compresses* the bottom part (only stores partial information). This information is recomputed whenever it is needed afterwards. See the paper of [Barba *et al.*](https://arxiv.org/abs/1208.3663) for more details on this structure.
+The CompressedStacks.cpp module/library implements the compressed stack structure. This data structure behaves like a usual stack with the usual push and pop operations, but has the additional advantage that it uses less memory. Intuitively, when large blocks of information are pushed into the stack it *compresses* the bottom part (only stores partial information). This information is recomputed whenever it is needed afterwards. See the paper of [Barba *et al.*](https://arxiv.org/abs/1208.3663) for more details on this structure. More information about the implementation can be found in [Baffier *et al*](https://arxiv.org/abs/1706.04708).
 
 Please consult the [wiki](https://github.com/Azzaare/CompressedStacks.cpp/wiki) of this project for further details such as : speed and memory consumption tests, more details about installation, examples, and more.
 
