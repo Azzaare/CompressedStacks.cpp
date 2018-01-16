@@ -93,7 +93,7 @@ int Point2D::orientation(Point2D p1, Point2D p2, Point2D p3) {
 
   int val = (p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x) * (p3.y - p2.y);
 
-  std::cout<<"ORIENTATION BETWEEN "<<p1<<" "<<p2<<" "<<p3<<" is:"<<((val > 0) ? 1 : 2)<<std::endl;
+  // std::cout<<"ORIENTATION BETWEEN "<<p1<<" "<<p2<<" "<<p3<<" is:"<<((val > 0) ? 1 : 2)<<std::endl;
 
   if (val == 0)
     return 0;               // colinear
